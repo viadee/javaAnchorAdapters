@@ -12,6 +12,7 @@
 
     <modules>
         <module>sparkExtension</module>
+        <module>FastMPJExtension</module>
     </modules>
 
     <build>
