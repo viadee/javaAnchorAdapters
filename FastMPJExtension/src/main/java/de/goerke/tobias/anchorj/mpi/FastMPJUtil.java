@@ -17,41 +17,39 @@ public final class FastMPJUtil {
     }
 
     /**
-     * Waits for all processes' signal
+     * Waits for a processes' signal
      *
-     * @param tag   the tag
-     * @param nProc number of total processes
+     * @param i   the process number
+     * @param tag the tag
      */
-    public static void waitForAllToSignal(int tag, int nProc) {
-        for (int i = 1; i < nProc; i++) {
-            MPI.COMM_WORLD.Recv(new boolean[1], 0, 1, MPI.BOOLEAN, i, tag);
-        }
+    public static void waitForSignal(int i, int tag) {
+        MPI.COMM_WORLD.Recv(new boolean[1], 0, 1, MPI.BOOLEAN, i, tag);
     }
 
+
     /**
-     * Sends (non-blocking) an object to all slaves
+     * Sends (non-blocking) an object to a slaves
      *
      * @param object the object to be send
-     * @param nProc  the number of processes
+     * @param i      the slave process
      * @param tag    the tag
      */
-    public static void sendFromRootToAll(Object object, int nProc, int tag) {
-        for (int i = 1; i < nProc; i++) {
-            MPI.COMM_WORLD.Isend(new Object[]{object}, 0, 1, MPI.OBJECT, i, tag);
-        }
+    public static void send(Object object, int i, int tag) {
+        MPI.COMM_WORLD.Isend(new Object[]{object}, 0, 1, MPI.OBJECT, i, tag);
     }
 
     /**
-     * Received (blocking) an object from all slaves
+     * Received (blocking) an object from a slaves
      *
+     * @param i   the process slave
      * @param tag the tag
      * @param <T> type of the received object
      * @return the received object
      */
     @SuppressWarnings("unchecked")
-    public static <T> T receiveFromRoot(int tag) {
+    public static <T> T receive(int i, int tag) {
         Object[] result = new Object[1];
-        MPI.COMM_WORLD.Recv(result, 0, 1, MPI.OBJECT, 0, tag);
+        MPI.COMM_WORLD.Recv(result, 0, 1, MPI.OBJECT, i, tag);
         return (T) result[0];
     }
 }

@@ -4,13 +4,16 @@ import de.goerke.tobias.anchorj.base.AnchorCandidate;
 import de.goerke.tobias.anchorj.base.ClassificationFunction;
 import de.goerke.tobias.anchorj.base.DataInstance;
 import de.goerke.tobias.anchorj.base.PerturbationFunction;
-import de.goerke.tobias.anchorj.base.execution.AbstractSamplingService;
+import de.goerke.tobias.anchorj.base.execution.SamplingService;
 import de.goerke.tobias.anchorj.base.execution.SamplingSession;
+import de.goerke.tobias.anchorj.base.execution.sampling.DefaultSamplingFunction;
+import de.goerke.tobias.anchorj.base.execution.sampling.SamplingFunction;
 import mpi.MPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,16 +34,15 @@ import java.util.stream.IntStream;
  *
  * @param <T> Type of the {@link DataInstance}
  */
-public class FastMPJSamplingService<T extends DataInstance<?>> extends AbstractSamplingService<T> {
+public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBaseClass implements SamplingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastMPJSamplingService.class);
+
 
     private static final int MESSAGE_SIZE_TAG = 0;
     private static final int COMMAND_SEND_TAG = 1;
     private static final int RESPOND_TAG = 2;
-    private static boolean isFinalizeCalled = false;
-    private final int nProcesses;
-    private final int me;
-    private boolean isInitialized = false;
+
+    private final SamplingFunction samplingFunction;
 
     private int totalSampleCount = 0;
 
@@ -66,84 +68,63 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends AbstractS
      */
     public FastMPJSamplingService(int[] initializerResult, ClassificationFunction<T> classificationFunction,
                                   PerturbationFunction<T> perturbationFunction) {
-        super(classificationFunction, perturbationFunction);
-        this.nProcesses = initializerResult[0];
-        this.me = initializerResult[1];
-        if (this.me == 0)
-            this.isInitialized = true;
+        super(initializerResult);
+        this.samplingFunction = new DefaultSamplingFunction<>(classificationFunction, perturbationFunction);
     }
 
-    /**
-     * Finalizes the FastMPJ environment. Needs to be called to kill all processes at the end of the application.
-     */
-    public void close() {
-        LOGGER.info("Finalizing environment");
-        isFinalizeCalled = true;
-        FastMPJInitializer.finalizeEnvironment();
-    }
 
-    /**
-     * This method initializes the service, i.e. "traps" all worker processes in an endless loop, listening to the
-     * master process.
-     * <p>
-     * Needs to be called for all slave processes.
-     * <p>
-     * This method does not need to be called for the master processl
-     */
-    public void initialize() {
-        LOGGER.debug("{} entering looped receive mode", me);
-        isInitialized = true;
-        if (me > 0) {
-            while (!isFinalizeCalled) {
-                LOGGER.debug("Worker {} waiting for message size receive", me);
-                int[] sizeAndLabelData = new int[2];
-                MPI.COMM_WORLD.Recv(sizeAndLabelData, 0, sizeAndLabelData.length, MPI.INT, 0, MESSAGE_SIZE_TAG);
-                int label = sizeAndLabelData[1];
-                int[] data = new int[sizeAndLabelData[0]];
-                MPI.COMM_WORLD.Recv(data, 0, data.length, MPI.INT, 0, COMMAND_SEND_TAG);
-                int[] features = new int[data.length - 1];
-                int sampleCount = data[data.length - 1];
-                System.arraycopy(data, 0, features, 0, features.length);
-                LOGGER.debug("Worker {} received operation to sample {} with label {} for {} times", me, features, label, sampleCount);
+    @Override
+    protected void init() {
+        while (!isIsFinalizeCalled()) {
+            LOGGER.debug("Worker {} waiting for message size receive", me);
+            int[] sizeAndLabelData = new int[2];
+            MPI.COMM_WORLD.Recv(sizeAndLabelData, 0, sizeAndLabelData.length, MPI.INT, 0, MESSAGE_SIZE_TAG);
+            int label = sizeAndLabelData[1];
+            int[] data = new int[sizeAndLabelData[0]];
+            MPI.COMM_WORLD.Recv(data, 0, data.length, MPI.INT, 0, COMMAND_SEND_TAG);
+            int[] features = new int[data.length - 1];
+            int sampleCount = data[data.length - 1];
+            System.arraycopy(data, 0, features, 0, features.length);
+            LOGGER.debug("Worker {} received operation to sample {} with label {} for {} times", me, features, label, sampleCount);
 
-                Collection<Integer> featuresCollection = IntStream.of(features).boxed().collect(Collectors.toList());
-                AnchorCandidate candidate = new AnchorCandidate(featuresCollection);
-                doSample(candidate, sampleCount, label);
+            Collection<Integer> featuresCollection = IntStream.of(features).boxed().collect(Collectors.toList());
+            AnchorCandidate candidate = new AnchorCandidate(featuresCollection);
+            samplingFunction.evaluate(candidate, sampleCount, label);
 
-                MPI.COMM_WORLD.Send(new int[]{candidate.getSampledSize(), candidate.getPositiveSamples()}, 0, 2, MPI.INT, 0, RESPOND_TAG);
+            MPI.COMM_WORLD.Send(new int[]{candidate.getSampledSize(), candidate.getPositiveSamples()}, 0, 2, MPI.INT, 0, RESPOND_TAG);
 
-                LOGGER.debug("Worker {} finished one cycle", me);
-            }
-            close();
+            LOGGER.debug("Worker {} finished one cycle", me);
         }
     }
 
-    /**
-     * @return the current worker index
-     */
-    public int getMe() {
-        return me;
-    }
 
-    /**
-     * @return the total number of processes
-     */
-    public int getnProcesses() {
-        return nProcesses;
+    @Override
+    public double getTimeSpentSampling() {
+        return 0;
     }
 
     @Override
     public SamplingSession createSession(int explainedInstanceLabel) {
-        if (!isInitialized)
+        if (!isInitialized())
             throw new IllegalArgumentException("initialize() must have been called before using the FastMPJ service");
+        return new SamplingSession() {
+            protected final Map<AnchorCandidate, Integer> samplingCountMap = new LinkedHashMap<>();
 
-        return new AbstractSamplingSession(explainedInstanceLabel) {
             @Override
-            protected void execute() {
+            public SamplingSession registerCandidateEvaluation(AnchorCandidate candidate, int count) {
+                if (samplingCountMap.containsKey(candidate))
+                    count += samplingCountMap.get(candidate);
+                samplingCountMap.put(candidate, count);
+
+                return this;
+            }
+
+            @Override
+            public void run() {
                 if (me == 0) {
                     LOGGER.debug("Starting parent sampling process");
 
-                    for (Map.Entry<AnchorCandidate, Integer> entry : super.samplingCountMap.entrySet()) {
+                    for (Map.Entry<AnchorCandidate, Integer> entry : samplingCountMap.entrySet()) {
                         final Integer[] features = entry.getKey().getOrderedFeatures().toArray(new Integer[0]);
 
                         final int samplesPerWorker = entry.getValue() / (nProcesses - 1);

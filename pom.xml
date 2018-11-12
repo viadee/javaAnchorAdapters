@@ -13,6 +13,8 @@
     <modules>
         <module>sparkExtension</module>
         <module>FastMPJExtension</module>
+        <module>H2OExtension</module>
+        <module>DefaultConfigsExtension</module>
     </modules>
 
     <build>
