@@ -1,5 +1,6 @@
 package de.goerke.tobias.anchorj.classifiers;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import smile.classification.RandomForest;
 import smile.data.Attribute;
@@ -46,6 +47,7 @@ class RandomForestClassifierTest {
      * <p>
      * Test of learn method, of class RandomForest.
      */
+    @Disabled
     @Test
     public void testRandomForestUSPSNominal() throws Exception {
         DelimitedTextParser parser = new DelimitedTextParser();
