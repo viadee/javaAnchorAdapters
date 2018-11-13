@@ -16,7 +16,7 @@ public class ImageInstanceVisualizerTest {
     public void drawImportance() throws Exception {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("dog.jpg");
         de.goerke.tobias.anchorj.image.BufferedImageRepresentation imageRepresentation = new BufferedImageRepresentation(ImageIO.read(resource));
-        ImageInstance imageInstance = Superpixel.calculateClusters(imageRepresentation, 100, 150);
+        ImageInstance imageInstance = SLICSuperpixelation.extractSuperpixels(imageRepresentation,  50, 0.15f);
         de.goerke.tobias.anchorj.image.ImageInstanceVisualizer visualizer = new ImageInstanceVisualizer(imageInstance);
 
         Map<Integer, Double> importanceMap = new HashMap<>();

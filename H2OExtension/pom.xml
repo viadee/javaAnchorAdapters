@@ -17,6 +17,18 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <!-- DefaultConfigsExtension -->
+        <dependency>
+            <groupId>de.goerke.tobias</groupId>
+            <artifactId>DefaultConfigsExtension</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
+        <!-- https://mvnrepository.com/artifact/ai.h2o/h2o-genmodel -->
+        <dependency>
+            <groupId>ai.h2o</groupId>
+            <artifactId>h2o-genmodel</artifactId>
+            <version>3.20.0.10</version>
+        </dependency>
     </dependencies>
 </project>

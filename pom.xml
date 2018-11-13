@@ -15,6 +15,7 @@
         <module>FastMPJExtension</module>
         <module>H2OExtension</module>
         <module>DefaultConfigsExtension</module>
+        <module>DefaultMLMethods</module>
     </modules>
 
     <build>
@@ -115,6 +116,13 @@
             <groupId>de.goerke.tobias</groupId>
             <artifactId>anchorj</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Commons-io for loading files -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
 
         <!-- SLF4J -->
