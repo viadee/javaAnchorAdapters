@@ -1,7 +1,7 @@
 package de.goerke.tobias.anchorj.spark;
 
-import de.goerke.tobias.anchorj.base.ClassificationFunction;
-import de.goerke.tobias.anchorj.base.DataInstance;
+import de.goerke.tobias.anchorj.ClassificationFunction;
+import de.goerke.tobias.anchorj.DataInstance;
 import org.apache.spark.api.java.function.PairFunction;
 import scala.Tuple2;
 

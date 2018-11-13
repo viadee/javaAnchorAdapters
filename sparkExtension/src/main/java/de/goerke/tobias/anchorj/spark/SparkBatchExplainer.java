@@ -1,9 +1,9 @@
 package de.goerke.tobias.anchorj.spark;
 
-import de.goerke.tobias.anchorj.base.AnchorConstructionBuilder;
-import de.goerke.tobias.anchorj.base.AnchorResult;
-import de.goerke.tobias.anchorj.base.DataInstance;
-import de.goerke.tobias.anchorj.base.global.BatchExplainer;
+import de.goerke.tobias.anchorj.AnchorConstructionBuilder;
+import de.goerke.tobias.anchorj.AnchorResult;
+import de.goerke.tobias.anchorj.DataInstance;
+import de.goerke.tobias.anchorj.global.BatchExplainer;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;

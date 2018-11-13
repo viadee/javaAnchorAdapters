@@ -1,8 +1,8 @@
 package de.goerke.tobias.anchorj.spark;
 
-import de.goerke.tobias.anchorj.base.AnchorConstructionBuilder;
-import de.goerke.tobias.anchorj.base.AnchorResult;
-import de.goerke.tobias.anchorj.base.DataInstance;
+import de.goerke.tobias.anchorj.AnchorConstructionBuilder;
+import de.goerke.tobias.anchorj.AnchorResult;
+import de.goerke.tobias.anchorj.DataInstance;
 import org.apache.spark.api.java.function.Function;
 import scala.Tuple2;
 
@@ -24,7 +24,7 @@ class ConstructionMapper<T extends DataInstance<?>> implements Function<Tuple2<T
      * Instantiates a new Construction mapper.
      *
      * @param anchorConstructionBuilder the builder used to construct an
-     *                                  {@link de.goerke.tobias.anchorj.base.AnchorConstruction} instance
+     *                                  {@link de.goerke.tobias.anchorj.AnchorConstruction} instance
      */
     @SuppressWarnings("static-access")
     ConstructionMapper(AnchorConstructionBuilder<T> anchorConstructionBuilder) {
