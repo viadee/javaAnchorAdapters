@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-// TODO
+// TODO Make abstract and have implementations for each model type. Let user define output discretization
 public class H2OTabularRegressionMojoClassifier<T extends TabularInstance> implements ClassificationFunction<T> {
 
     private final EasyPredictModelWrapper modelWrapper;
