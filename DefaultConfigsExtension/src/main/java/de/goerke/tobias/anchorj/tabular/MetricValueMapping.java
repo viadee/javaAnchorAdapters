@@ -3,7 +3,8 @@ package de.goerke.tobias.anchorj.tabular;
 /**
  * @author ak902764
  */
-public class MetricValueMapping extends FeatureValueMapping {
+public class MetricValueMapping extends DiscretizedValueMapping {
+
     private final Double minValue;
     private final Double maxValue;
 
@@ -20,11 +21,6 @@ public class MetricValueMapping extends FeatureValueMapping {
 
     public Double getMaxValue() {
         return maxValue;
-    }
-
-    @Override
-    public String toString() {
-        return "Range(" + this.minValue + ", " + this.maxValue + ")";
     }
 
 }

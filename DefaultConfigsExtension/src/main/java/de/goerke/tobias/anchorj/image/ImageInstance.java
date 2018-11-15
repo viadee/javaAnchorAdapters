@@ -40,7 +40,7 @@ public class ImageInstance implements DataInstance<ImageRepresentation> {
     }
 
     @Override
-    public Object getFeature(int featureId) {
+    public Object getValue(int featureId) {
         throw new UnsupportedOperationException("Feature extraction is not supported for images");
     }
 

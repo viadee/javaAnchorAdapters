@@ -3,7 +3,8 @@ package de.goerke.tobias.anchorj.tabular;
 /**
  * @author ak902764
  */
-public class CategoricalValueMapping extends FeatureValueMapping {
+public class CategoricalValueMapping extends DiscretizedValueMapping {
+
     private final Object categoricalValue;
 
     public CategoricalValueMapping(TabularFeature feature, Object discretizedValue, Object categoricalValue) {
@@ -15,8 +16,4 @@ public class CategoricalValueMapping extends FeatureValueMapping {
         return categoricalValue;
     }
 
-    @Override
-    public String toString() {
-        return this.getDiscretizedValue().toString();
-    }
 }

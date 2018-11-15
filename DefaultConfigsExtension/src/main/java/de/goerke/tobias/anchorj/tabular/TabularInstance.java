@@ -39,7 +39,7 @@ public class TabularInstance implements DataInstance<Object[]> {
         return instance;
     }
 
-    public Object getFeature(String featureName) {
+    public Object getValue(String featureName) {
         if (this.featureNames == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
@@ -47,7 +47,11 @@ public class TabularInstance implements DataInstance<Object[]> {
             throw new IllegalArgumentException("feature " + featureName + " not found");
         }
 
-        return this.getFeature(this.featureNames.get(featureName));
+        return this.getValue(this.featureNames.get(featureName));
+    }
+
+    public Integer getFeatureArrayIndex(String featureName) {
+        return this.featureNames.get(featureName);
     }
 
     @Override

@@ -6,18 +6,13 @@ package de.goerke.tobias.anchorj.tabular;
 public class FeatureValueMapping {
 
     private final TabularFeature feature;
-    private final Object discretizedValue;
 
-    public FeatureValueMapping(TabularFeature feature, Object discretizedValue) {
+    public FeatureValueMapping(TabularFeature feature) {
         this.feature = feature;
-        this.discretizedValue = discretizedValue;
     }
 
     public TabularFeature getFeature() {
         return feature;
     }
 
-    public Object getDiscretizedValue() {
-        return discretizedValue;
-    }
 }
