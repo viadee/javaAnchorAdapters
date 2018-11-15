@@ -1,11 +1,23 @@
 package de.goerke.tobias.anchorj.tabular;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.goerke.tobias.anchorj.util.ArrayUtils.*;
+import static de.goerke.tobias.anchorj.util.ArrayUtils.removeColumn;
+import static de.goerke.tobias.anchorj.util.ArrayUtils.replaceColumnValues;
+import static de.goerke.tobias.anchorj.util.ArrayUtils.transformToIntArray;
 
 /**
  * Provides default means to use the Anchors algorithm on de.goerke.tobias.anchorj.tabular data
@@ -16,11 +28,11 @@ public class AnchorTabular {
 
     private final TabularInstanceList tabularInstances;
     private final TabularFeature[] features;
-    private final Map<TabularFeature, Map<Object, Object>> mappings;
+    private final Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
 
     private AnchorTabular(final TabularInstanceList tabularInstances, final TabularFeature[] features,
-                          final Map<TabularFeature, Map<Object, Object>> mappings,
+                          final Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings,
                           final TabularInstanceVisualizer tabularInstanceVisualizer) {
         this.tabularInstances = tabularInstances;
         this.features = features;
@@ -43,7 +55,7 @@ public class AnchorTabular {
         applyTransformations(data, usedColumns);
 
         // Store the mappings that were conducted in order to be able to reverse them later on
-        Map<TabularFeature, Map<Object, Object>> mappings = transformDataAndCreateReverseTransformationMapping(data, usedColumns, tabularFeatures);
+        Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings = transformDataAndCreateReverseTransformationMapping(data, usedColumns, tabularFeatures);
 
         // Convert to int array
         Object[][] dataAsInt = transformToIntArray(data);
@@ -76,8 +88,8 @@ public class AnchorTabular {
         return new de.goerke.tobias.anchorj.tabular.AnchorTabular(instances, tabularFeatures, mappings, tabularInstanceVisualizer);
     }
 
-    private static Map<TabularFeature, Map<Object, Object>> transformDataAndCreateReverseTransformationMapping(Object[][] data, List<ColumnDescription> usedColumns, TabularFeature[] finalFeatures) {
-        Map<TabularFeature, Map<Object, Object>> mappings = new LinkedHashMap<>();
+    private static Map<TabularFeature, Map<Object, FeatureValueMapping>> transformDataAndCreateReverseTransformationMapping(Object[][] data, List<ColumnDescription> usedColumns, TabularFeature[] finalFeatures) {
+        Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings = new LinkedHashMap<>();
 
         // Transform categorical features to be in a range of 0..(distinct values)
         // Also discretize nominal values
@@ -87,7 +99,13 @@ public class AnchorTabular {
             // Only categorize categorical features
             if (internalColumn.getColumnType() == TabularFeature.ColumnType.CATEGORICAL) {
                 Object[] result = transformColumnToUniqueValues(data, i);
-                mappings.put(finalFeatures[i], (Map<Object, Object>) result[1]);
+                Map<Object, Object> transformedMapping = (Map<Object, Object>) result[1];
+
+                final TabularFeature feature = finalFeatures[i];
+                Map<Object, FeatureValueMapping> featureMapping = new HashMap<>(transformedMapping.size());
+                transformedMapping.forEach((key, value) -> featureMapping.put(key, new CategoricalValueMapping(feature, key, value)));
+
+                mappings.put(feature, featureMapping);
                 replaceColumnValues(data, (int[]) result[0], i);
             }
 
@@ -118,13 +136,13 @@ public class AnchorTabular {
                     values.add(valuesToBeDiscretized[j]);
                 }
 
-                Map<Object, Object> mapping = new LinkedHashMap<>();
+                Map<Object, FeatureValueMapping> valueMappings = new LinkedHashMap<>();
                 for (Map.Entry<Object, Set<Number>> entry : tmpMapping.entrySet()) {
-                    Set<Integer> values = entry.getValue().stream().map(Number::intValue).collect(Collectors.toSet());
-                    String range = String.format("Range(%d, %d)", Collections.min(values), Collections.max(values));
-                    mapping.put(range, entry.getKey());
+                    Set<Double> values = entry.getValue().stream().map(Number::doubleValue).collect(Collectors.toSet());
+                    valueMappings.put(entry.getKey(), new MetricValueMapping(finalFeatures[i], entry.getKey(),
+                            Collections.min(values), Collections.max(values)));
                 }
-                mappings.put(finalFeatures[i], mapping);
+                mappings.put(finalFeatures[i], valueMappings);
             } else {
                 mappings.put(finalFeatures[i], Collections.emptyMap());
             }
@@ -211,7 +229,7 @@ public class AnchorTabular {
             }
             result[i] = valueSet.get(cell);
         }
-        return new Object[]{result, valueSet};
+        return new Object[] { result, valueSet };
     }
 
     private static Object[][] removeColumns(Object[][] values, List<Integer> indices) {
@@ -263,7 +281,7 @@ public class AnchorTabular {
      * @return a {@link Map} mapping, for each feature, which value got replaced by which other value during
      * preprocessing
      */
-    public Map<TabularFeature, Map<Object, Object>> getMappings() {
+    public Map<TabularFeature, Map<Object, FeatureValueMapping>> getMappings() {
         return mappings;
     }
 

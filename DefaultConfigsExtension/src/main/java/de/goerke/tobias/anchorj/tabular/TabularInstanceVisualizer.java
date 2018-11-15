@@ -12,18 +12,15 @@ import java.util.*;
  * May be used to visualize an instance of the algorithms result for the user.
  */
 public class TabularInstanceVisualizer {
-    private final Map<TabularFeature, Map<Object, Object>> invertedMappings;
+    private final Map<TabularFeature, Map<Object, FeatureValueMapping>> featureValueMapping;
 
     /**
      * Constructs the instance.
      *
      * @param mappings the mappings used for transforming values
      */
-    public TabularInstanceVisualizer(Map<TabularFeature, Map<Object, Object>> mappings) {
-        this.invertedMappings = new LinkedHashMap<>();
-        for (Map.Entry<TabularFeature, Map<Object, Object>> entry : mappings.entrySet()) {
-            this.invertedMappings.put(entry.getKey(), invertMap(entry.getValue()));
-        }
+    public TabularInstanceVisualizer(Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings) {
+        this.featureValueMapping = mappings;
     }
 
     private static AnchorCandidate getCandidateForFeatureNr(AnchorResult<?> result, Integer featureNr) {
@@ -33,7 +30,7 @@ public class TabularInstanceVisualizer {
                 return current;
             current = current.getParentCandidate();
         }
-        throw new RuntimeException("Illegal result hierarchy");
+        throw new IllegalStateException("Illegal result hierarchy");
     }
 
     private static <K, V> Map<V, K> invertMap(Map<K, V> toInvert) {
@@ -62,9 +59,11 @@ public class TabularInstanceVisualizer {
             explanation[index++] = text[featureNr] + " [" + df.format(candidate.getAddedPrecision()) + ","
                     + df.format(candidate.getAddedCoverage()) + "]";
         }
+        // TODO refactor!
         return "IF ( " + String.join(" AND " + System.lineSeparator(), explanation) + ")"
                 + System.lineSeparator() + "THEN PREDICT " +
-                getLabelMapping().getOrDefault(anchorResult.getLabel(), anchorResult.getLabel());
+                getLabelMapping().getOrDefault(anchorResult.getLabel(),
+                        new CategoricalValueMapping(null, anchorResult.getLabel(), anchorResult.getLabel()));
     }
 
     public String[] getAnchorAsPredicateList(AnchorResult<TabularInstance> anchorResult) {
@@ -94,21 +93,25 @@ public class TabularInstanceVisualizer {
     private String[] instanceToText(TabularInstance explainedInstance) {
         final List<String> result = new ArrayList<>();
         int i = 0;
-        for (Map.Entry<TabularFeature, Map<Object, Object>> entry : invertedMappings.entrySet()) {
-            if (i >= explainedInstance.getFeatureCount())
+        for (Map.Entry<TabularFeature, Map<Object, FeatureValueMapping>> entry : featureValueMapping.entrySet()) {
+            if (i >= explainedInstance.getFeatureCount()) {
                 break;
-            Object value = entry.getValue().get(explainedInstance.getInstance()[i]);
-            String tmp = (value instanceof String) ? (String) value : String.valueOf(value);
-            if (value == null)
-                tmp = String.valueOf(explainedInstance.getInstance()[i]);
+            }
+            FeatureValueMapping value = entry.getValue().get(explainedInstance.getInstance()[i]);
+            String tmp = value.toString();
             result.add(entry.getKey().getName() + " = " + tmp);
             i++;
         }
         return result.toArray(new String[0]);
     }
 
-    private Map<Object, Object> getLabelMapping() {
-        return invertedMappings.entrySet().stream().filter(e -> e.getKey().isTargetFeature()).map(Map.Entry::getValue)
+    public List<FeatureValueMapping> getAnchor(TabularInstance explainedInstance) {
+        // TODO sfd
+        return null;
+    }
+
+    private Map<Object, FeatureValueMapping> getLabelMapping() {
+        return featureValueMapping.entrySet().stream().filter(e -> e.getKey().isTargetFeature()).map(Map.Entry::getValue)
                 .findFirst().orElse(Collections.emptyMap());
     }
 }
