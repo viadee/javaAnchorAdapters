@@ -125,13 +125,17 @@ public class TabularInstanceVisualizer {
 
     private Map<Integer, FeatureValueMapping> getInstanceValueMapping(TabularInstance explainedInstance) {
         Map<Integer, FeatureValueMapping> featureValues = new HashMap<>(explainedInstance.getFeatureCount());
-        for (Map.Entry<TabularFeature, Map<Object, FeatureValueMapping>> entry : featureValueMapping.entrySet()) {
-            final String featureName = entry.getKey().getName();
-            Integer featureArrayIndex = explainedInstance.getFeatureArrayIndex(featureName);
+        final int instanceLength = explainedInstance.getInstance().length;
+        for (int featureArrayIndex = 0; featureArrayIndex < instanceLength; featureArrayIndex++) {
+            final String featureName = explainedInstance.getFeatureName(featureArrayIndex);
+            Map.Entry<TabularFeature, Map<Object, FeatureValueMapping>> valueMapping = this.featureValueMapping.entrySet().stream()
+                    .filter((entry) -> entry.getKey().getName().equals(featureName))
+                    .findFirst().orElseThrow(() -> new IllegalArgumentException("no value mapping with feature name "
+            + featureName + " found"));
 
-            final Object instanceValue = explainedInstance.getValue(featureName);
-            FeatureValueMapping value = entry.getValue().getOrDefault(instanceValue,
-                    new NativeValueMapping(entry.getKey(), instanceValue));
+            final Object instanceValue = explainedInstance.getValue(featureArrayIndex);
+            FeatureValueMapping value = valueMapping.getValue().getOrDefault(instanceValue,
+                    new NativeValueMapping(valueMapping.getKey(), instanceValue));
             featureValues.put(featureArrayIndex, value);
         }
 

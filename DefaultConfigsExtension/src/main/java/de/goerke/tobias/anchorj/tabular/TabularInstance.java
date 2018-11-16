@@ -50,6 +50,11 @@ public class TabularInstance implements DataInstance<Object[]> {
         return this.getValue(this.featureNames.get(featureName));
     }
 
+    public String getFeatureName(int index) {
+        return this.featureNames.entrySet().stream().filter(entry -> entry.getValue() == index).findFirst().orElseThrow(() ->
+                new ArrayIndexOutOfBoundsException("no entry found with index " + index)).getKey();
+    }
+
     public Integer getFeatureArrayIndex(String featureName) {
         return this.featureNames.get(featureName);
     }
