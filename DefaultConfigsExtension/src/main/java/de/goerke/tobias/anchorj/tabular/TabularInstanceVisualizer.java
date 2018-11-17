@@ -149,9 +149,10 @@ public class TabularInstanceVisualizer {
     public Map<Integer, FeatureValueMapping> getAnchor(AnchorResult<TabularInstance> anchorResult) {
         Map<Integer, FeatureValueMapping> instanceValues = this.getInstanceValueMapping(anchorResult.getInstance());
 
+        List<Integer> orderedFeatures = anchorResult.getOrderedFeatures();
         Map<Integer, FeatureValueMapping> result = new HashMap<>();
-        for (Integer arrayIndex : anchorResult.getOrderedFeatures()) {
-            result.put(arrayIndex, instanceValues.get(arrayIndex));
+        for (int arrayIndex = 0; arrayIndex < orderedFeatures.size(); arrayIndex++) {
+            result.put(arrayIndex, instanceValues.get(orderedFeatures.get(arrayIndex)));
         }
 
         return result;
