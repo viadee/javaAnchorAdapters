@@ -1,29 +1,32 @@
 package de.goerke.tobias.anchorj.tabular;
 
-import de.goerke.tobias.anchorj.AnchorCandidate;
-import de.goerke.tobias.anchorj.AnchorResult;
-
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import de.goerke.tobias.anchorj.AnchorCandidate;
+import de.goerke.tobias.anchorj.AnchorResult;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
  */
 public class TabularInstanceVisualizer {
-    private final Map<TabularFeature, Map<Object, Object>> invertedMappings;
+    private final Map<TabularFeature, Map<Object, FeatureValueMapping>> featureValueMapping;
 
     /**
      * Constructs the instance.
      *
      * @param mappings the mappings used for transforming values
      */
-    public TabularInstanceVisualizer(Map<TabularFeature, Map<Object, Object>> mappings) {
-        this.invertedMappings = new LinkedHashMap<>();
-        for (Map.Entry<TabularFeature, Map<Object, Object>> entry : mappings.entrySet()) {
-            this.invertedMappings.put(entry.getKey(), invertMap(entry.getValue()));
-        }
+    public TabularInstanceVisualizer(Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings) {
+        this.featureValueMapping = mappings;
     }
 
     private static AnchorCandidate getCandidateForFeatureNr(AnchorResult<?> result, Integer featureNr) {
@@ -33,7 +36,7 @@ public class TabularInstanceVisualizer {
                 return current;
             current = current.getParentCandidate();
         }
-        throw new RuntimeException("Illegal result hierarchy");
+        throw new IllegalStateException("Illegal result hierarchy");
     }
 
     private static <K, V> Map<V, K> invertMap(Map<K, V> toInvert) {
@@ -62,9 +65,11 @@ public class TabularInstanceVisualizer {
             explanation[index++] = text[featureNr] + " [" + df.format(candidate.getAddedPrecision()) + ","
                     + df.format(candidate.getAddedCoverage()) + "]";
         }
+        // TODO refactor?!
         return "IF ( " + String.join(" AND " + System.lineSeparator(), explanation) + ")"
                 + System.lineSeparator() + "THEN PREDICT " +
-                getLabelMapping().getOrDefault(anchorResult.getLabel(), anchorResult.getLabel());
+                getLabelMapping().getOrDefault(anchorResult.getLabel(),
+                        new CategoricalValueMapping(null, anchorResult.getLabel(), anchorResult.getLabel()));
     }
 
     public String[] getAnchorAsPredicateList(AnchorResult<TabularInstance> anchorResult) {
@@ -93,22 +98,69 @@ public class TabularInstanceVisualizer {
 
     private String[] instanceToText(TabularInstance explainedInstance) {
         final List<String> result = new ArrayList<>();
-        int i = 0;
-        for (Map.Entry<TabularFeature, Map<Object, Object>> entry : invertedMappings.entrySet()) {
-            if (i >= explainedInstance.getFeatureCount())
-                break;
-            Object value = entry.getValue().get(explainedInstance.getInstance()[i]);
-            String tmp = (value instanceof String) ? (String) value : String.valueOf(value);
-            if (value == null)
-                tmp = String.valueOf(explainedInstance.getInstance()[i]);
-            result.add(entry.getKey().getName() + " = " + tmp);
-            i++;
-        }
+        Map<Integer, FeatureValueMapping> instanceValueMapping = this.getInstanceValueMapping(explainedInstance);
+        instanceValueMapping.keySet().stream().sorted(Integer::compareTo).forEachOrdered((arrayIndex) -> {
+            FeatureValueMapping value = instanceValueMapping.get(arrayIndex);
+            String tmp;
+            switch (value.getFeature().getColumnType()) {
+                case CATEGORICAL:
+                    tmp = ((CategoricalValueMapping) value).getCategoricalValue().toString();
+                    break;
+                case NATIVE:
+                    tmp = ((NativeValueMapping) value).getValue().toString();
+                    break;
+                case NOMINAL:
+                    MetricValueMapping metric = (MetricValueMapping) value;
+                    tmp = "Range(" + metric.getMinValue() + ", " + metric.getMaxValue() + ")";
+                    break;
+                default:
+                    throw new IllegalArgumentException("column type " +
+                            value.getFeature().getColumnType() + " not handled");
+            }
+            result.add(value.getFeature().getName() + " = " + tmp);
+        });
+
         return result.toArray(new String[0]);
     }
 
-    private Map<Object, Object> getLabelMapping() {
-        return invertedMappings.entrySet().stream().filter(e -> e.getKey().isTargetFeature()).map(Map.Entry::getValue)
+    private Map<Integer, FeatureValueMapping> getInstanceValueMapping(TabularInstance explainedInstance) {
+        Map<Integer, FeatureValueMapping> featureValues = new HashMap<>(explainedInstance.getFeatureCount());
+        final int instanceLength = explainedInstance.getInstance().length;
+        for (int featureArrayIndex = 0; featureArrayIndex < instanceLength; featureArrayIndex++) {
+            final String featureName = explainedInstance.getFeatureName(featureArrayIndex);
+            Map.Entry<TabularFeature, Map<Object, FeatureValueMapping>> valueMapping = this.featureValueMapping.entrySet().stream()
+                    .filter((entry) -> entry.getKey().getName().equals(featureName))
+                    .findFirst().orElseThrow(() -> new IllegalArgumentException("no value mapping with feature name "
+            + featureName + " found"));
+
+            final Object instanceValue = explainedInstance.getValue(featureArrayIndex);
+            FeatureValueMapping value = valueMapping.getValue().getOrDefault(instanceValue,
+                    new NativeValueMapping(valueMapping.getKey(), instanceValue));
+            featureValues.put(featureArrayIndex, value);
+        }
+
+        return featureValues;
+    }
+
+    /**
+     * @param anchorResult
+     * @return mapping of the anchor. !IMPORTANT! the key is the order of importance of the anchor.
+     */
+    public Map<Integer, FeatureValueMapping> getAnchor(AnchorResult<TabularInstance> anchorResult) {
+        Map<Integer, FeatureValueMapping> instanceValues = this.getInstanceValueMapping(anchorResult.getInstance());
+
+        List<Integer> orderedFeatures = anchorResult.getOrderedFeatures();
+        Map<Integer, FeatureValueMapping> result = new HashMap<>();
+        for (int arrayIndex = 0; arrayIndex < orderedFeatures.size(); arrayIndex++) {
+            result.put(arrayIndex, instanceValues.get(orderedFeatures.get(arrayIndex)));
+        }
+
+        return result;
+    }
+
+    private Map<Object, FeatureValueMapping> getLabelMapping() {
+        return featureValueMapping.entrySet().stream().filter(e -> e.getKey().isTargetFeature()).map(Map.Entry::getValue)
                 .findFirst().orElse(Collections.emptyMap());
     }
+
 }

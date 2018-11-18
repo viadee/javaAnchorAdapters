@@ -55,7 +55,7 @@ public class TextInstance implements DataInstance<String[]> {
     }
 
     @Override
-    public Object getFeature(int featureId) {
+    public Object getValue(int featureId) {
         return tokens[featureId];
     }
 }
