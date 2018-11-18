@@ -13,7 +13,7 @@
     <modules>
         <module>sparkExtension</module>
         <module>FastMPJExtension</module>
-        <module>H2OExtension</module>
+        <module>ModelImportExtension</module>
         <module>DefaultConfigsExtension</module>
         <module>DefaultMLMethods</module>
     </modules>
