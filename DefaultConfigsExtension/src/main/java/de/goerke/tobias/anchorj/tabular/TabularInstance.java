@@ -59,6 +59,10 @@ public class TabularInstance implements DataInstance<Object[]> {
         return this.featureNames.get(featureName);
     }
 
+    public Map<String, Integer> getFeatureNamesMapping() {
+        return this.featureNames;
+    }
+
     @Override
     public int getFeatureCount() {
         return instance.length;
