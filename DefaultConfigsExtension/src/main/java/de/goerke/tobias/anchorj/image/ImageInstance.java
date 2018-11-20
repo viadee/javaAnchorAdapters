@@ -1,7 +1,7 @@
 package de.goerke.tobias.anchorj.image;
 
-import de.goerke.tobias.anchorj.DataInstance;
-import de.goerke.tobias.anchorj.util.ParameterValidation;
+import de.viadee.anchorj.DataInstance;
+import de.viadee.anchorj.util.ParameterValidation;
 
 import java.util.ArrayList;
 import java.util.List;

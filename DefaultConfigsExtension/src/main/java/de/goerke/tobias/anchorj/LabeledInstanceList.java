@@ -1,7 +1,7 @@
 package de.goerke.tobias.anchorj;
 
-import de.goerke.tobias.anchorj.ClassificationFunction;
-import de.goerke.tobias.anchorj.DataInstance;
+import de.viadee.anchorj.ClassificationFunction;
+import de.viadee.anchorj.DataInstance;
 
 import java.io.Serializable;
 import java.util.AbstractList;

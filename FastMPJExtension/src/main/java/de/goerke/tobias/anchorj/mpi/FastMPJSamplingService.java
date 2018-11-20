@@ -1,13 +1,13 @@
 package de.goerke.tobias.anchorj.mpi;
 
-import de.goerke.tobias.anchorj.AnchorCandidate;
-import de.goerke.tobias.anchorj.ClassificationFunction;
-import de.goerke.tobias.anchorj.DataInstance;
-import de.goerke.tobias.anchorj.PerturbationFunction;
-import de.goerke.tobias.anchorj.execution.SamplingService;
-import de.goerke.tobias.anchorj.execution.SamplingSession;
-import de.goerke.tobias.anchorj.execution.sampling.DefaultSamplingFunction;
-import de.goerke.tobias.anchorj.execution.sampling.SamplingFunction;
+import de.viadee.anchorj.AnchorCandidate;
+import de.viadee.anchorj.ClassificationFunction;
+import de.viadee.anchorj.DataInstance;
+import de.viadee.anchorj.PerturbationFunction;
+import de.viadee.anchorj.execution.SamplingService;
+import de.viadee.anchorj.execution.SamplingSession;
+import de.viadee.anchorj.execution.sampling.DefaultSamplingFunction;
+import de.viadee.anchorj.execution.sampling.SamplingFunction;
 import mpi.MPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

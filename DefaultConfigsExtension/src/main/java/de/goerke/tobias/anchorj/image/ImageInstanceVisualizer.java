@@ -1,7 +1,7 @@
 package de.goerke.tobias.anchorj.image;
 
-import de.goerke.tobias.anchorj.AnchorCandidate;
-import de.goerke.tobias.anchorj.util.ParameterValidation;
+import de.viadee.anchorj.AnchorCandidate;
+import de.viadee.anchorj.util.ParameterValidation;
 
 import javax.swing.*;
 import java.util.Collection;

@@ -1,6 +1,7 @@
 package de.goerke.tobias.anchorj;
 
 import de.goerke.tobias.anchorj.tabular.TabularInstance;
+import de.viadee.anchorj.ClassificationFunction;
 import hex.ModelCategory;
 import hex.genmodel.ModelMojoReader;
 import hex.genmodel.MojoModel;

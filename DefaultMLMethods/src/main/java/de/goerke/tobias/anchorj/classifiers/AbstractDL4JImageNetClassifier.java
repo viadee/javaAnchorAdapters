@@ -1,6 +1,6 @@
 package de.goerke.tobias.anchorj.classifiers;
 
-import de.goerke.tobias.anchorj.ClassificationFunction;
+import de.viadee.anchorj.ClassificationFunction;
 import de.goerke.tobias.anchorj.image.ImageInstance;
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.nn.graph.ComputationGraph;

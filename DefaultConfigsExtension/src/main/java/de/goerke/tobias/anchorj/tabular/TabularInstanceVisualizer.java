@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import de.goerke.tobias.anchorj.AnchorCandidate;
-import de.goerke.tobias.anchorj.AnchorResult;
+import de.viadee.anchorj.AnchorCandidate;
+import de.viadee.anchorj.AnchorResult;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.

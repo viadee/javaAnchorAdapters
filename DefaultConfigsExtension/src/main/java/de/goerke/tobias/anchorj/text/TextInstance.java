@@ -1,6 +1,6 @@
 package de.goerke.tobias.anchorj.text;
 
-import de.goerke.tobias.anchorj.DataInstance;
+import de.viadee.anchorj.DataInstance;
 
 import java.util.function.Function;
 
