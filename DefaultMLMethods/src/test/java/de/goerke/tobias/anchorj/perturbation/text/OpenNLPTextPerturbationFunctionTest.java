@@ -1,6 +1,6 @@
 package de.goerke.tobias.anchorj.perturbation.text;
 
-import de.goerke.tobias.anchorj.PerturbationFunction;
+import de.viadee.anchorj.PerturbationFunction;
 import de.goerke.tobias.anchorj.text.TextInstance;
 import org.junit.jupiter.api.Test;
 

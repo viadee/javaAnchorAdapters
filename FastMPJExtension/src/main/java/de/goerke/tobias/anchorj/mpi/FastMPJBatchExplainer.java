@@ -1,9 +1,9 @@
 package de.goerke.tobias.anchorj.mpi;
 
-import de.goerke.tobias.anchorj.AnchorConstructionBuilder;
-import de.goerke.tobias.anchorj.AnchorResult;
-import de.goerke.tobias.anchorj.DataInstance;
-import de.goerke.tobias.anchorj.global.BatchExplainer;
+import de.viadee.anchorj.AnchorConstructionBuilder;
+import de.viadee.anchorj.AnchorResult;
+import de.viadee.anchorj.DataInstance;
+import de.viadee.anchorj.global.BatchExplainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

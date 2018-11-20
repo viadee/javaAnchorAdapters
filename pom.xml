@@ -113,7 +113,7 @@
     <dependencies>
         <!-- AnchorJ -->
         <dependency>
-            <groupId>de.goerke.tobias</groupId>
+            <groupId>de.viadee</groupId>
             <artifactId>anchorj</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

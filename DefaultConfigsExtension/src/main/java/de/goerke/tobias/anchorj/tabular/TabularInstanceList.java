@@ -1,13 +1,13 @@
 package de.goerke.tobias.anchorj.tabular;
 
 import de.goerke.tobias.anchorj.LabeledInstanceList;
-import de.goerke.tobias.anchorj.util.ParameterValidation;
+import de.viadee.anchorj.util.ParameterValidation;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.goerke.tobias.anchorj.util.ArrayUtils.*;
+import static de.viadee.anchorj.util.ArrayUtils.*;
 
 /**
  * Stores multiple instances of a {@link TabularInstance} and their corresponding labels

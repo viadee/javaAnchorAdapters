@@ -15,9 +15,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.goerke.tobias.anchorj.util.ArrayUtils.removeColumn;
-import static de.goerke.tobias.anchorj.util.ArrayUtils.replaceColumnValues;
-import static de.goerke.tobias.anchorj.util.ArrayUtils.transformToIntArray;
+import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
+import static de.viadee.anchorj.util.ArrayUtils.replaceColumnValues;
+import static de.viadee.anchorj.util.ArrayUtils.transformToIntArray;
 
 /**
  * Provides default means to use the Anchors algorithm on de.goerke.tobias.anchorj.tabular data

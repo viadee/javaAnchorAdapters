@@ -1,8 +1,8 @@
 package de.goerke.tobias.anchorj.image;
 
-import de.goerke.tobias.anchorj.PerturbationFunction;
-import de.goerke.tobias.anchorj.global.ReconfigurablePerturbationFunction;
-import de.goerke.tobias.anchorj.util.ParameterValidation;
+import de.viadee.anchorj.PerturbationFunction;
+import de.viadee.anchorj.global.ReconfigurablePerturbationFunction;
+import de.viadee.anchorj.util.ParameterValidation;
 
 import java.util.Collections;
 import java.util.List;

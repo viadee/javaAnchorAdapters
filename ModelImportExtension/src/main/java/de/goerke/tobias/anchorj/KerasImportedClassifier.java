@@ -1,5 +1,7 @@
 package de.goerke.tobias.anchorj;
 
+import de.viadee.anchorj.ClassificationFunction;
+import de.viadee.anchorj.DataInstance;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;

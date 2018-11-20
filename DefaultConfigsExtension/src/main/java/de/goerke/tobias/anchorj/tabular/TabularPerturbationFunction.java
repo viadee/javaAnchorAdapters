@@ -1,7 +1,7 @@
 package de.goerke.tobias.anchorj.tabular;
 
-import de.goerke.tobias.anchorj.PerturbationFunction;
-import de.goerke.tobias.anchorj.global.ReconfigurablePerturbationFunction;
+import de.viadee.anchorj.PerturbationFunction;
+import de.viadee.anchorj.global.ReconfigurablePerturbationFunction;
 
 import java.util.*;
 
