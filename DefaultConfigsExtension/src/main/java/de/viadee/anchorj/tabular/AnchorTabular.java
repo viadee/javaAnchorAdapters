@@ -69,7 +69,7 @@ public class AnchorTabular {
         // Split off labels if there are
         final List<ColumnDescription> targetColumns = usedColumns.stream().filter(ColumnDescription::isTargetFeature).collect(Collectors.toList());
         if (!targetColumns.isEmpty()) {
-            int labelColumnIndex = usedColumns.indexOf(targetColumns.get(0));
+            int labelColumnIndex = usedFeatureNames.get(targetColumns.get(0).getName());
             Object[] mappingResult = transformColumnToUniqueValues(dataAsInt, labelColumnIndex);
             transformedLabelColumn = (int[]) mappingResult[0];
             dataAsInt = removeColumn(dataAsInt, labelColumnIndex);
