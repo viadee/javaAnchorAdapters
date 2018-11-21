@@ -38,7 +38,8 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
     public static JavaSparkContext createSparkConf(String hadoopHomeDir) {
         System.setProperty("hadoop.home.dir", hadoopHomeDir);
         // [*] configures Spark to use as many cores/threads as applicable
-        SparkConf conf = new SparkConf().setMaster("local[*]").setAppName(SparkBatchExplainer.class.getCanonicalName());
+        SparkConf conf = new SparkConf().setMaster("local[*]").setAppName(SparkBatchExplainer.class.getCanonicalName())
+                .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
         return new JavaSparkContext(conf);
     }
 
@@ -56,13 +57,15 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
         // Distribute the instances among the instances
         JavaRDD<T> parallelizedInstances = sc.parallelize(instances);
 
-        final KryoSerializer kryoSerializer = new KryoSerializer(sc.getConf());
-        final Kryo kryo = kryoSerializer.newKryo();
-        final ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        final Output output = kryoSerializer.newKryoOutput();
-        output.setOutputStream(bao);
-        kryo.writeClassAndObject(output, anchorConstructionBuilder);
-        output.close();
+        sc.
+
+//        final KryoSerializer kryoSerializer = new KryoSerializer(sc.getConf());
+//        final Kryo kryo = kryoSerializer.newKryo();
+//        final ByteArrayOutputStream bao = new ByteArrayOutputStream();
+//        final Output output = kryoSerializer.newKryoOutput();
+//        output.setOutputStream(bao);
+//        kryo.writeClassAndObject(output, anchorConstructionBuilder);
+//        output.close();
 
         List<AnchorResult<T>> result = parallelizedInstances
                 .mapToPair(i -> new Tuple2<>(i, anchorConstructionBuilder.getClassificationFunction().predict(i)))
