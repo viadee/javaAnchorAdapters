@@ -21,7 +21,7 @@ import java.util.List;
  * <li>Compile the main class</li>
  * <li>Go to its containing class folder. Usually, this is target/classes</li>
  * <li>Run fmpjrun. Note: classpath needs to be specified, e.g.
- * fmpjrun -np 1 -cp "C:\Users\Tobias\AppData\Local\Temp\classpath1859923920.jar"
+ * fmpjrun -np 1 -cp "&lt;absolute_path&gt;\classpath1859923920.jar"
  * -class de.viadee.anchorj.showcase.experiments.FastMPJExperiment</li>
  * </ol>
  *
