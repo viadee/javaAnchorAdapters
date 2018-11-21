@@ -102,20 +102,16 @@ public class TabularInstanceVisualizer {
         instanceValueMapping.keySet().stream().sorted(Integer::compareTo).forEachOrdered((arrayIndex) -> {
             FeatureValueMapping value = instanceValueMapping.get(arrayIndex);
             String tmp;
-            switch (value.getFeature().getColumnType()) {
-                case CATEGORICAL:
-                    tmp = ((CategoricalValueMapping) value).getValue().toString();
-                    break;
-                case NATIVE:
-                    tmp = ((NativeValueMapping) value).getValue().toString();
-                    break;
-                case NOMINAL:
-                    MetricValueMapping metric = (MetricValueMapping) value;
-                    tmp = "Range(" + metric.getMinValue() + ", " + metric.getMaxValue() + ")";
-                    break;
-                default:
-                    throw new IllegalArgumentException("column type " +
-                            value.getFeature().getColumnType() + " not handled");
+            if (value instanceof CategoricalValueMapping) {
+                tmp = value.getValue().toString();
+            } else if (value instanceof NativeValueMapping) {
+                tmp = value.getValue().toString();
+            } else if (value instanceof MetricValueMapping) {
+                MetricValueMapping metric = (MetricValueMapping) value;
+                tmp = "Range(" + metric.getMinValue() + ", " + metric.getMaxValue() + ")";
+            } else {
+                throw new IllegalArgumentException("column type " +
+                        value.getFeature().getColumnType() + " not handled");
             }
             result.add(value.getFeature().getName() + " = " + tmp);
         });
@@ -131,7 +127,7 @@ public class TabularInstanceVisualizer {
             Map.Entry<TabularFeature, Map<Object, FeatureValueMapping>> valueMapping = this.featureValueMapping.entrySet().stream()
                     .filter((entry) -> entry.getKey().getName().equals(featureName))
                     .findFirst().orElseThrow(() -> new IllegalArgumentException("no value mapping with feature name "
-            + featureName + " found"));
+                            + featureName + " found"));
 
             final Object instanceValue = explainedInstance.getValue(featureArrayIndex);
             FeatureValueMapping value = valueMapping.getValue().getOrDefault(instanceValue,
