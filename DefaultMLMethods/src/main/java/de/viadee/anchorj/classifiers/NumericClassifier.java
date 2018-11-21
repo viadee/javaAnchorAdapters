@@ -1,9 +1,11 @@
 package de.viadee.anchorj.classifiers;
 
+import java.io.Serializable;
+
 /**
  * Interface marking classifiers that are able to predict regression problems
  */
-interface NumericClassifier {
+interface NumericClassifier extends Serializable {
     /**
      * Fit/train the model.
      *
