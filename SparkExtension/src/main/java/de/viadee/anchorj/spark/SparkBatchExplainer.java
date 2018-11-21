@@ -57,7 +57,7 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
         // Distribute the instances among the instances
         JavaRDD<T> parallelizedInstances = sc.parallelize(instances);
 
-        sc.
+//        sc.
 
 //        final KryoSerializer kryoSerializer = new KryoSerializer(sc.getConf());
 //        final Kryo kryo = kryoSerializer.newKryo();
