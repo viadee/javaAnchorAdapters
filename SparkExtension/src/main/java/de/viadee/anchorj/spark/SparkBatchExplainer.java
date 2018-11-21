@@ -35,15 +35,35 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
     }
 
     /**
+     * Instantiates the batch explainer
+     *
+     * @param hadoopHomeDir the hadoop installation directory
+     */
+    public SparkBatchExplainer(String hadoopHomeDir) {
+        this(createLocalSparkConf(hadoopHomeDir));
+    }
+
+    /**
      * May be used to create a default {@link JavaSparkContext}
      *
      * @param hadoopHomeDir the hadoop installation directory
      * @return a {@link JavaSparkContext} usable to instantiate this class
      */
-    public static JavaSparkContext createSparkConf(String hadoopHomeDir) {
+    public static JavaSparkContext createLocalSparkConf(String hadoopHomeDir) {
+        return SparkBatchExplainer.createSparkConf(hadoopHomeDir, "local[*]");
+    }
+
+    /**
+     * May be used to create a default {@link JavaSparkContext}
+     *
+     * @param hadoopHomeDir the hadoop installation directory
+     * @param master the master url
+     * @return a {@link JavaSparkContext} usable to instantiate this class
+     */
+    public static JavaSparkContext createSparkConf(String hadoopHomeDir, String master) {
         System.setProperty("hadoop.home.dir", hadoopHomeDir);
         // [*] configures Spark to use as many cores/threads as applicable
-        SparkConf conf = new SparkConf().setMaster("local[*]").setAppName(SparkBatchExplainer.class.getCanonicalName());
+        SparkConf conf = new SparkConf().setMaster(master).setAppName(SparkBatchExplainer.class.getCanonicalName());
         return new JavaSparkContext(conf);
     }
 

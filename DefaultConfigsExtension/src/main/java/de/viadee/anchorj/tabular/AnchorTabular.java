@@ -365,16 +365,6 @@ public class AnchorTabular {
          * Adds a column that will be ignored.
          * Useful if processing a e.g. CSV file where some columns shall be disregarded
          *
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addIgnoredColumn() {
-            return addIgnoredColumn(null);
-        }
-
-        /**
-         * Adds a column that will be ignored.
-         * Useful if processing a e.g. CSV file where some columns shall be disregarded
-         *
          * @param name the name of the column
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
