@@ -104,7 +104,7 @@ public class TabularInstanceVisualizer {
             String tmp;
             switch (value.getFeature().getColumnType()) {
                 case CATEGORICAL:
-                    tmp = ((CategoricalValueMapping) value).getCategoricalValue().toString();
+                    tmp = ((CategoricalValueMapping) value).getValue().toString();
                     break;
                 case NATIVE:
                     tmp = ((NativeValueMapping) value).getValue().toString();

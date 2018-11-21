@@ -5,14 +5,7 @@ package de.viadee.anchorj.tabular;
  */
 public class NativeValueMapping extends FeatureValueMapping {
 
-    private final Object value;
-
     public NativeValueMapping(TabularFeature feature, Object value) {
-        super(feature);
-        this.value = value;
-    }
-
-    public Object getValue() {
-        return value;
+        super(feature, value);
     }
 }

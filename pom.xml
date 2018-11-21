@@ -11,7 +11,7 @@
     <description>This project contains multiple modules providing extensions to anchorj</description>
 
     <modules>
-        <module>sparkExtension</module>
+        <module>SparkExtension</module>
         <module>FastMPJExtension</module>
         <module>ModelImportExtension</module>
         <module>DefaultConfigsExtension</module>

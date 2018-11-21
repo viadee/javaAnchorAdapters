@@ -12,8 +12,4 @@ public class CategoricalValueMapping extends DiscretizedValueMapping {
         this.categoricalValue = categoricalValue;
     }
 
-    public Object getCategoricalValue() {
-        return categoricalValue;
-    }
-
 }
