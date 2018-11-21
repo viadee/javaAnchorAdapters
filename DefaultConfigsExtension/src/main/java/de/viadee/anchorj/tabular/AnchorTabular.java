@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,12 +42,16 @@ public class AnchorTabular {
     }
 
     @SuppressWarnings("unchecked")
-    private static AnchorTabular preprocess(final Collection<String[]> dataCollection, Map<String, Integer> featureNames,
-                                                                             List<ColumnDescription> columnDescription, final boolean doBalance) {
+    private static AnchorTabular preprocess(final Collection<String[]> dataCollection,
+                                            final Map<String, Integer> featureNames,
+                                            List<ColumnDescription> columnDescription,
+                                            final boolean doBalance) {
         // Read data to object
         Object[][] data = mapCollectionToArray(dataCollection);
         data = removeUnusedColumns(columnDescription, data);
-        List<ColumnDescription> usedColumns = columnDescription.stream().filter(c -> c.isDoUse()).collect(Collectors.toList());
+        List<ColumnDescription> usedColumns = columnDescription.stream().filter(ColumnDescription::isDoUse).collect(Collectors.toList());
+
+        Map<String, Integer> usedFeatureNames = filterFeatureNamesByUsage(featureNames, columnDescription, usedColumns);
 
         // Create features the data set will ultimately consist of
         TabularFeature[] tabularFeatures = transformColumnDescriptionToFeatureDescription(usedColumns);
@@ -72,7 +77,7 @@ public class AnchorTabular {
                     .filter(f -> !f.isTargetFeature()).toArray(TabularFeature[]::new);
         }
 
-        TabularInstanceList instances = new TabularInstanceList(dataAsInt, transformedLabelColumn, featureNames, tabularFeatures);
+        TabularInstanceList instances = new TabularInstanceList(dataAsInt, transformedLabelColumn, usedFeatureNames, tabularFeatures);
 
         // Balancing = for each label have the same amount of entries
         if (doBalance && transformedLabelColumn == null) {
@@ -86,6 +91,19 @@ public class AnchorTabular {
         TabularInstanceVisualizer tabularInstanceVisualizer = new TabularInstanceVisualizer(mappings);
 
         return new AnchorTabular(instances, tabularFeatures, mappings, tabularInstanceVisualizer);
+    }
+
+    private static Map<String, Integer> filterFeatureNamesByUsage(Map<String, Integer> featureNames, List<ColumnDescription> columnDescription, List<ColumnDescription> usedColumns) {
+        int newColumnIndex = 0;
+        Map<String, Integer> usedFeatureNames = new HashMap<>(usedColumns.size());
+
+        for (Map.Entry<String, Integer> entry : featureNames.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).collect(Collectors.toList())) {
+            if (columnDescription.stream().anyMatch((column) -> column.getName().equals(entry.getKey()) && column.isDoUse())) {
+                usedFeatureNames.put(entry.getKey(), newColumnIndex);
+                newColumnIndex++;
+            }
+        }
+        return usedFeatureNames;
     }
 
     private static Map<TabularFeature, Map<Object, FeatureValueMapping>> transformDataAndCreateReverseTransformationMapping(Object[][] data, List<ColumnDescription> usedColumns, TabularFeature[] finalFeatures) {
@@ -229,7 +247,7 @@ public class AnchorTabular {
             }
             result[i] = valueSet.get(cell);
         }
-        return new Object[] { result, valueSet };
+        return new Object[]{result, valueSet};
     }
 
     private static Object[][] removeColumns(Object[][] values, List<Integer> indices) {
