@@ -1,2 +1,16 @@
-# AnchorjExtensions
-TODO
+# JavaAnchorAdapters
+
+> *Adapter* [/əˈdaptə/] noun, a device for connecting pieces of equipment that cannot be connected directly.
+
+This is a collection of tools that serve to make the [Java implementation of the Anchors algorithm](https://github.com/viadee/javaAnchorServer) more easy to use. The algorithm (as introduced Marco Tulio Ribeiro, 2018) is model-agnostic, but the nature of the dataset needs to be considered. 
+
+This repository includes *methodological* aspects, i.e. default approaches on how to apply the algorithm to tabular data in typical use cases with tabular data (such as [bpmn.ai](https://github.com/viadee/bpmn.ai)), images or texts as well as *technical* aspects, such as running Anchors explanations on Apache Spark.
+
+This project is to be considered research-in-progress.
+
+# Collaboration
+
+The project is operated and further developed by the viadee Consulting AG in Münster, Westphalia. Results from theses at the WWU Münster and the FH Münster have been incorporated.
+* Further theses are planned: Contact person is Dr. Frank Köhne from viadee.
+    Community contributions to the project are welcome: Please open Github-Issues with suggestions (or PR), which we can then edit in the team.
+*   We are looking for further partners who have interesting process data to refine our tooling as well as partners that are simply interested in a discussion about AI in the context of business process automation and explainability.
