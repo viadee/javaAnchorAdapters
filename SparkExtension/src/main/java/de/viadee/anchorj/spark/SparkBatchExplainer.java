@@ -7,7 +7,6 @@ import de.viadee.anchorj.global.BatchExplainer;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import scala.Tuple2;
 
 import java.util.List;
 
@@ -16,9 +15,6 @@ import java.util.List;
  * <p>
  * As due to Spark's nature there are multiple requirements to work with serializable Objects, there have been multiple
  * obstacles while developing as not every class could be easily made serializable.
- * <p>
- * The solution was to create named classes holding static instances so that instances do not need to be serialized.
- * See {@link ClassificationMapper} and {@link ConstructionMapper}.
  *
  * @param <T> Type of the instance
  */
@@ -57,7 +53,7 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
      * May be used to create a default {@link JavaSparkContext}
      *
      * @param hadoopHomeDir the hadoop installation directory
-     * @param master the master url
+     * @param master        the master url
      * @return a {@link JavaSparkContext} usable to instantiate this class
      */
     public static JavaSparkContext createSparkConf(String hadoopHomeDir, String master) {
@@ -73,8 +69,7 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
         JavaRDD<T> parallelizedInstances = sc.parallelize(instances);
 
         List<AnchorResult<T>> result = parallelizedInstances
-                .mapToPair(i -> new Tuple2<>(i, anchorConstructionBuilder.getClassificationFunction().predict(i)))
-                .map(p -> anchorConstructionBuilder.setupForSP(p._1, p._2).build().constructAnchor())
+                .map(i -> AnchorConstructionBuilder.buildForSP(anchorConstructionBuilder, i).constructAnchor())
                 .collect();
 
         // "Hacks" used to circumvent serializable issues

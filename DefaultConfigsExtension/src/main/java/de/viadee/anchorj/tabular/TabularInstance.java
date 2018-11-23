@@ -27,7 +27,7 @@ public class TabularInstance implements DataInstance<Object[]> {
      *
      * @param instance the instance to be copied
      */
-    TabularInstance(de.viadee.anchorj.tabular.TabularInstance instance) {
+    TabularInstance(TabularInstance instance) {
         Object[] copy = new Object[instance.getInstance().length];
         System.arraycopy(instance.getInstance(), 0, copy, 0, instance.getInstance().length);
         this.instance = copy;

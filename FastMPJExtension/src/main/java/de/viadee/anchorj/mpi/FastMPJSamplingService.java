@@ -161,6 +161,11 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
         };
     }
 
+    @Override
+    public SamplingService notifySamplingFunctionChange(SamplingFunction samplingFunction) {
+        throw new UnsupportedOperationException("SubmodularPick is not available for FastMPJ single sampling services");
+    }
+
     /**
      * @return the amount of overall sampled instances
      */

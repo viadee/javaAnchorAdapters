@@ -114,8 +114,7 @@ public class FastMPJBatchExplainer<T extends DataInstance<?>> extends FastMPJBas
 
             final T element = FastMPJUtil.receive(0, SEND_ELEMENT_TAG);
             LOGGER.info("Slave #{} received element {}", me, element);
-            final int label = builder.getClassificationFunction().predict(element);
-            AnchorResult<T> result = builder.setupForSP(element, label).build().constructAnchor();
+            AnchorResult<T> result = AnchorConstructionBuilder.buildForSP(builder, element).constructAnchor();
 
             LOGGER.info("Slave #{} responding explanation {}", me, result);
             FastMPJUtil.send(result, 0, RECEIVE_ELEMENT_TAG);
