@@ -1,24 +1,16 @@
 package de.viadee.anchorj.tabular;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import de.viadee.anchorj.AnchorConstructionBuilder;
+import de.viadee.anchorj.ClassificationFunction;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
-import static de.viadee.anchorj.util.ArrayUtils.replaceColumnValues;
-import static de.viadee.anchorj.util.ArrayUtils.transformToIntArray;
+import static de.viadee.anchorj.util.ArrayUtils.*;
 
 /**
  * Provides default means to use the Anchors algorithm on tabular data
@@ -188,7 +180,6 @@ public class AnchorTabular {
         return data;
     }
 
-
     private static TabularFeature[] transformColumnDescriptionToFeatureDescription(List<ColumnDescription> internalColumns) {
         List<ColumnDescription> usedFeatures = new ArrayList<>();
         for (ColumnDescription internalColumn : internalColumns) {
@@ -228,7 +219,6 @@ public class AnchorTabular {
             }
         }
     }
-
 
     /**
      * Transforms an object column to an int column, where each class of unique objects has the same id
@@ -282,6 +272,20 @@ public class AnchorTabular {
     }
 
     /**
+     * Provides a default builder configures with the contents of this class
+     *
+     * @param classificationFunction the classificationFunction to use
+     * @param explainedInstance      the instance to explain
+     * @return the further configurable or directly usable builder
+     */
+    public AnchorConstructionBuilder<TabularInstance> createDefaultBuilder(final ClassificationFunction<TabularInstance> classificationFunction,
+                                                                           final TabularInstance explainedInstance) {
+        TabularPerturbationFunction tabularPerturbationFunction = new TabularPerturbationFunction(explainedInstance,
+                tabularInstances.getInstances().toArray(new TabularInstance[0]));
+        return new AnchorConstructionBuilder<>(classificationFunction, tabularPerturbationFunction, explainedInstance);
+    }
+
+    /**
      * @return the contained instance list
      */
     public TabularInstanceList getTabularInstances() {
@@ -327,8 +331,32 @@ public class AnchorTabular {
         }
 
         /**
+         * Builds the configured instance using a CSV file
+         *
+         * @param csvInputStream the inputStream
+         * @return the {@link AnchorTabular} instance
+         */
+        public AnchorTabular build(InputStream csvInputStream) throws IOException {
+            return build(csvInputStream, false, false);
+        }
+
+        /**
+         * Builds the configured instance using a CSV file
+         *
+         * @param csvInputStream the inputStream
+         * @param excludeFirst   exclude the first row. Helpful if it is the header row
+         * @param trim           if true, each on each cell String#trim will be called
+         * @return the {@link AnchorTabular} instance
+         */
+        public AnchorTabular build(InputStream csvInputStream, boolean excludeFirst, boolean trim) throws IOException {
+            Collection<String[]> strings = CSVReader.readCSV(csvInputStream, trim);
+            return build(strings, excludeFirst);
+        }
+
+        /**
          * Builds the configured instance
          *
+         * @param dataCollection the date to be transformed
          * @return the {@link AnchorTabular} instance
          */
         public AnchorTabular build(Collection<String[]> dataCollection) {
@@ -369,8 +397,7 @@ public class AnchorTabular {
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
         public TabularPreprocessorBuilder addIgnoredColumn(String name) {
-            this.addColumn(new ColumnDescription(null, name, false, false, null, null));
-            return this;
+            return addColumn(new ColumnDescription(null, name, false, false, null, null));
         }
 
         /**
@@ -381,8 +408,7 @@ public class AnchorTabular {
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
         public TabularPreprocessorBuilder addCategoricalColumn(String name, Function<Object[], Object[]> transformation) {
-            this.addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, false, transformation, null));
-            return this;
+            return addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, false, transformation, null));
         }
 
         /**
@@ -404,8 +430,7 @@ public class AnchorTabular {
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
         public TabularPreprocessorBuilder addNominalColumn(String name, Function<Object[], Object[]> transformation, Function<Number[], Integer[]> discretizer) {
-            this.addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, transformation, discretizer));
-            return this;
+            return addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, transformation, discretizer));
         }
 
         /**
@@ -416,8 +441,7 @@ public class AnchorTabular {
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
         public TabularPreprocessorBuilder addNominalColumn(String name, Function<Number[], Integer[]> discretizer) {
-            this.addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, null, discretizer));
-            return this;
+            return addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, null, discretizer));
         }
 
         /**
@@ -442,8 +466,7 @@ public class AnchorTabular {
             if (this.columnDescriptions.stream().anyMatch(ColumnDescription::isTargetFeature)) {
                 throw new IllegalArgumentException("There is already a target column registered");
             }
-            this.addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, true, transformation, null));
-            return this;
+            return addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, true, transformation, null));
         }
 
         /**
@@ -464,8 +487,7 @@ public class AnchorTabular {
          * @return the current {@link TabularPreprocessorBuilder}'s instance
          */
         public TabularPreprocessorBuilder addObjectColumn(String name) {
-            this.addColumn(new ColumnDescription(TabularFeature.ColumnType.NATIVE, name, true, false, null, null));
-            return this;
+            return this.addColumn(new ColumnDescription(TabularFeature.ColumnType.NATIVE, name, true, false, null, null));
         }
 
         private TabularPreprocessorBuilder addColumn(ColumnDescription description) {
