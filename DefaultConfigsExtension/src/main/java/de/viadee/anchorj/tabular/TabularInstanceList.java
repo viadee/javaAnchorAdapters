@@ -1,6 +1,7 @@
 package de.viadee.anchorj.tabular;
 
 import de.viadee.anchorj.LabeledInstanceList;
+import de.viadee.anchorj.tabular.column.AbstractColumn;
 import de.viadee.anchorj.util.ParameterValidation;
 
 import java.util.*;
@@ -13,8 +14,7 @@ import static de.viadee.anchorj.util.ArrayUtils.*;
  * Stores multiple instances of a {@link TabularInstance} and their corresponding labels
  */
 public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
-    private final TabularFeature[] features;
-    private final Map<String, Integer> featureNames;
+    private final AbstractColumn[] features;
 
     /**
      * Constructs the instance.
@@ -23,13 +23,22 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      * @param labels        the labels, one for each {@link TabularInstance}
      * @param features      the features. One for each column.
      */
-    public TabularInstanceList(TabularInstance[] dataInstances, int[] labels, Map<String, Integer> featureNames,
-                               TabularFeature[] features) {
+    public TabularInstanceList(TabularInstance[] dataInstances, int[] labels, AbstractColumn[] features) {
         super(dataInstances, labels);
         if (getFeatureCount() != features.length)
             throw new IllegalArgumentException("Feature count of data instances must equal features");
         this.features = features;
-        this.featureNames = featureNames;
+    }
+
+    /**
+     * Constructs the instance.
+     *
+     * @param dataInstances the contained {@link TabularInstance}s
+     * @param labels        the labels, one for each {@link TabularInstance}
+     * @param features      the features. One for each column.
+     */
+    public TabularInstanceList(TabularInstance[] dataInstances, int[] labels, List<AbstractColumn> features) {
+        this(dataInstances, labels, features.toArray(new AbstractColumn[0]));
     }
 
     /**
@@ -39,9 +48,21 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      * @param labels   the labels, one for each {@link TabularInstance}
      * @param features the features. One for each column.
      */
-    public TabularInstanceList(Object[][] table, int[] labels, Map<String, Integer> featureNames, TabularFeature[] features) {
-        this(Stream.of(transformToIntArray(table)).map(entry -> new TabularInstance(featureNames, entry))
-                .toArray(TabularInstance[]::new), labels, featureNames, features);
+    public TabularInstanceList(Object[][] table, int[] labels, AbstractColumn[] features) {
+        this(Stream.of(transformToIntArray(table)).map(entry -> new TabularInstance(features, entry))
+                .toArray(TabularInstance[]::new), labels, features);
+    }
+
+    /**
+     * Constructs the instance.
+     *
+     * @param table    an object table to be converted to the array of {@link TabularInstance}s
+     * @param labels   the labels, one for each {@link TabularInstance}
+     * @param features the features. One for each column.
+     */
+    public TabularInstanceList(Object[][] table, int[] labels, List<AbstractColumn> features) {
+        this(Stream.of(transformToIntArray(table)).map(entry -> new TabularInstance(features, entry))
+                .toArray(TabularInstance[]::new), labels, features);
     }
 
     /**
@@ -49,8 +70,8 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      *
      * @param copyList the list whose values to copy.
      */
-    public TabularInstanceList(de.viadee.anchorj.tabular.TabularInstanceList copyList) {
-        this(copyList.dataInstances, copyList.labels, copyList.featureNames, copyList.features);
+    public TabularInstanceList(TabularInstanceList copyList) {
+        this(copyList.dataInstances, copyList.labels, copyList.features);
     }
 
     private static Object[][] balanceDataset(Object[][] values, Integer[] labels) {
@@ -88,7 +109,11 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      *
      * @return the balanced data list
      */
-    de.viadee.anchorj.tabular.TabularInstanceList balance() {
+    TabularInstanceList balance() {
+        // Balancing = for each label have the same amount of entries
+        if (labels == null) {
+            throw new IllegalArgumentException("Cannot balance when no target column is specified");
+        }
         // Balancing = for each label have the same amount of entries
         // We reattach the labels as balancing shuffles the table, which would lead to our labels being faulty
         Object[][] table = asArray();
@@ -97,14 +122,14 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
         // Split labels off again
         int[] newLabels = toPrimitiveArray(extractIntegerColumn(table, table[0].length - 1));
         table = removeColumn(table, table[0].length - 1);
-        return new de.viadee.anchorj.tabular.TabularInstanceList(Stream.of(table).map(entry -> new TabularInstance(this.featureNames, entry))
-                .toArray(TabularInstance[]::new), newLabels, this.featureNames, this.features);
+        return new TabularInstanceList(Stream.of(table).map(entry -> new TabularInstance(this.features, entry))
+                .toArray(TabularInstance[]::new), newLabels, this.features);
     }
 
     /**
      * @return an UnmodifiableList of the contained features
      */
-    public List<TabularFeature> getFeatures() {
+    public List<AbstractColumn> getFeatures() {
         return Collections.unmodifiableList(Arrays.asList(features));
     }
 
@@ -120,7 +145,7 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      * @param percentageSize the percentage of entries the first list will contain
      * @return the split lists
      */
-    public List<de.viadee.anchorj.tabular.TabularInstanceList> shuffleSplitList(double percentageSize) {
+    public List<TabularInstanceList> shuffleSplitList(double percentageSize) {
         return shuffleSplitList(percentageSize, new Random());
     }
 
@@ -133,7 +158,7 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
      * @param rnd            the Random to be used
      * @return the split lists
      */
-    public List<de.viadee.anchorj.tabular.TabularInstanceList> shuffleSplitList(double percentageSize, Random rnd) {
+    public List<TabularInstanceList> shuffleSplitList(double percentageSize, Random rnd) {
         if (!ParameterValidation.isPercentage(percentageSize))
             throw new IllegalArgumentException("Percentage size" + ParameterValidation.NOT_PERCENTAGE_MESSAGE);
 
@@ -150,8 +175,8 @@ public class TabularInstanceList extends LabeledInstanceList<TabularInstance> {
         afterSplitArray = removeColumn(afterSplitArray, featureCount);
 
         return (Arrays.asList(
-                new de.viadee.anchorj.tabular.TabularInstanceList(beforeSplitArray, beforeSplitLabels, this.featureNames, this.features),
-                new de.viadee.anchorj.tabular.TabularInstanceList(afterSplitArray, afterSplitLabels, this.featureNames, this.features)
+                new TabularInstanceList(beforeSplitArray, beforeSplitLabels, this.features),
+                new TabularInstanceList(afterSplitArray, afterSplitLabels, this.features)
         ));
     }
 

@@ -1,4 +1,4 @@
-package de.viadee.anchorj.tabular;
+package de.viadee.anchorj.tabular.discretizer;
 
 import java.util.*;
 import java.util.function.Function;

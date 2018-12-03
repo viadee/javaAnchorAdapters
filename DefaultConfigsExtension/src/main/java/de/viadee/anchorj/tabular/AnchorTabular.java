@@ -2,6 +2,8 @@ package de.viadee.anchorj.tabular;
 
 import de.viadee.anchorj.AnchorConstructionBuilder;
 import de.viadee.anchorj.ClassificationFunction;
+import de.viadee.anchorj.tabular.column.AbstractColumn;
+import de.viadee.anchorj.tabular.column.IgnoredColumn;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,71 +12,82 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.viadee.anchorj.util.ArrayUtils.*;
+import static de.viadee.anchorj.util.ArrayUtils.extractIntegerColumn;
+import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
 
 /**
  * Provides default means to use the Anchors algorithm on tabular data
  * <p>
- * To make use of this, use the {@link TabularPreprocessorBuilder} to create an instance of this class.
+ * To make use of this, use the {@link Builder} to create an instance of this class.
  */
 public class AnchorTabular {
 
     private final TabularInstanceList tabularInstances;
-    private final TabularFeature[] features;
-    private final Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings;
+    private final AbstractColumn[] columns;
+    private final AbstractColumn targetColumn;
+    private final Map<AbstractColumn, Map<Object, Object>> mappings;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
 
-    private AnchorTabular(final TabularInstanceList tabularInstances, final TabularFeature[] features,
-                          final Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings,
+    private AnchorTabular(final TabularInstanceList tabularInstances, final AbstractColumn[] columns,
+                          final AbstractColumn targetColumn,
+                          final Map<AbstractColumn, Map<Object, Object>> mappings,
                           final TabularInstanceVisualizer tabularInstanceVisualizer) {
         this.tabularInstances = tabularInstances;
-        this.features = features;
+        this.columns = columns;
+        this.targetColumn = targetColumn;
         this.mappings = mappings;
         this.tabularInstanceVisualizer = tabularInstanceVisualizer;
     }
 
     @SuppressWarnings("unchecked")
     private static AnchorTabular preprocess(final Collection<String[]> dataCollection,
-                                            final Map<String, Integer> featureNames,
-                                            List<ColumnDescription> columnDescription,
+                                            final List<AbstractColumn> columns,
+                                            final AbstractColumn targetColumn,
                                             final boolean doBalance) {
+        // Add target column temporarily. Will be removed after data processed
+        columns.add(targetColumn);
         // Read data to object
         Object[][] data = mapCollectionToArray(dataCollection);
-        data = removeUnusedColumns(columnDescription, data);
-        List<ColumnDescription> usedColumns = columnDescription.stream().filter(ColumnDescription::isDoUse).collect(Collectors.toList());
-
-        Map<String, Integer> usedFeatureNames = filterFeatureNamesByUsage(featureNames, columnDescription, usedColumns);
-
-        // Create features the data set will ultimately consist of
-        TabularFeature[] tabularFeatures = transformColumnDescriptionToFeatureDescription(usedColumns);
+        data = removeUnusedColumns(columns, data);
+        List<AbstractColumn> usedColumns = columns.stream().filter(AbstractColumn::isDoUse).collect(Collectors.toList());
 
         // Apply transformation to used columns
-        applyTransformations(data, usedColumns);
+        applyTransformations(data, usedColumns.toArray(new AbstractColumn[0]));
 
         // Store the mappings that were conducted in order to be able to reverse them later on
-        Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings = transformDataAndCreateReverseTransformationMapping(data, usedColumns, tabularFeatures);
+        final Map<AbstractColumn, Map<Object, Object>> mappings = new HashMap<>();
 
-        // Convert to int array
-        Object[][] dataAsInt = transformToIntArray(data);
-        int[] transformedLabelColumn = null;
-
-        // Split off labels if there are
-        final List<ColumnDescription> targetColumns = usedColumns.stream().filter(ColumnDescription::isTargetFeature).collect(Collectors.toList());
-        if (!targetColumns.isEmpty()) {
-            int labelColumnIndex = usedFeatureNames.get(targetColumns.get(0).getName());
-            Object[] mappingResult = transformColumnToUniqueValues(dataAsInt, labelColumnIndex);
-            transformedLabelColumn = (int[]) mappingResult[0];
-            dataAsInt = removeColumn(dataAsInt, labelColumnIndex);
-            tabularFeatures = Stream.of(tabularFeatures)
-                    .filter(f -> !f.isTargetFeature()).toArray(TabularFeature[]::new);
+        // Apply all discretizers
+        for (int i = 0; i < usedColumns.size(); i++) {
+            final Object[] columnValues = new Object[data.length];
+            for (int j = 0; j < columnValues.length; j++)
+                columnValues[j] = data[j][i];
+            final AbstractColumn usedColumn = usedColumns.get(i);
+            if (usedColumn.getDiscretizer() == null)
+                continue;
+            usedColumn.getDiscretizer().fit(columnValues);
+            for (int j = 0; j < columnValues.length; j++) {
+                final Object originalValue = columnValues[j];
+                final Object discretizedValue = usedColumn.getDiscretizer().apply(originalValue);
+                data[j][i] = discretizedValue;
+                mappings.computeIfAbsent(usedColumn, k -> new HashMap<>())
+                        .putIfAbsent(originalValue, discretizedValue);
+            }
         }
 
-        TabularInstanceList instances = new TabularInstanceList(dataAsInt, transformedLabelColumn, usedFeatureNames, tabularFeatures);
 
-        // Balancing = for each label have the same amount of entries
-        if (doBalance && transformedLabelColumn == null) {
-            throw new IllegalArgumentException("Cannot balance when no target column is specified");
-        }
+        // Split off labels
+        int[] labels = null;
+        if (!targetColumn.getDiscretizer().isResultNumeric())
+            throw new IllegalArgumentException("Target Column must be discretized to int value");
+        final int labelColumnIndex = usedColumns.indexOf(targetColumn);
+        labels = Stream.of(extractIntegerColumn(data, labelColumnIndex)).mapToInt(i -> i).toArray();
+        data = removeColumn(data, labelColumnIndex);
+
+        // Finally remove target column
+        usedColumns.remove(targetColumn);
+
+        TabularInstanceList instances = new TabularInstanceList(data, labels, usedColumns);
         if (doBalance) {
             instances = instances.balance();
         }
@@ -82,83 +95,83 @@ public class AnchorTabular {
         // Create the result explainer
         TabularInstanceVisualizer tabularInstanceVisualizer = new TabularInstanceVisualizer(mappings);
 
-        return new AnchorTabular(instances, tabularFeatures, mappings, tabularInstanceVisualizer);
+        return new AnchorTabular(instances, usedColumns.toArray(new AbstractColumn[0]), targetColumn, mappings, tabularInstanceVisualizer);
     }
 
-    private static Map<String, Integer> filterFeatureNamesByUsage(Map<String, Integer> featureNames, List<ColumnDescription> columnDescription, List<ColumnDescription> usedColumns) {
-        int newColumnIndex = 0;
-        Map<String, Integer> usedFeatureNames = new HashMap<>(usedColumns.size());
+//    private static Map<String, Integer> filterFeatureNamesByUsage(Map<String, Integer> featureNames, List<AbstractColumn> columnDescription, List<AbstractColumn> usedColumns) {
+//        int newColumnIndex = 0;
+//        Map<String, Integer> usedFeatureNames = new HashMap<>(usedColumns.size());
+//
+//        for (Map.Entry<String, Integer> entry : featureNames.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).collect(Collectors.toList())) {
+//            if (columnDescription.stream().anyMatch((column) -> column.getName().equals(entry.getKey()) && column.isDoUse())) {
+//                usedFeatureNames.put(entry.getKey(), newColumnIndex);
+//                newColumnIndex++;
+//            }
+//        }
+//        return usedFeatureNames;
+//    }
 
-        for (Map.Entry<String, Integer> entry : featureNames.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).collect(Collectors.toList())) {
-            if (columnDescription.stream().anyMatch((column) -> column.getName().equals(entry.getKey()) && column.isDoUse())) {
-                usedFeatureNames.put(entry.getKey(), newColumnIndex);
-                newColumnIndex++;
-            }
-        }
-        return usedFeatureNames;
-    }
-
-    private static Map<TabularFeature, Map<Object, FeatureValueMapping>> transformDataAndCreateReverseTransformationMapping(Object[][] data, List<ColumnDescription> usedColumns, TabularFeature[] finalFeatures) {
-        Map<TabularFeature, Map<Object, FeatureValueMapping>> mappings = new LinkedHashMap<>();
-
-        // Transform categorical features to be in a range of 0..(distinct values)
-        // Also discretize nominal values
-        for (int i = 0; i < usedColumns.size(); i++) {
-            ColumnDescription internalColumn = usedColumns.get(i);
-
-            // Only categorize categorical features
-            if (internalColumn.getColumnType() == TabularFeature.ColumnType.CATEGORICAL) {
-                Object[] result = transformColumnToUniqueValues(data, i);
-                Map<Object, Object> transformedMapping = (Map<Object, Object>) result[1];
-
-                final TabularFeature feature = finalFeatures[i];
-                Map<Object, FeatureValueMapping> featureMapping = new HashMap<>(transformedMapping.size());
-                transformedMapping.forEach((key, value) -> featureMapping.put(key, new CategoricalValueMapping(feature, key, value)));
-
-                mappings.put(feature, featureMapping);
-                replaceColumnValues(data, (int[]) result[0], i);
-            }
-
-            // Discretize nominal values if discretizer given
-            else if (internalColumn.getColumnType() == TabularFeature.ColumnType.NOMINAL && internalColumn.getDiscretizer() != null) {
-                Number[] valuesToBeDiscretized = new Number[data.length];
-                for (int j = 0; j < valuesToBeDiscretized.length; j++) {
-                    if (data[j][i] instanceof String)
-                        valuesToBeDiscretized[j] = Double.valueOf((String) data[j][i]);
-                    else if (data[j][i] instanceof Integer)
-                        valuesToBeDiscretized[j] = (Integer) data[j][i];
-                    else
-                        throw new IllegalArgumentException("Could not read nominal column");
-                }
-                Object[] discretizedValues = internalColumn.getDiscretizer().apply(valuesToBeDiscretized);
-                // Discretized values come from a "range" of input values.
-                Map<Object, Set<Number>> tmpMapping = new LinkedHashMap<>();
-                for (int j = 0; j < discretizedValues.length; j++) {
-                    data[j][i] = discretizedValues[j];
-
-                    Set<Number> values;
-                    if (tmpMapping.containsKey(discretizedValues[j]))
-                        values = tmpMapping.get(discretizedValues[j]);
-                    else {
-                        values = new HashSet<>();
-                        tmpMapping.put(discretizedValues[j], values);
-                    }
-                    values.add(valuesToBeDiscretized[j]);
-                }
-
-                Map<Object, FeatureValueMapping> valueMappings = new LinkedHashMap<>();
-                for (Map.Entry<Object, Set<Number>> entry : tmpMapping.entrySet()) {
-                    Set<Double> values = entry.getValue().stream().map(Number::doubleValue).collect(Collectors.toSet());
-                    valueMappings.put(entry.getKey(), new MetricValueMapping(finalFeatures[i], entry.getKey(),
-                            Collections.min(values), Collections.max(values)));
-                }
-                mappings.put(finalFeatures[i], valueMappings);
-            } else {
-                mappings.put(finalFeatures[i], Collections.emptyMap());
-            }
-        }
-        return mappings;
-    }
+//    private static Map<AbstractColumn, Map<Object, FeatureValueMapping>> createTransformationMapping(Object[][] data, AbstractColumn[] usedColumns) {
+//        Map<AbstractColumn, Map<Object, FeatureValueMapping>> mappings = new LinkedHashMap<>();
+//
+//        // Transform categorical columns to be in a range of 0..(distinct values)
+//        // Also discretize nominal values
+//        for (int i = 0; i < usedColumns.size(); i++) {
+//            AbstractColumn internalColumn = usedColumns.get(i);
+//
+//            // Only categorize categorical columns
+//            if (internalColumn.getColumnType() == ColumnType.CATEGORICAL) {
+//                Object[] result = transformColumnToUniqueValues(data, i);
+//                Map<Object, Object> transformedMapping = (Map<Object, Object>) result[1];
+//
+//                final AbstractColumn feature = finalFeatures[i];
+//                Map<Object, FeatureValueMapping> featureMapping = new HashMap<>(transformedMapping.size());
+//                transformedMapping.forEach((key, value) -> featureMapping.put(key, new CategoricalValueMapping(feature, key, value)));
+//
+//                mappings.put(feature, featureMapping);
+//                replaceColumnValues(data, (int[]) result[0], i);
+//            }
+//
+//            // Discretize nominal values if discretizer given
+//            else if (internalColumn.getColumnType() == ColumnType.NOMINAL && internalColumn.getDiscretizer() != null) {
+//                Number[] valuesToBeDiscretized = new Number[data.length];
+//                for (int j = 0; j < valuesToBeDiscretized.length; j++) {
+//                    if (data[j][i] instanceof String)
+//                        valuesToBeDiscretized[j] = Double.valueOf((String) data[j][i]);
+//                    else if (data[j][i] instanceof Integer)
+//                        valuesToBeDiscretized[j] = (Integer) data[j][i];
+//                    else
+//                        throw new IllegalArgumentException("Could not read nominal column");
+//                }
+//                Object[] discretizedValues = internalColumn.getDiscretizer().apply(valuesToBeDiscretized);
+//                // Discretized values come from a "range" of input values.
+//                Map<Object, Set<Number>> tmpMapping = new LinkedHashMap<>();
+//                for (int j = 0; j < discretizedValues.length; j++) {
+//                    data[j][i] = discretizedValues[j];
+//
+//                    Set<Number> values;
+//                    if (tmpMapping.containsKey(discretizedValues[j]))
+//                        values = tmpMapping.get(discretizedValues[j]);
+//                    else {
+//                        values = new HashSet<>();
+//                        tmpMapping.put(discretizedValues[j], values);
+//                    }
+//                    values.add(valuesToBeDiscretized[j]);
+//                }
+//
+//                Map<Object, FeatureValueMapping> valueMappings = new LinkedHashMap<>();
+//                for (Map.Entry<Object, Set<Number>> entry : tmpMapping.entrySet()) {
+//                    Set<Double> values = entry.getValue().stream().map(Number::doubleValue).collect(Collectors.toSet());
+//                    valueMappings.put(entry.getKey(), new MetricValueMapping(finalFeatures[i], entry.getKey(),
+//                            Collections.min(values), Collections.max(values)));
+//                }
+//                mappings.put(finalFeatures[i], valueMappings);
+//            } else {
+//                mappings.put(finalFeatures[i], Collections.emptyMap());
+//            }
+//        }
+//        return mappings;
+//    }
 
     /**
      * Iterates through the column description and removes all ignored columns.
@@ -167,7 +180,7 @@ public class AnchorTabular {
      * @param data              the 2D data array
      * @return the data without ignored columns
      */
-    private static Object[][] removeUnusedColumns(List<ColumnDescription> columnDescription, Object[][] data) {
+    private static Object[][] removeUnusedColumns(List<AbstractColumn> columnDescription, Object[][] data) {
         List<Integer> unusedIndices = new ArrayList<>();
         for (int i = 0; i < columnDescription.size(); i++) {
             if (!columnDescription.get(i).isDoUse())
@@ -180,65 +193,39 @@ public class AnchorTabular {
         return data;
     }
 
-    private static TabularFeature[] transformColumnDescriptionToFeatureDescription(List<ColumnDescription> internalColumns) {
-        List<ColumnDescription> usedFeatures = new ArrayList<>();
-        for (ColumnDescription internalColumn : internalColumns) {
-            if (internalColumn.isDoUse())
-                usedFeatures.add(internalColumn);
-        }
 
-        TabularFeature[] result = new TabularFeature[usedFeatures.size()];
-        for (int i = 0; i < result.length; i++) {
-            ColumnDescription internalColumn = usedFeatures.get(i);
-            TabularFeature.ColumnType type;
-            if (internalColumn.getColumnType() == TabularFeature.ColumnType.NATIVE)
-                type = TabularFeature.ColumnType.NATIVE;
-            else if ((internalColumn.getColumnType() == TabularFeature.ColumnType.CATEGORICAL) ||
-                    (internalColumn.getColumnType() == TabularFeature.ColumnType.NOMINAL && internalColumn.getDiscretizer() != null))
-                type = TabularFeature.ColumnType.CATEGORICAL;
-            else
-                type = TabularFeature.ColumnType.NOMINAL;
-
-            result[i] = new TabularFeature(type, internalColumn.getName(), internalColumn.isTargetFeature());
-        }
-        return result;
-    }
-
-    private static void applyTransformations(Object[][] data, List<ColumnDescription> internalColumns) {
-        for (int i = 0; i < internalColumns.size(); i++) {
-            Function<Object[], Object[]> transformation = internalColumns.get(i).getTransformation();
-            if (transformation == null)
-                continue;
+    private static void applyTransformations(Object[][] data, AbstractColumn[] internalColumns) {
+        for (int i = 0; i < internalColumns.length; i++) {
             Object[] column = new Object[data.length];
             for (int j = 0; j < data.length; j++) {
                 column[j] = data[j][i];
             }
-            Object[] transformationResult = transformation.apply(column);
+            Object[] transformationResult = internalColumns[i].transform(column);
             for (int j = 0; j < data.length; j++) {
                 data[j][i] = transformationResult[j];
             }
         }
     }
 
-    /**
-     * Transforms an object column to an int column, where each class of unique objects has the same id
-     *
-     * @param values       the values
-     * @param targetColumn its column index
-     * @return an int array
-     */
-    private static Object[] transformColumnToUniqueValues(Object[][] values, int targetColumn) {
-        int[] result = new int[values.length];
-        Map<Object, Integer> valueSet = new LinkedHashMap<>();
-        for (int i = 0; i < values.length; i++) {
-            Object cell = values[i][targetColumn];
-            if (!valueSet.containsKey(cell)) {
-                valueSet.put(cell, valueSet.size());
-            }
-            result[i] = valueSet.get(cell);
-        }
-        return new Object[]{result, valueSet};
-    }
+//    /**
+//     * Transforms an object column to an int column, where each class of unique objects has the same id
+//     *
+//     * @param values       the values
+//     * @param targetColumn its column index
+//     * @return an int array
+//     */
+//    private static Object[] transformColumnToUniqueValues(Object[][] values, int targetColumn) {
+//        int[] result = new int[values.length];
+//        Map<Object, Integer> valueSet = new LinkedHashMap<>();
+//        for (int i = 0; i < values.length; i++) {
+//            Object cell = values[i][targetColumn];
+//            if (!valueSet.containsKey(cell)) {
+//                valueSet.put(cell, valueSet.size());
+//            }
+//            result[i] = valueSet.get(cell);
+//        }
+//        return new Object[]{result, valueSet};
+//    }
 
     private static Object[][] removeColumns(Object[][] values, List<Integer> indices) {
         Object[][] result = new Object[values.length][];
@@ -278,11 +265,11 @@ public class AnchorTabular {
      * @param explainedInstance      the instance to explain
      * @return the further configurable or directly usable builder
      */
-    public AnchorConstructionBuilder<TabularInstance> createDefaultBuilder(final ClassificationFunction<TabularInstance> classificationFunction,
+    public AnchorConstructionBuilder<TabularInstance> createDefaultBuilder(final Function<TabularInstance, Integer> classificationFunction,
                                                                            final TabularInstance explainedInstance) {
         TabularPerturbationFunction tabularPerturbationFunction = new TabularPerturbationFunction(explainedInstance,
                 tabularInstances.getInstances().toArray(new TabularInstance[0]));
-        return new AnchorConstructionBuilder<>(classificationFunction, tabularPerturbationFunction, explainedInstance);
+        return new AnchorConstructionBuilder<>(classificationFunction::apply, tabularPerturbationFunction, explainedInstance);
     }
 
     /**
@@ -293,17 +280,17 @@ public class AnchorTabular {
     }
 
     /**
-     * @return an UnmodifiableList of the contained features
+     * @return an UnmodifiableList of the contained columns
      */
-    public List<TabularFeature> getFeatures() {
-        return Collections.unmodifiableList(Arrays.asList(features));
+    public List<AbstractColumn> getColumns() {
+        return Collections.unmodifiableList(Arrays.asList(columns));
     }
 
     /**
      * @return a {@link Map} mapping, for each feature, which value got replaced by which other value during
      * preprocessing
      */
-    public Map<TabularFeature, Map<Object, FeatureValueMapping>> getMappings() {
+    public Map<AbstractColumn, Map<Object, Object>> getMappings() {
         return mappings;
     }
 
@@ -319,15 +306,15 @@ public class AnchorTabular {
      * <p>
      * The addColumn operations must be called as many times as there are columns in the submitted dataset.
      */
-    public static class TabularPreprocessorBuilder {
-        private final List<ColumnDescription> columnDescriptions = new ArrayList<>();
-        private final Map<String, Integer> featureLabels = new HashMap<>();
+    public static class Builder {
+        private final List<AbstractColumn> columnDescriptions = new ArrayList<>();
+        private AbstractColumn targetColumn;
         private boolean doBalance = false;
 
         /**
          * Constructs the builder
          */
-        public TabularPreprocessorBuilder() {
+        public Builder() {
         }
 
         /**
@@ -371,11 +358,12 @@ public class AnchorTabular {
          * @return the {@link AnchorTabular} instance
          */
         public AnchorTabular build(Collection<String[]> dataCollection, boolean excludeFirst) {
-            //if (columnDescriptions.stream().noneMatch(c -> c.isTargetFeature))
-            //    throw new IllegalArgumentException("Not target feature specified");
+            if (targetColumn == null)
+                throw new IllegalArgumentException("Not target column specified");
             for (String[] fileContent : dataCollection) {
-                if (fileContent.length != columnDescriptions.size()) {
-                    throw new IllegalArgumentException("InternalColumn count does not match loaded data's features. " +
+                // +1 == target feature
+                if (fileContent.length != columnDescriptions.size() + 1) {
+                    throw new IllegalArgumentException("InternalColumn count does not match loaded data's columns. " +
                             fileContent.length + " vs " + columnDescriptions.size());
                 }
             }
@@ -386,122 +374,37 @@ public class AnchorTabular {
                 iterator.remove();
             }
 
-            return AnchorTabular.preprocess(dataCollection, this.featureLabels, this.columnDescriptions, this.doBalance);
+            return AnchorTabular.preprocess(dataCollection, this.columnDescriptions, this.targetColumn, this.doBalance);
         }
+
 
         /**
-         * Adds a column that will be ignored.
-         * Useful if processing a e.g. CSV file where some columns shall be disregarded
+         * Registers a column
          *
-         * @param name the name of the column
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
+         * @param column the column to be added
+         * @return the {@link AnchorTabular} instance
          */
-        public TabularPreprocessorBuilder addIgnoredColumn(String name) {
-            return addColumn(new ColumnDescription(null, name, false, false, null, null));
-        }
-
-        /**
-         * Adds a categorical column.
-         *
-         * @param name           the name of the column
-         * @param transformation a {@link Function} transforming a column's values. May be used to normalize data.
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addCategoricalColumn(String name, Function<Object[], Object[]> transformation) {
-            return addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, false, transformation, null));
-        }
-
-        /**
-         * Adds a categorical column.
-         *
-         * @param name the name of the column
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addCategoricalColumn(String name) {
-            return this.addCategoricalColumn(name, null);
-        }
-
-        /**
-         * Adds a nominal column.
-         *
-         * @param name           the name of the column
-         * @param transformation a {@link Function} transforming a column's values. May be used to normalize data.
-         * @param discretizer    a {@link Function} used to discretize data, i.e. transforming nominal data
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addNominalColumn(String name, Function<Object[], Object[]> transformation, Function<Number[], Integer[]> discretizer) {
-            return addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, transformation, discretizer));
-        }
-
-        /**
-         * Adds a nominal column.
-         *
-         * @param name        the name of the column
-         * @param discretizer a {@link Function} used to discretize data, i.e. transforming nominal data
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addNominalColumn(String name, Function<Number[], Integer[]> discretizer) {
-            return addColumn(new ColumnDescription(TabularFeature.ColumnType.NOMINAL, name, true, false, null, discretizer));
-        }
-
-        /**
-         * Adds a nominal column.
-         *
-         * @param name the name of the column
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addNominalColumn(String name) {
-            return this.addNominalColumn(name, null, null);
-        }
-
-        /**
-         * Specifies the target column, i.e. the one containing the predicted label.
-         * May one be used once per build operation.
-         *
-         * @param name           the name of the column
-         * @param transformation a {@link Function} transforming a column's values. May be used to normalize data.
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addTargetColumn(String name, Function<Object[], Object[]> transformation) {
-            if (this.columnDescriptions.stream().anyMatch(ColumnDescription::isTargetFeature)) {
-                throw new IllegalArgumentException("There is already a target column registered");
-            }
-            return addColumn(new ColumnDescription(TabularFeature.ColumnType.CATEGORICAL, name, true, true, transformation, null));
-        }
-
-        /**
-         * Specifies the target column, i.e. the one containing the predicted label.
-         * May one be used once per build operation.
-         *
-         * @param name the name of the column
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addTargetColumn(String name) {
-            return this.addTargetColumn(name, null);
-        }
-
-        /**
-         * Adds a column that does retain its type during preprocessing and does not get converted at any time
-         *
-         * @param name the column name
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
-         */
-        public TabularPreprocessorBuilder addObjectColumn(String name) {
-            return this.addColumn(new ColumnDescription(TabularFeature.ColumnType.NATIVE, name, true, false, null, null));
-        }
-
-        private TabularPreprocessorBuilder addColumn(ColumnDescription description) {
-            this.columnDescriptions.add(description);
-            this.featureLabels.put(description.getName(), this.featureLabels.size());
+        public Builder addColumn(AbstractColumn column) {
+            this.columnDescriptions.add(column);
             return this;
         }
 
-        public List<ColumnDescription> getColumnDescriptions() {
-            return columnDescriptions;
+        public Builder addIgnoredColumn() {
+            this.columnDescriptions.add(new IgnoredColumn());
+            return this;
         }
 
-        public boolean isDoBalance() {
-            return doBalance;
+        /**
+         * Registers a target column
+         *
+         * @param column the target column to be set
+         * @return the {@link AnchorTabular} instance
+         */
+        public Builder addTargetcolumn(AbstractColumn column) {
+            if (targetColumn != null)
+                throw new IllegalArgumentException("Only one target column can be set");
+            this.targetColumn = column;
+            return this;
         }
 
         /**
@@ -509,9 +412,9 @@ public class AnchorTabular {
          * that each label has the same amount of instances
          *
          * @param doBalance true, if to balance dataset
-         * @return the current {@link TabularPreprocessorBuilder}'s instance
+         * @return the current {@link Builder}'s instance
          */
-        public TabularPreprocessorBuilder setDoBalance(boolean doBalance) {
+        public Builder setDoBalance(boolean doBalance) {
             this.doBalance = doBalance;
             return this;
         }
