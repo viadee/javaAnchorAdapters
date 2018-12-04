@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class TabularInstance implements DataInstance<Object[]> {
     private final Object[] instance;
+    private Object[] origIns;
     private AbstractColumn[] features;
 
     /**

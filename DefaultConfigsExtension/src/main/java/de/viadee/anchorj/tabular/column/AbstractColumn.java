@@ -16,7 +16,7 @@ import java.util.function.Function;
 public abstract class AbstractColumn<T> implements Serializable {
 
     private final String name;
-    private List<Function<Object[], Object[]>> transformations = new ArrayList<>();
+    private List<Function<Object[], Object[]>> transformations;
     private AbstractDiscretizer<T> discretizer;
 
     protected AbstractColumn(String name) {

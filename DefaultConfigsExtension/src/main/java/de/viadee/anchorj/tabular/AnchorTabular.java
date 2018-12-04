@@ -1,7 +1,6 @@
 package de.viadee.anchorj.tabular;
 
 import de.viadee.anchorj.AnchorConstructionBuilder;
-import de.viadee.anchorj.ClassificationFunction;
 import de.viadee.anchorj.tabular.column.AbstractColumn;
 import de.viadee.anchorj.tabular.column.IgnoredColumn;
 
@@ -44,34 +43,45 @@ public class AnchorTabular {
                                             final List<AbstractColumn> columns,
                                             final AbstractColumn targetColumn,
                                             final boolean doBalance) {
-        // Add target column temporarily. Will be removed after data processed
+        // Add target column temporarily. Will be removed after transformedData processed
         columns.add(targetColumn);
-        // Read data to object
-        Object[][] data = mapCollectionToArray(dataCollection);
-        data = removeUnusedColumns(columns, data);
+        // Read transformedData to object
+        Object[][] transformedData = removeUnusedColumns(columns, mapCollectionToArray(dataCollection));
+        Object[][] discretizedData = new Object[transformedData.length][];
         List<AbstractColumn> usedColumns = columns.stream().filter(AbstractColumn::isDoUse).collect(Collectors.toList());
 
         // Apply transformation to used columns
-        applyTransformations(data, usedColumns.toArray(new AbstractColumn[0]));
+        applyTransformations(transformedData, usedColumns.toArray(new AbstractColumn[0]));
 
         // Store the mappings that were conducted in order to be able to reverse them later on
         final Map<AbstractColumn, Map<Object, Object>> mappings = new HashMap<>();
 
         // Apply all discretizers
         for (int i = 0; i < usedColumns.size(); i++) {
-            final Object[] columnValues = new Object[data.length];
-            for (int j = 0; j < columnValues.length; j++)
-                columnValues[j] = data[j][i];
+            final Object[] originalColumn = new Object[transformedData.length];
+            for (int j = 0; j < originalColumn.length; j++)
+                originalColumn[j] = transformedData[j][i];
             final AbstractColumn usedColumn = usedColumns.get(i);
-            if (usedColumn.getDiscretizer() == null)
-                continue;
-            usedColumn.getDiscretizer().fit(columnValues);
-            for (int j = 0; j < columnValues.length; j++) {
-                final Object originalValue = columnValues[j];
-                final Object discretizedValue = usedColumn.getDiscretizer().apply(originalValue);
-                data[j][i] = discretizedValue;
+
+            // Discretize or accept original values
+            Object[] discretizedColumn = new Object[transformedData.length];
+            if (usedColumn.getDiscretizer() == null) {
+                // Use Array copy to ensure later manipulations don't affect both data
+                System.arraycopy(originalColumn,  0, discretizedColumn, 0, originalColumn.length);
+            } else {
+                usedColumn.getDiscretizer().fit(originalColumn);
+                for (int j = 0; j < originalColumn.length; j++) {
+                    final Object originalValue = originalColumn[j];
+                    discretizedColumn[j] = usedColumn.getDiscretizer().apply(originalValue);
+                }
+            }
+            // Put discretized results into new array and create mapping to save efforts at runtime
+            for (int j = 0; j < originalColumn.length; j++) {
+                if (i == 0)
+                    discretizedData[j] = new Object[usedColumns.size()];
+                discretizedData[j][i] = discretizedColumn[j];
                 mappings.computeIfAbsent(usedColumn, k -> new HashMap<>())
-                        .putIfAbsent(originalValue, discretizedValue);
+                        .putIfAbsent(discretizedColumn[j], transformedData[j][i]);
             }
         }
 
@@ -81,13 +91,14 @@ public class AnchorTabular {
         if (!targetColumn.getDiscretizer().isResultNumeric())
             throw new IllegalArgumentException("Target Column must be discretized to int value");
         final int labelColumnIndex = usedColumns.indexOf(targetColumn);
-        labels = Stream.of(extractIntegerColumn(data, labelColumnIndex)).mapToInt(i -> i).toArray();
-        data = removeColumn(data, labelColumnIndex);
+        labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
+        transformedData = removeColumn(transformedData, labelColumnIndex);
+        discretizedData = removeColumn(discretizedData, labelColumnIndex);
 
         // Finally remove target column
         usedColumns.remove(targetColumn);
 
-        TabularInstanceList instances = new TabularInstanceList(data, labels, usedColumns);
+        TabularInstanceList instances = new TabularInstanceList(transformedData, labels, usedColumns);
         if (doBalance) {
             instances = instances.balance();
         }
@@ -97,81 +108,6 @@ public class AnchorTabular {
 
         return new AnchorTabular(instances, usedColumns.toArray(new AbstractColumn[0]), targetColumn, mappings, tabularInstanceVisualizer);
     }
-
-//    private static Map<String, Integer> filterFeatureNamesByUsage(Map<String, Integer> featureNames, List<AbstractColumn> columnDescription, List<AbstractColumn> usedColumns) {
-//        int newColumnIndex = 0;
-//        Map<String, Integer> usedFeatureNames = new HashMap<>(usedColumns.size());
-//
-//        for (Map.Entry<String, Integer> entry : featureNames.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).collect(Collectors.toList())) {
-//            if (columnDescription.stream().anyMatch((column) -> column.getName().equals(entry.getKey()) && column.isDoUse())) {
-//                usedFeatureNames.put(entry.getKey(), newColumnIndex);
-//                newColumnIndex++;
-//            }
-//        }
-//        return usedFeatureNames;
-//    }
-
-//    private static Map<AbstractColumn, Map<Object, FeatureValueMapping>> createTransformationMapping(Object[][] data, AbstractColumn[] usedColumns) {
-//        Map<AbstractColumn, Map<Object, FeatureValueMapping>> mappings = new LinkedHashMap<>();
-//
-//        // Transform categorical columns to be in a range of 0..(distinct values)
-//        // Also discretize nominal values
-//        for (int i = 0; i < usedColumns.size(); i++) {
-//            AbstractColumn internalColumn = usedColumns.get(i);
-//
-//            // Only categorize categorical columns
-//            if (internalColumn.getColumnType() == ColumnType.CATEGORICAL) {
-//                Object[] result = transformColumnToUniqueValues(data, i);
-//                Map<Object, Object> transformedMapping = (Map<Object, Object>) result[1];
-//
-//                final AbstractColumn feature = finalFeatures[i];
-//                Map<Object, FeatureValueMapping> featureMapping = new HashMap<>(transformedMapping.size());
-//                transformedMapping.forEach((key, value) -> featureMapping.put(key, new CategoricalValueMapping(feature, key, value)));
-//
-//                mappings.put(feature, featureMapping);
-//                replaceColumnValues(data, (int[]) result[0], i);
-//            }
-//
-//            // Discretize nominal values if discretizer given
-//            else if (internalColumn.getColumnType() == ColumnType.NOMINAL && internalColumn.getDiscretizer() != null) {
-//                Number[] valuesToBeDiscretized = new Number[data.length];
-//                for (int j = 0; j < valuesToBeDiscretized.length; j++) {
-//                    if (data[j][i] instanceof String)
-//                        valuesToBeDiscretized[j] = Double.valueOf((String) data[j][i]);
-//                    else if (data[j][i] instanceof Integer)
-//                        valuesToBeDiscretized[j] = (Integer) data[j][i];
-//                    else
-//                        throw new IllegalArgumentException("Could not read nominal column");
-//                }
-//                Object[] discretizedValues = internalColumn.getDiscretizer().apply(valuesToBeDiscretized);
-//                // Discretized values come from a "range" of input values.
-//                Map<Object, Set<Number>> tmpMapping = new LinkedHashMap<>();
-//                for (int j = 0; j < discretizedValues.length; j++) {
-//                    data[j][i] = discretizedValues[j];
-//
-//                    Set<Number> values;
-//                    if (tmpMapping.containsKey(discretizedValues[j]))
-//                        values = tmpMapping.get(discretizedValues[j]);
-//                    else {
-//                        values = new HashSet<>();
-//                        tmpMapping.put(discretizedValues[j], values);
-//                    }
-//                    values.add(valuesToBeDiscretized[j]);
-//                }
-//
-//                Map<Object, FeatureValueMapping> valueMappings = new LinkedHashMap<>();
-//                for (Map.Entry<Object, Set<Number>> entry : tmpMapping.entrySet()) {
-//                    Set<Double> values = entry.getValue().stream().map(Number::doubleValue).collect(Collectors.toSet());
-//                    valueMappings.put(entry.getKey(), new MetricValueMapping(finalFeatures[i], entry.getKey(),
-//                            Collections.min(values), Collections.max(values)));
-//                }
-//                mappings.put(finalFeatures[i], valueMappings);
-//            } else {
-//                mappings.put(finalFeatures[i], Collections.emptyMap());
-//            }
-//        }
-//        return mappings;
-//    }
 
     /**
      * Iterates through the column description and removes all ignored columns.
@@ -206,26 +142,6 @@ public class AnchorTabular {
             }
         }
     }
-
-//    /**
-//     * Transforms an object column to an int column, where each class of unique objects has the same id
-//     *
-//     * @param values       the values
-//     * @param targetColumn its column index
-//     * @return an int array
-//     */
-//    private static Object[] transformColumnToUniqueValues(Object[][] values, int targetColumn) {
-//        int[] result = new int[values.length];
-//        Map<Object, Integer> valueSet = new LinkedHashMap<>();
-//        for (int i = 0; i < values.length; i++) {
-//            Object cell = values[i][targetColumn];
-//            if (!valueSet.containsKey(cell)) {
-//                valueSet.put(cell, valueSet.size());
-//            }
-//            result[i] = valueSet.get(cell);
-//        }
-//        return new Object[]{result, valueSet};
-//    }
 
     private static Object[][] removeColumns(Object[][] values, List<Integer> indices) {
         Object[][] result = new Object[values.length][];
