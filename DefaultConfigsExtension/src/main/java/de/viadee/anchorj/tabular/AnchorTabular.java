@@ -3,6 +3,7 @@ package de.viadee.anchorj.tabular;
 import de.viadee.anchorj.AnchorConstructionBuilder;
 import de.viadee.anchorj.tabular.column.AbstractColumn;
 import de.viadee.anchorj.tabular.column.IgnoredColumn;
+import de.viadee.anchorj.tabular.util.Balancer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,13 +22,13 @@ import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
  */
 public class AnchorTabular {
 
-    private final TabularInstanceList tabularInstances;
+    private final TabularInstance[] tabularInstances;
     private final AbstractColumn[] columns;
     private final AbstractColumn targetColumn;
     private final Map<AbstractColumn, Map<Object, Object>> mappings;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
 
-    private AnchorTabular(final TabularInstanceList tabularInstances, final AbstractColumn[] columns,
+    private AnchorTabular(final TabularInstance[] tabularInstances, final AbstractColumn[] columns,
                           final AbstractColumn targetColumn,
                           final Map<AbstractColumn, Map<Object, Object>> mappings,
                           final TabularInstanceVisualizer tabularInstanceVisualizer) {
@@ -67,7 +68,7 @@ public class AnchorTabular {
             Object[] discretizedColumn = new Object[transformedData.length];
             if (usedColumn.getDiscretizer() == null) {
                 // Use Array copy to ensure later manipulations don't affect both data
-                System.arraycopy(originalColumn,  0, discretizedColumn, 0, originalColumn.length);
+                System.arraycopy(originalColumn, 0, discretizedColumn, 0, originalColumn.length);
             } else {
                 usedColumn.getDiscretizer().fit(originalColumn);
                 for (int j = 0; j < originalColumn.length; j++) {
@@ -87,20 +88,25 @@ public class AnchorTabular {
 
 
         // Split off labels
-        int[] labels = null;
         if (!targetColumn.getDiscretizer().isResultNumeric())
             throw new IllegalArgumentException("Target Column must be discretized to int value");
         final int labelColumnIndex = usedColumns.indexOf(targetColumn);
-        labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
+        final int[] labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
         transformedData = removeColumn(transformedData, labelColumnIndex);
         discretizedData = removeColumn(discretizedData, labelColumnIndex);
 
         // Finally remove target column
         usedColumns.remove(targetColumn);
 
-        TabularInstanceList instances = new TabularInstanceList(transformedData, labels, usedColumns);
+        TabularInstance[] instances = new TabularInstance[labels.length];
+        for (int i = 0; i < labels.length; i++) {
+            instances[i] = new TabularInstance(usedColumns.toArray(new AbstractColumn[0]),
+                    transformedData[i], discretizedData[i], labels[i]);
+        }
+
+        // Balance dataset if set
         if (doBalance) {
-            instances = instances.balance();
+            instances = Balancer.balance(instances);
         }
 
         // Create the result explainer
@@ -184,14 +190,14 @@ public class AnchorTabular {
     public AnchorConstructionBuilder<TabularInstance> createDefaultBuilder(final Function<TabularInstance, Integer> classificationFunction,
                                                                            final TabularInstance explainedInstance) {
         TabularPerturbationFunction tabularPerturbationFunction = new TabularPerturbationFunction(explainedInstance,
-                tabularInstances.getInstances().toArray(new TabularInstance[0]));
+                tabularInstances);
         return new AnchorConstructionBuilder<>(classificationFunction::apply, tabularPerturbationFunction, explainedInstance);
     }
 
     /**
-     * @return the contained instance list
+     * @return the tabular instances created by transforming and discretizing the source
      */
-    public TabularInstanceList getTabularInstances() {
+    public TabularInstance[] getTabularInstances() {
         return tabularInstances;
     }
 

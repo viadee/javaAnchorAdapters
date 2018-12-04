@@ -3,53 +3,78 @@ package de.viadee.anchorj.tabular;
 import de.viadee.anchorj.DataInstance;
 import de.viadee.anchorj.tabular.column.AbstractColumn;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
- * Represents an instance (i.e. row) of a data table
+ * Represents an instance (i.e. row) of a data table.
+ * <p>
+ * Holds both discretized and non-discretized values
  */
 public class TabularInstance implements DataInstance<Object[]> {
-    private final Object[] instance;
-    private Object[] origIns;
-    private AbstractColumn[] features;
+    private final AbstractColumn[] features;
+    private final Object[] transformedInstance;
+    private final Object[] discretizedInstance;
+    private final Integer originalLabel;
 
     /**
      * Constructs the instance
      *
-     * @param instance the instance array containing one element for each column
+     * @param features
+     * @param transformedInstance the instance array containing one element for each column.
+     *                            Created before discretization and thus can be seen to represent original data
+     * @param discretizedInstance the discretized values of the transformed instance
+     * @param originalLabel       the original label, if any
      */
-    public TabularInstance(final AbstractColumn[] features, Object[] instance) {
+    public TabularInstance(AbstractColumn[] features, Object[] transformedInstance, Object[] discretizedInstance, Integer originalLabel) {
         this.features = features;
-        this.instance = instance;
+        this.transformedInstance = transformedInstance;
+        this.discretizedInstance = discretizedInstance;
+        this.originalLabel = originalLabel;
     }
 
     /**
-     * Constructs the instance
+     * Copy constructor using System.arraycopy
      *
-     * @param instance the instance array containing one element for each column
+     * @param instanceToClone the instance to be cloned
      */
-    public TabularInstance(final List<AbstractColumn> features, Object[] instance) {
-        this.features = features.toArray(new AbstractColumn[0]);
-        this.instance = instance;
+    public TabularInstance(TabularInstance instanceToClone) {
+        this.features = instanceToClone.getFeatures();
+        this.originalLabel = null;
+        this.transformedInstance = new Object[instanceToClone.transformedInstance.length];
+        this.discretizedInstance = new Object[instanceToClone.discretizedInstance.length];
+        System.arraycopy(instanceToClone.transformedInstance, 0, this.transformedInstance, 0, transformedInstance.length);
+        System.arraycopy(instanceToClone.discretizedInstance, 0, this.discretizedInstance, 0, discretizedInstance.length);
     }
 
     /**
-     * Copying constructor
-     *
-     * @param instance the instance to be copied
+     * @return the transformed instance created before discretization
      */
-    TabularInstance(TabularInstance instance) {
-        Object[] copy = new Object[instance.getInstance().length];
-        System.arraycopy(instance.getInstance(), 0, copy, 0, instance.getInstance().length);
-        this.instance = copy;
-        this.features = instance.features;
+    public Object[] getTransformedInstance() {
+        return transformedInstance;
     }
 
     @Override
     public Object[] getInstance() {
-        return instance;
+        return discretizedInstance;
     }
 
+    public AbstractColumn[] getFeatures() {
+        return features;
+    }
+
+    private Object getValue(AbstractColumn feature) {
+        final int index = Arrays.asList(features).indexOf(feature);
+        if (index < 0)
+            throw new IllegalArgumentException("Feature not existant");
+        return discretizedInstance[index];
+    }
+
+    /**
+     * Gets the value of a feature name
+     *
+     * @param featureName the feature's name
+     * @return the corresponding value
+     */
     public Object getValue(String featureName) {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
@@ -61,39 +86,18 @@ public class TabularInstance implements DataInstance<Object[]> {
                 break;
             }
         }
-        if (featureIndex < 0) {
-            throw new IllegalArgumentException("feature " + featureName + " not found");
-        }
-
-        return this.getValue(featureIndex);
-    }
-
-    /**
-     * Returns the instance with discretized values
-     *
-     * @return the discretized instance
-     */
-    public Object[] asDiscretizedInstance() {
-        Object[] result = new Object[instance.length];
-        for (int i = 0; i < instance.length; i++) {
-            final Object value = instance[i];
-            if (features[i].getDiscretizer() == null) {
-                result[i] = value;
-            } else {
-                result[i] = features[i].getDiscretizer().apply(value);
-            }
-        }
-        return result;
-    }
-
-    public String getFeatureName(int index) {
-        return features[index].getName();
-//        return this.featureNames.entrySet().stream().filter(entry -> entry.getValue() == index).findFirst().orElseThrow(() ->
-//                new ArrayIndexOutOfBoundsException("no entry found with index " + index)).getKey();
+        return getValue(features[featureIndex]);
     }
 
     @Override
     public int getFeatureCount() {
-        return instance.length;
+        return discretizedInstance.length;
+    }
+
+    /**
+     * @return the original label, if set. null otherwise
+     */
+    public Integer getOriginalLabel() {
+        return originalLabel;
     }
 }

@@ -48,10 +48,12 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
         List<TabularInstance> rawResult = new ArrayList<>();
         List<boolean[]> featuresChanged = new ArrayList<>();
         for (int i = 0; i < nrPerturbations; i++) {
-            TabularInstance perturbedInstance = new TabularInstance(shuffledPerturbations.get(i));
+            final TabularInstance instanceToClone = shuffledPerturbations.get(i);
+            final TabularInstance perturbedInstance = new TabularInstance(instanceToClone);
             // Copy all fixed features
             for (Integer featureId : immutableFeaturesIdx) {
                 perturbedInstance.getInstance()[featureId] = instance.getInstance()[featureId];
+                perturbedInstance.getTransformedInstance()[featureId] = instance.getTransformedInstance()[featureId];
             }
             rawResult.add(perturbedInstance);
             boolean[] tempFeatureChanged = new boolean[perturbedInstance.getFeatureCount()];
