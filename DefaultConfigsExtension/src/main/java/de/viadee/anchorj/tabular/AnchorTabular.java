@@ -4,6 +4,7 @@ import de.viadee.anchorj.AnchorConstructionBuilder;
 import de.viadee.anchorj.tabular.column.AbstractColumn;
 import de.viadee.anchorj.tabular.column.IgnoredColumn;
 import de.viadee.anchorj.tabular.util.Balancer;
+import de.viadee.anchorj.tabular.util.ShuffleSplit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -181,6 +182,19 @@ public class AnchorTabular {
     }
 
     /**
+     * Splits the dataset into three subsets, i.e. training, validation and test set
+     *
+     * @param firstSplit  the size of the first split in percent
+     * @param secondSplit size of the second split
+     * @return the result, having three main indices
+     */
+    public TabularInstance[][] shuffleSplitInstances(double firstSplit, double secondSplit) {
+        TabularInstance[][] firstShuffleSplitResult = ShuffleSplit.shuffleSplit(tabularInstances, firstSplit);
+        TabularInstance[][] secondShuffleSplitResult = ShuffleSplit.shuffleSplit(firstShuffleSplitResult[1], secondSplit);
+        return new TabularInstance[][]{firstShuffleSplitResult[0], secondShuffleSplitResult[0], secondShuffleSplitResult[1]};
+    }
+
+    /**
      * Provides a default builder configures with the contents of this class
      *
      * @param classificationFunction the classificationFunction to use
@@ -244,6 +258,7 @@ public class AnchorTabular {
          *
          * @param csvInputStream the inputStream
          * @return the {@link AnchorTabular} instance
+         * @throws IOException when the CSV cannot be parsed
          */
         public AnchorTabular build(InputStream csvInputStream) throws IOException {
             return build(csvInputStream, false, false);
@@ -256,6 +271,7 @@ public class AnchorTabular {
          * @param excludeFirst   exclude the first row. Helpful if it is the header row
          * @param trim           if true, each on each cell String#trim will be called
          * @return the {@link AnchorTabular} instance
+         * @throws IOException when the CSV cannot be parsed
          */
         public AnchorTabular build(InputStream csvInputStream, boolean excludeFirst, boolean trim) throws IOException {
             Collection<String[]> strings = CSVReader.readCSV(csvInputStream, trim);

@@ -19,7 +19,7 @@ public class TabularInstance implements DataInstance<Object[]> {
     /**
      * Constructs the instance
      *
-     * @param features
+     * @param features            the features describing the instance / columns
      * @param transformedInstance the instance array containing one element for each column.
      *                            Created before discretization and thus can be seen to represent original data
      * @param discretizedInstance the discretized values of the transformed instance
