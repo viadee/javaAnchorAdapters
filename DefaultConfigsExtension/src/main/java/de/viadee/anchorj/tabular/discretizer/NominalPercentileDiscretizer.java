@@ -6,9 +6,11 @@ import java.util.LinkedHashSet;
 import java.util.stream.Stream;
 
 /**
- * Discretizes data by using percentiles
+ * Discretizes data by using percentiles.
+ * <p>
+ * Creates new groups ranging from 0..percentileCount
  */
-public class NominalPercentileDiscretizer extends AbstractNumericDiscretizer {
+public class NominalPercentileDiscretizer implements Discretizer {
 
     private final int[] percentiles;
     private LinkedHashSet<Double> fittedPercentiles;
@@ -18,7 +20,7 @@ public class NominalPercentileDiscretizer extends AbstractNumericDiscretizer {
      *
      * @param percentiles the percentiles
      */
-    public NominalPercentileDiscretizer(int[] percentiles) {
+    public NominalPercentileDiscretizer(int... percentiles) {
         this.percentiles = percentiles;
     }
 
@@ -42,11 +44,6 @@ public class NominalPercentileDiscretizer extends AbstractNumericDiscretizer {
             double evaluate = percentile.evaluate(columnAsDouble, p);
             fittedPercentiles.add(evaluate);
         }
-    }
-
-    @Override
-    public boolean isResultNumeric() {
-        return true;
     }
 
     @Override

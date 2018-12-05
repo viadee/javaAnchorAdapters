@@ -1,4 +1,4 @@
-package de.viadee.anchorj.tabular;
+package de.viadee.anchorj.tabular.util;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -14,7 +14,7 @@ import java.util.Collection;
 /**
  * Provides methods to parse a CSV file
  */
-final class CSVReader {
+public final class CSVReader {
 
     /**
      * Loads a CSV file from the resources path
@@ -24,7 +24,7 @@ final class CSVReader {
      * @return a {@link Collection}, representing the rows, containing an array of string/columns
      * @throws IOException if the file cannot be loaded
      */
-    static Collection<String[]> readCSV(final InputStream is, final boolean trim) throws IOException {
+    public static Collection<String[]> readCSV(final InputStream is, final boolean trim) throws IOException {
         final CSVParser parser = new CSVParser(new InputStreamReader(is), CSVFormat.DEFAULT);
 
         final Collection<String[]> result = new ArrayList<>();

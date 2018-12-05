@@ -43,9 +43,9 @@ public class TabularRandomForestClassifier implements Function<TabularInstance, 
 
     @Override
     public Integer apply(TabularInstance instance) {
-        double[] doubleColumn = new double[instance.getInstance().length];
+        final double[] doubleColumn = new double[instance.getInstance().length];
         for (int j = 0; j < doubleColumn.length; j++)
-            doubleColumn[j] = ((Number) instance.getInstance()[j]).doubleValue();
+            doubleColumn[j] = instance.getInstance()[j].doubleValue();
         return classifier.predict(doubleColumn);
     }
 }

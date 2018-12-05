@@ -1,9 +1,11 @@
 package de.viadee.anchorj.tabular;
 
 import de.viadee.anchorj.AnchorConstructionBuilder;
-import de.viadee.anchorj.tabular.column.AbstractColumn;
+import de.viadee.anchorj.tabular.column.GenericColumn;
 import de.viadee.anchorj.tabular.column.IgnoredColumn;
+import de.viadee.anchorj.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.anchorj.tabular.util.Balancer;
+import de.viadee.anchorj.tabular.util.CSVReader;
 import de.viadee.anchorj.tabular.util.ShuffleSplit;
 
 import java.io.IOException;
@@ -13,8 +15,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static de.viadee.anchorj.util.ArrayUtils.extractIntegerColumn;
-import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
+import static de.viadee.anchorj.util.ArrayUtils.*;
 
 /**
  * Provides default means to use the Anchors algorithm on tabular data
@@ -24,14 +25,14 @@ import static de.viadee.anchorj.util.ArrayUtils.removeColumn;
 public class AnchorTabular {
 
     private final TabularInstance[] tabularInstances;
-    private final AbstractColumn[] columns;
-    private final AbstractColumn targetColumn;
-    private final Map<AbstractColumn, Map<Object, Object>> mappings;
+    private final GenericColumn[] columns;
+    private final GenericColumn targetColumn;
+    private final Map<GenericColumn, Map<Object, Object>> mappings;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
 
-    private AnchorTabular(final TabularInstance[] tabularInstances, final AbstractColumn[] columns,
-                          final AbstractColumn targetColumn,
-                          final Map<AbstractColumn, Map<Object, Object>> mappings,
+    private AnchorTabular(final TabularInstance[] tabularInstances, final GenericColumn[] columns,
+                          final GenericColumn targetColumn,
+                          final Map<GenericColumn, Map<Object, Object>> mappings,
                           final TabularInstanceVisualizer tabularInstanceVisualizer) {
         this.tabularInstances = tabularInstances;
         this.columns = columns;
@@ -42,67 +43,69 @@ public class AnchorTabular {
 
     @SuppressWarnings("unchecked")
     private static AnchorTabular preprocess(final Collection<String[]> dataCollection,
-                                            final List<AbstractColumn> columns,
-                                            final AbstractColumn targetColumn,
+                                            final List<GenericColumn> columns,
+                                            final GenericColumn targetColumn,
                                             final boolean doBalance) {
         // Add target column temporarily. Will be removed after transformedData processed
-        columns.add(targetColumn);
+        // columns.add(targetColumn);
         // Read transformedData to object
         Object[][] transformedData = removeUnusedColumns(columns, mapCollectionToArray(dataCollection));
-        Object[][] discretizedData = new Object[transformedData.length][];
-        List<AbstractColumn> usedColumns = columns.stream().filter(AbstractColumn::isDoUse).collect(Collectors.toList());
+        Integer[][] discretizedData = new Integer[transformedData.length][];
+        List<GenericColumn> usedColumns = columns.stream().filter(GenericColumn::isDoUse).collect(Collectors.toList());
 
         // Apply transformation to used columns
-        applyTransformations(transformedData, usedColumns.toArray(new AbstractColumn[0]));
+        applyTransformations(transformedData, usedColumns.toArray(new GenericColumn[0]));
 
         // Store the mappings that were conducted in order to be able to reverse them later on
-        final Map<AbstractColumn, Map<Object, Object>> mappings = new HashMap<>();
+        final Map<GenericColumn, Map<Object, Object>> mappings = new HashMap<>();
 
         // Apply all discretizers
         for (int i = 0; i < usedColumns.size(); i++) {
             final Object[] originalColumn = new Object[transformedData.length];
             for (int j = 0; j < originalColumn.length; j++)
                 originalColumn[j] = transformedData[j][i];
-            final AbstractColumn usedColumn = usedColumns.get(i);
+            final GenericColumn usedColumn = usedColumns.get(i);
 
-            // Discretize or accept original values
-            Object[] discretizedColumn = new Object[transformedData.length];
+            // Discretize. If no discretizer is set, set a default one
             if (usedColumn.getDiscretizer() == null) {
                 // Use Array copy to ensure later manipulations don't affect both data
-                System.arraycopy(originalColumn, 0, discretizedColumn, 0, originalColumn.length);
-            } else {
-                usedColumn.getDiscretizer().fit(originalColumn);
-                for (int j = 0; j < originalColumn.length; j++) {
-                    final Object originalValue = originalColumn[j];
-                    discretizedColumn[j] = usedColumn.getDiscretizer().apply(originalValue);
-                }
+                //System.arraycopy(originalColumn, 0, discretizedColumn, 0, originalColumn.length);
+                usedColumn.setDiscretizer(new UniqueValueDiscretizer());
             }
+
+            usedColumn.getDiscretizer().fit(originalColumn);
+            final Integer[] discretizedColumn = new Integer[transformedData.length];
+            for (int j = 0; j < originalColumn.length; j++) {
+                final Object originalValue = originalColumn[j];
+                discretizedColumn[j] = usedColumn.getDiscretizer().apply(originalValue);
+            }
+
             // Put discretized results into new array and create mapping to save efforts at runtime
             for (int j = 0; j < originalColumn.length; j++) {
                 if (i == 0)
-                    discretizedData[j] = new Object[usedColumns.size()];
+                    discretizedData[j] = new Integer[usedColumns.size()];
                 discretizedData[j][i] = discretizedColumn[j];
                 mappings.computeIfAbsent(usedColumn, k -> new HashMap<>())
-                        .putIfAbsent(discretizedColumn[j], transformedData[j][i]);
+                        .putIfAbsent(transformedData[j][i], discretizedColumn[j]);
             }
         }
 
-
         // Split off labels
-        if (!targetColumn.getDiscretizer().isResultNumeric())
-            throw new IllegalArgumentException("Target Column must be discretized to int value");
-        final int labelColumnIndex = usedColumns.indexOf(targetColumn);
-        final int[] labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
-        transformedData = removeColumn(transformedData, labelColumnIndex);
-        discretizedData = removeColumn(discretizedData, labelColumnIndex);
+        int[] labels = null;
+        if (targetColumn != null) {
+            final int labelColumnIndex = usedColumns.indexOf(targetColumn);
+            labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
+            transformedData = removeColumn(transformedData, labelColumnIndex);
+            discretizedData = removeIntegerColumn(discretizedData, labelColumnIndex);
 
-        // Finally remove target column
-        usedColumns.remove(targetColumn);
+            // Finally remove target column
+            usedColumns.remove(targetColumn);
+        }
 
-        TabularInstance[] instances = new TabularInstance[labels.length];
-        for (int i = 0; i < labels.length; i++) {
-            instances[i] = new TabularInstance(usedColumns.toArray(new AbstractColumn[0]),
-                    transformedData[i], discretizedData[i], labels[i]);
+        TabularInstance[] instances = new TabularInstance[transformedData.length];
+        for (int i = 0; i < transformedData.length; i++) {
+            instances[i] = new TabularInstance(usedColumns.toArray(new GenericColumn[0]),
+                    transformedData[i], discretizedData[i], (labels != null) ? labels[i] : null);
         }
 
         // Balance dataset if set
@@ -113,7 +116,7 @@ public class AnchorTabular {
         // Create the result explainer
         TabularInstanceVisualizer tabularInstanceVisualizer = new TabularInstanceVisualizer(mappings);
 
-        return new AnchorTabular(instances, usedColumns.toArray(new AbstractColumn[0]), targetColumn, mappings, tabularInstanceVisualizer);
+        return new AnchorTabular(instances, usedColumns.toArray(new GenericColumn[0]), targetColumn, mappings, tabularInstanceVisualizer);
     }
 
     /**
@@ -123,7 +126,7 @@ public class AnchorTabular {
      * @param data              the 2D data array
      * @return the data without ignored columns
      */
-    private static Object[][] removeUnusedColumns(List<AbstractColumn> columnDescription, Object[][] data) {
+    private static Object[][] removeUnusedColumns(List<GenericColumn> columnDescription, Object[][] data) {
         List<Integer> unusedIndices = new ArrayList<>();
         for (int i = 0; i < columnDescription.size(); i++) {
             if (!columnDescription.get(i).isDoUse())
@@ -137,13 +140,18 @@ public class AnchorTabular {
     }
 
 
-    private static void applyTransformations(Object[][] data, AbstractColumn[] internalColumns) {
+    private static void applyTransformations(Object[][] data, GenericColumn[] internalColumns) {
         for (int i = 0; i < internalColumns.length; i++) {
             Object[] column = new Object[data.length];
             for (int j = 0; j < data.length; j++) {
                 column[j] = data[j][i];
             }
-            Object[] transformationResult = internalColumns[i].transform(column);
+            Object[] transformationResult;
+            try {
+                transformationResult = internalColumns[i].transform(column);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Could not transform column " + internalColumns[i] + " as specified.", e);
+            }
             for (int j = 0; j < data.length; j++) {
                 data[j][i] = transformationResult[j];
             }
@@ -218,7 +226,7 @@ public class AnchorTabular {
     /**
      * @return an UnmodifiableList of the contained columns
      */
-    public List<AbstractColumn> getColumns() {
+    public List<GenericColumn> getColumns() {
         return Collections.unmodifiableList(Arrays.asList(columns));
     }
 
@@ -226,7 +234,7 @@ public class AnchorTabular {
      * @return a {@link Map} mapping, for each feature, which value got replaced by which other value during
      * preprocessing
      */
-    public Map<AbstractColumn, Map<Object, Object>> getMappings() {
+    public Map<GenericColumn, Map<Object, Object>> getMappings() {
         return mappings;
     }
 
@@ -243,8 +251,8 @@ public class AnchorTabular {
      * The addColumn operations must be called as many times as there are columns in the submitted dataset.
      */
     public static class Builder {
-        private final List<AbstractColumn> columnDescriptions = new ArrayList<>();
-        private AbstractColumn targetColumn;
+        private final List<GenericColumn> columnDescriptions = new ArrayList<>();
+        private GenericColumn targetColumn;
         private boolean doBalance = false;
 
         /**
@@ -299,8 +307,7 @@ public class AnchorTabular {
             if (targetColumn == null)
                 throw new IllegalArgumentException("Not target column specified");
             for (String[] fileContent : dataCollection) {
-                // +1 == target feature
-                if (fileContent.length != columnDescriptions.size() + 1) {
+                if (fileContent.length != columnDescriptions.size()) {
                     throw new IllegalArgumentException("InternalColumn count does not match loaded data's columns. " +
                             fileContent.length + " vs " + columnDescriptions.size());
                 }
@@ -322,13 +329,39 @@ public class AnchorTabular {
          * @param column the column to be added
          * @return the {@link AnchorTabular} instance
          */
-        public Builder addColumn(AbstractColumn column) {
+        public Builder addColumn(GenericColumn column) {
             this.columnDescriptions.add(column);
             return this;
         }
 
+        /**
+         * Marks a column to be ignored
+         *
+         * @return the {@link Builder}
+         */
         public Builder addIgnoredColumn() {
-            this.columnDescriptions.add(new IgnoredColumn());
+            return addIgnoredColumn((String) null);
+        }
+
+        /**
+         * Marks a column to be ignored
+         *
+         * @param name a name for reasons of clarity and comprehensibility
+         * @return the {@link Builder}
+         */
+        public Builder addIgnoredColumn(String name) {
+            this.columnDescriptions.add(new IgnoredColumn(name));
+            return this;
+        }
+
+        /**
+         * Marks a column to be ignored
+         *
+         * @param column a column for reasons of clarity and comprehensibility
+         * @return the {@link Builder}
+         */
+        public Builder addIgnoredColumn(GenericColumn column) {
+            this.columnDescriptions.add(new IgnoredColumn(column.getName()));
             return this;
         }
 
@@ -338,10 +371,11 @@ public class AnchorTabular {
          * @param column the target column to be set
          * @return the {@link AnchorTabular} instance
          */
-        public Builder addTargetcolumn(AbstractColumn column) {
+        public Builder addTargetcolumn(GenericColumn column) {
             if (targetColumn != null)
                 throw new IllegalArgumentException("Only one target column can be set");
             this.targetColumn = column;
+            this.columnDescriptions.add(column);
             return this;
         }
 

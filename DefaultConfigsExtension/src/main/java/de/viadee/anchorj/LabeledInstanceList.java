@@ -1,8 +1,5 @@
 package de.viadee.anchorj;
 
-import de.viadee.anchorj.ClassificationFunction;
-import de.viadee.anchorj.DataInstance;
-
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -13,9 +10,12 @@ import java.util.stream.IntStream;
 
 /**
  * Provides a way to store multiple instances and their corresponding labels.
+ * <p>
+ * TODO remove eventually
  *
  * @param <T> Type of the hold {@link DataInstance}
  */
+@Deprecated
 public abstract class LabeledInstanceList<T extends DataInstance<?>> extends AbstractList<T> implements Serializable {
     protected final T[] dataInstances;
     protected final int[] labels;

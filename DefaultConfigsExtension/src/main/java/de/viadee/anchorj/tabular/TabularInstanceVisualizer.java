@@ -1,32 +1,21 @@
 package de.viadee.anchorj.tabular;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import de.viadee.anchorj.AnchorCandidate;
-import de.viadee.anchorj.AnchorResult;
-import de.viadee.anchorj.tabular.column.AbstractColumn;
+import de.viadee.anchorj.tabular.column.GenericColumn;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
  */
 public class TabularInstanceVisualizer {
-    private final Map<AbstractColumn, Map<Object, Object>> featureValueMapping;
+    private final Map<GenericColumn, Map<Object, Object>> featureValueMapping;
 
     /**
      * Constructs the instance.
      *
      * @param mappings the mappings used for transforming values
      */
-    public TabularInstanceVisualizer(Map<AbstractColumn, Map<Object, Object>> mappings) {
+    public TabularInstanceVisualizer(Map<GenericColumn, Map<Object, Object>> mappings) {
         this.featureValueMapping = mappings;
     }
 
@@ -125,7 +114,7 @@ public class TabularInstanceVisualizer {
 //        final int instanceLength = explainedInstance.getInstance().length;
 //        for (int featureArrayIndex = 0; featureArrayIndex < instanceLength; featureArrayIndex++) {
 //            final String featureName = explainedInstance.getFeatureName(featureArrayIndex);
-//            Map.Entry<AbstractColumn, Map<Object, FeatureValueMapping>> valueMapping = this.featureValueMapping.entrySet().stream()
+//            Map.Entry<GenericColumn, Map<Object, FeatureValueMapping>> valueMapping = this.featureValueMapping.entrySet().stream()
 //                    .filter((entry) -> entry.getKey().getName().equals(featureName))
 //                    .findFirst().orElseThrow(() -> new IllegalArgumentException("no value mapping with feature name "
 //                            + featureName + " found"));

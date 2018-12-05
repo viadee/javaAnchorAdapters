@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Discretizer mapping each value to its integer value
+ * Discretizer mapping each value type to a unique integer value
  */
-public class UniqueValueDiscretizer extends AbstractDiscretizer<Integer> {
-
+public class UniqueValueDiscretizer implements Discretizer {
     private final Map<Object, Integer> valueToIndexDiscretizer = new HashMap<>();
 
     @Override
@@ -18,11 +17,6 @@ public class UniqueValueDiscretizer extends AbstractDiscretizer<Integer> {
             if (previous == null)
                 index++;
         }
-    }
-
-    @Override
-    public boolean isResultNumeric() {
-        return true;
     }
 
     @Override
