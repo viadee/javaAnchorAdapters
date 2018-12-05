@@ -104,6 +104,11 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
     }
 
     @Override
+    public int getSamplesTakenCount() {
+        return 0;
+    }
+
+    @Override
     public SamplingSession createSession(int explainedInstanceLabel) {
         if (!isInitialized())
             throw new IllegalArgumentException("initialize() must have been called before using the FastMPJ service");
@@ -159,6 +164,11 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
                 }
             }
         };
+    }
+
+    @Override
+    public SamplingService notifySamplingFunctionChange(SamplingFunction samplingFunction) {
+        throw new UnsupportedOperationException("SubmodularPick is not available for FastMPJ single sampling services");
     }
 
     /**

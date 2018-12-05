@@ -33,6 +33,25 @@
             <version>4.2</version>
         </dependency>
 
+        <!-- Commons CSV for parsind datasets -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.2</version>
+        </dependency>
+
+        <!-- SMILE classification algorithms -->
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+
 
         <!-- SLIC for ImageJ -->
         <dependency>

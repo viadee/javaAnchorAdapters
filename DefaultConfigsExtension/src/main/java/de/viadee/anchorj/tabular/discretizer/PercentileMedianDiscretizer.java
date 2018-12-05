@@ -1,15 +1,15 @@
-package de.viadee.anchorj.tabular;
+package de.viadee.anchorj.tabular.discretizer;
 
 import java.util.*;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Discretizer partitioning data into n specified classes using their mean values as a class label
  */
-public class PercentileMedianDiscretizer implements Function<Number[], Integer[]> {
-
+public class PercentileMedianDiscretizer implements Discretizer {
     private final int classCount;
+    private Map<Number, Integer> medianValueMapping;
 
     /**
      * Creates the discretizer.
@@ -28,10 +28,11 @@ public class PercentileMedianDiscretizer implements Function<Number[], Integer[]
     }
 
     @Override
-    public Integer[] apply(final Number[] initialInput) {
-        final List<Number> numbers = new ArrayList<>(Arrays.asList(initialInput));
-        numbers.sort(Comparator.comparingDouble(Number::doubleValue));
-        final Map<Number, Integer> medianValueMapping = new HashMap<>();
+    public void fit(Object[] values) {
+        final List<Number> numbers = Stream.of(values).map(i -> (Number) i)
+                .sorted(Comparator.comparingDouble(Number::doubleValue))
+                .collect(Collectors.toList());
+        medianValueMapping = new HashMap<>();
         final int classes = Math.min(classCount, numbers.size());
         final int countPerClass = numbers.size() / classes;
         int backlog = numbers.size() % classes;
@@ -51,6 +52,10 @@ public class PercentileMedianDiscretizer implements Function<Number[], Integer[]
             }
 
         }
-        return Stream.of(initialInput).mapToInt(medianValueMapping::get).boxed().toArray(Integer[]::new);
+    }
+
+    @Override
+    public Integer apply(Object o) {
+        return medianValueMapping.get(o);
     }
 }

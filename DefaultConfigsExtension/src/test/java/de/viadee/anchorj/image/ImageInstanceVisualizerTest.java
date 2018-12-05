@@ -1,5 +1,6 @@
 package de.viadee.anchorj.image;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ImageInstanceVisualizerTest {
 
     @Test
+    @Disabled
     public void drawImportance() throws Exception {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("dog.jpg");
         de.viadee.anchorj.image.BufferedImageRepresentation imageRepresentation = new BufferedImageRepresentation(ImageIO.read(resource));
@@ -33,6 +35,5 @@ public class ImageInstanceVisualizerTest {
         for (int i = 0; i < imageInstance.getFeatureCount(); i++) {
             importanceMap.put(i, 1 - stepSize * i);
         }
-        // TODO test result
     }
 }

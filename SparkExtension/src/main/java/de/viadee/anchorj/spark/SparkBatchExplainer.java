@@ -1,29 +1,32 @@
 package de.viadee.anchorj.spark;
 
+import de.viadee.anchorj.AnchorConstruction;
 import de.viadee.anchorj.AnchorConstructionBuilder;
 import de.viadee.anchorj.AnchorResult;
 import de.viadee.anchorj.DataInstance;
 import de.viadee.anchorj.global.BatchExplainer;
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import scala.Tuple2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Batch explainer offering distributed and global explanations.
  * <p>
  * As due to Spark's nature there are multiple requirements to work with serializable Objects, there have been multiple
  * obstacles while developing as not every class could be easily made serializable.
- * <p>
- * The solution was to create named classes holding static instances so that instances do not need to be serialized.
- * See {@link ClassificationMapper} and {@link ConstructionMapper}.
  *
  * @param <T> Type of the instance
  */
 public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExplainer<T> {
-    private static JavaSparkContext sc;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnchorConstruction.class);
+    private JavaSparkContext sc;
 
     /**
      * Instantiates the batch explainer
@@ -35,35 +38,87 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
     }
 
     /**
+     * Instantiates the batch explainer
+     *
+     * @param hadoopHomeDir the hadoop installation directory
+     */
+    public SparkBatchExplainer(String hadoopHomeDir) {
+        this(createLocalSparkConf(hadoopHomeDir));
+    }
+
+    /**
      * May be used to create a default {@link JavaSparkContext}
      *
      * @param hadoopHomeDir the hadoop installation directory
      * @return a {@link JavaSparkContext} usable to instantiate this class
      */
-    public static JavaSparkContext createSparkConf(String hadoopHomeDir) {
+    public static JavaSparkContext createLocalSparkConf(String hadoopHomeDir) {
+        return SparkBatchExplainer.createSparkConf(hadoopHomeDir, "local[*]");
+    }
+
+    /**
+     * May be used to create a default {@link JavaSparkContext}
+     *
+     * @param hadoopHomeDir the hadoop installation directory
+     * @param master        the master url
+     * @return a {@link JavaSparkContext} usable to instantiate this class
+     */
+    public static JavaSparkContext createSparkConf(String hadoopHomeDir, String master) {
         System.setProperty("hadoop.home.dir", hadoopHomeDir);
         // [*] configures Spark to use as many cores/threads as applicable
-        SparkConf conf = new SparkConf().setMaster("local[*]").setAppName(SparkBatchExplainer.class.getCanonicalName());
+        SparkConf conf = new SparkConf().setMaster(master).setAppName(SparkBatchExplainer.class.getCanonicalName());
         return new JavaSparkContext(conf);
     }
 
     @Override
     public AnchorResult<T>[] obtainAnchors(AnchorConstructionBuilder<T> anchorConstructionBuilder, List<T> instances) {
-        // Distribute the instances among the instances
-        JavaRDD<T> parallelizedInstances = sc.parallelize(instances);
 
-        List<AnchorResult<T>> result = parallelizedInstances
-                .mapToPair(i -> new Tuple2<>(i, anchorConstructionBuilder.getClassificationFunction().predict(i)))
-                .map(p -> anchorConstructionBuilder.setupForSP(p._1, p._2).build().constructAnchor())
-                .collect();
 
-        // "Hacks" used to circumvent serializable issues
-//        List<AnchorResult<T>> result = parallelizedInstances
-//                .mapToPair(new ClassificationMapper<>(anchorConstructionBuilder.getClassificationFunction()))
-//                .map(new ConstructionMapper<>(anchorConstructionBuilder))
-//                .collect();
+        LOGGER.info("Values {} {}", sc.defaultParallelism(), sc.defaultMinPartitions());
+        final List<AnchorConstruction<T>> constructors = instances.stream()
+                .map(t -> AnchorConstructionBuilder.buildForSP(anchorConstructionBuilder, t))
+                .collect(Collectors.toList());
+        StopWatch stopWatch = StopWatch.createStarted();
+        LOGGER.info("============================================1");
+        LOGGER.info("============================================1");
+        LOGGER.info("============================================1");
+        List<AnchorResult<T>> result = sc.parallelize(constructors).cache().map(AnchorConstruction::constructAnchor).cache().collect();
+        LOGGER.info("============================================1");
+        LOGGER.info("============================================1");
+        LOGGER.info("============================================1");
+        LOGGER.info("1 Took {}", stopWatch.getTime(TimeUnit.MILLISECONDS));
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        result = sc.parallelize(constructors).cache().map(AnchorConstruction::constructAnchor).cache().collect();
+
+
+//        LOGGER.info("============================================2");
+//        LOGGER.info("============================================2");
+//        LOGGER.info("============================================2");
+//
+////
+//        LOGGER.info("Distributing the instances among the workers");
+//        final JavaRDD<AnchorConstructionBuilder<T>> b = sc.parallelize(Collections.singletonList(anchorConstructionBuilder)).cache();
+//        JavaRDD<T> parallelizedInstances = sc.parallelize(instances).persist(StorageLevel.MEMORY_AND_DISK());
+//        LOGGER.info("Distribution completed");
+//
+
+        stopWatch = StopWatch.createStarted();
+        final JavaRDD<T> cache = sc.parallelize(instances).cache();
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        result = cache.map(i -> AnchorConstructionBuilder.buildForSP(anchorConstructionBuilder, i)
+                .constructAnchor()).cache().collect();
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        LOGGER.info("============================================2");
+        LOGGER.info("2 Took {}", stopWatch.getTime(TimeUnit.MILLISECONDS));
+
 
         // Close the spark context
+        LOGGER.info("Completed distributed computing. Closing Spark Context..");
         this.sc.close();
 
         @SuppressWarnings("unchecked") final AnchorResult<T>[] anchorResults = result
