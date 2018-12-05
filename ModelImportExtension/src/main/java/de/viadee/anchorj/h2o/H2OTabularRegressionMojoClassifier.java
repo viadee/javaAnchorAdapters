@@ -7,10 +7,10 @@ import java.util.List;
 import de.viadee.anchorj.tabular.TabularInstance;
 import hex.genmodel.easy.prediction.RegressionModelPrediction;
 
-public class H2oTabularRegressionMojoClassifier<T extends TabularInstance> extends H2oTabularMojoClassifier<T> {
+public class H2OTabularRegressionMojoClassifier<T extends TabularInstance> extends H2oTabularMojoClassifier<T> {
     private static final long serialVersionUID = -2625940249220401118L;
 
-    public H2oTabularRegressionMojoClassifier(InputStream mojoInputStream, SerializableFunction predictionDiscretizer, List<String> sortedHeaderMapping) throws IOException {
+    public H2OTabularRegressionMojoClassifier(InputStream mojoInputStream, SerializableFunction predictionDiscretizer, List<String> sortedHeaderMapping) throws IOException {
         super(mojoInputStream, predictionDiscretizer, sortedHeaderMapping);
     }
 
