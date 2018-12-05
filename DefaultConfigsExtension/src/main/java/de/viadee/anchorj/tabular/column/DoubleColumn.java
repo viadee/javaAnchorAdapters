@@ -40,6 +40,7 @@ public class DoubleColumn extends NumberColumn {
      * Instantiates the column
      *
      * @param name the column's name
+     * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name) {
         return fromStringInput(name, null, null);
@@ -50,6 +51,7 @@ public class DoubleColumn extends NumberColumn {
      *
      * @param name        the column's name
      * @param discretizer the discretizer to use
+     * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name, Discretizer discretizer) {
         return fromStringInput(name, null, discretizer);
@@ -60,6 +62,7 @@ public class DoubleColumn extends NumberColumn {
      *
      * @param name       the column's name
      * @param classCount the count of classes to partition the data in
+     * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name, int classCount) {
         return fromStringInput(name, null, classCount);
@@ -71,6 +74,7 @@ public class DoubleColumn extends NumberColumn {
      * @param name        the column's name
      * @param replaceNull the object value to replace null values with. Must be convertable to double values
      * @param discretizer the discretizer to use
+     * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name, Object replaceNull, Discretizer discretizer) {
         return new DoubleColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),
@@ -83,6 +87,7 @@ public class DoubleColumn extends NumberColumn {
      * @param name        the column's name
      * @param replaceNull the object value to replace null values with. Must be convertable to double values
      * @param classCount  the count of classes to partition the data in
+     * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name, Object replaceNull, int classCount) {
         return new DoubleColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),

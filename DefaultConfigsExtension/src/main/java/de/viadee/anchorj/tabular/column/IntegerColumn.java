@@ -40,6 +40,7 @@ public class IntegerColumn extends NumberColumn {
      * Instantiates the column
      *
      * @param name the column's name
+     * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name) {
         return fromStringInput(name, null, null);
@@ -50,6 +51,7 @@ public class IntegerColumn extends NumberColumn {
      *
      * @param name        the column's name
      * @param discretizer the discretizer to use
+     * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Discretizer discretizer) {
         return fromStringInput(name, null, discretizer);
@@ -58,8 +60,9 @@ public class IntegerColumn extends NumberColumn {
     /**
      * Instantiates the column
      *
-     * @param name   the column's name
-     * @param classCount  the count of classes to partition the data in
+     * @param name       the column's name
+     * @param classCount the count of classes to partition the data in
+     * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, int classCount) {
         return fromStringInput(name, null, classCount);
@@ -71,6 +74,7 @@ public class IntegerColumn extends NumberColumn {
      * @param name        the column's name
      * @param replaceNull the object value to replace null values with. Must be convertable to Integer values
      * @param discretizer the discretizer to use
+     * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Object replaceNull, Discretizer discretizer) {
         return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
@@ -83,6 +87,7 @@ public class IntegerColumn extends NumberColumn {
      * @param name        the column's name
      * @param replaceNull the object value to replace null values with. Must be convertable to Integer values
      * @param classCount  the count of classes to partition the data in
+     * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Object replaceNull, int classCount) {
         return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),

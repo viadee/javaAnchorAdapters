@@ -27,12 +27,12 @@ public class AnchorTabular {
     private final TabularInstance[] tabularInstances;
     private final GenericColumn[] columns;
     private final GenericColumn targetColumn;
-    private final Map<GenericColumn, Map<Object, Object>> mappings;
+    private final Map<GenericColumn, Map<Object, Integer>> mappings;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
 
     private AnchorTabular(final TabularInstance[] tabularInstances, final GenericColumn[] columns,
                           final GenericColumn targetColumn,
-                          final Map<GenericColumn, Map<Object, Object>> mappings,
+                          final Map<GenericColumn, Map<Object, Integer>> mappings,
                           final TabularInstanceVisualizer tabularInstanceVisualizer) {
         this.tabularInstances = tabularInstances;
         this.columns = columns;
@@ -57,7 +57,7 @@ public class AnchorTabular {
         applyTransformations(transformedData, usedColumns.toArray(new GenericColumn[0]));
 
         // Store the mappings that were conducted in order to be able to reverse them later on
-        final Map<GenericColumn, Map<Object, Object>> mappings = new HashMap<>();
+        final Map<GenericColumn, Map<Object, Integer>> mappings = new HashMap<>();
 
         // Apply all discretizers
         for (int i = 0; i < usedColumns.size(); i++) {
@@ -91,10 +91,12 @@ public class AnchorTabular {
         }
 
         // Split off labels
-        int[] labels = null;
+        Object[] transformedLabels = null;
+        int[] discretizedLabels = null;
         if (targetColumn != null) {
             final int labelColumnIndex = usedColumns.indexOf(targetColumn);
-            labels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
+            transformedLabels = extractColumn(transformedData, labelColumnIndex);
+            discretizedLabels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
             transformedData = removeColumn(transformedData, labelColumnIndex);
             discretizedData = removeIntegerColumn(discretizedData, labelColumnIndex);
 
@@ -104,8 +106,9 @@ public class AnchorTabular {
 
         TabularInstance[] instances = new TabularInstance[transformedData.length];
         for (int i = 0; i < transformedData.length; i++) {
-            instances[i] = new TabularInstance(usedColumns.toArray(new GenericColumn[0]),
-                    transformedData[i], discretizedData[i], (labels != null) ? labels[i] : null);
+            instances[i] = new TabularInstance(usedColumns.toArray(new GenericColumn[0]), targetColumn,
+                    transformedData[i], discretizedData[i], (transformedLabels != null) ? transformedLabels[i] : null,
+                    (discretizedLabels != null) ? discretizedLabels[i] : null);
         }
 
         // Balance dataset if set
@@ -234,7 +237,7 @@ public class AnchorTabular {
      * @return a {@link Map} mapping, for each feature, which value got replaced by which other value during
      * preprocessing
      */
-    public Map<GenericColumn, Map<Object, Object>> getMappings() {
+    public Map<GenericColumn, Map<Object, Integer>> getMappings() {
         return mappings;
     }
 

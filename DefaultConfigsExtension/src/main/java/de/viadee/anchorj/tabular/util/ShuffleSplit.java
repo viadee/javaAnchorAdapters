@@ -21,7 +21,7 @@ public final class ShuffleSplit {
      * @return a multidimensional array with two x indices - one for each split list
      */
     public static TabularInstance[][] shuffleSplit(final TabularInstance[] tabularInstances,
-                                                       final double percentageSize) {
+                                                   final double percentageSize) {
         return shuffleSplit(tabularInstances, percentageSize, new Random());
     }
 
@@ -36,9 +36,17 @@ public final class ShuffleSplit {
      * @return a multidimensional array with two x indices - one for each split list
      */
     public static TabularInstance[][] shuffleSplit(final TabularInstance[] tabularInstances,
-                                                       final double percentageSize, final Random rnd) {
+                                                   final double percentageSize, final Random rnd) {
         if (!ParameterValidation.isPercentage(percentageSize))
             throw new IllegalArgumentException("Percentage size" + ParameterValidation.NOT_PERCENTAGE_MESSAGE);
+
+        if (tabularInstances.length == 0)
+            return new TabularInstance[][]{new TabularInstance[0], new TabularInstance[0]};
+
+        if (percentageSize == 1)
+            return new TabularInstance[][]{tabularInstances, new TabularInstance[0]};
+        if (percentageSize == 0)
+            return new TabularInstance[][]{new TabularInstance[0], tabularInstances};
 
         List<TabularInstance> instances = new ArrayList<>(Arrays.asList(tabularInstances));
         Collections.shuffle(instances, rnd);

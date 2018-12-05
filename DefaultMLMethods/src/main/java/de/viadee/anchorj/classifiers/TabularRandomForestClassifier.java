@@ -36,7 +36,7 @@ public class TabularRandomForestClassifier implements Function<TabularInstance, 
             }
             doubleTrainingSet[i] = doubleColumn;
         }
-        result.classifier.fit(doubleTrainingSet, Stream.of(trainingSet).mapToInt(TabularInstance::getOriginalLabel).toArray());
+        result.classifier.fit(doubleTrainingSet, Stream.of(trainingSet).mapToInt(TabularInstance::getDiscretizedLabel).toArray());
 
         return result;
     }
