@@ -58,7 +58,7 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
             rawResult.add(perturbedInstance);
             boolean[] tempFeatureChanged = new boolean[perturbedInstance.getFeatureCount()];
             for (int j = 0; j < tempFeatureChanged.length; j++) {
-                tempFeatureChanged[j] = !instance.getInstance()[j].equals(perturbedInstance.getInstance()[j]);
+                tempFeatureChanged[j] = !Objects.equals(instance.getInstance()[j], perturbedInstance.getInstance()[j]);
             }
             featuresChanged.add(tempFeatureChanged);
         }

@@ -1,13 +1,5 @@
 package de.viadee.anchorj.h2o;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.List;
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import de.viadee.anchorj.ClassificationFunction;
 import de.viadee.anchorj.tabular.TabularInstance;
 import hex.genmodel.ModelMojoReader;
@@ -17,6 +9,14 @@ import hex.genmodel.MojoReaderBackendFactory;
 import hex.genmodel.easy.EasyPredictModelWrapper;
 import hex.genmodel.easy.RowData;
 import hex.genmodel.easy.prediction.AbstractPrediction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.function.Function;
 
 public class H2oTabularMojoClassifier<T extends TabularInstance> implements ClassificationFunction<T> {
     private static final long serialVersionUID = -5889212341625113792L;
@@ -44,8 +44,8 @@ public class H2oTabularMojoClassifier<T extends TabularInstance> implements Clas
     @Override
     public int predict(final T instance) {
         Object[] instanceValues;
-        if (instance.getOriginalInstance() != null) {
-            instanceValues = instance.getOriginalInstance();
+        if (instance.getTransformedInstance() != null) {
+            instanceValues = instance.getTransformedInstance();
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Trying to predict with h2o model and the discretized " +

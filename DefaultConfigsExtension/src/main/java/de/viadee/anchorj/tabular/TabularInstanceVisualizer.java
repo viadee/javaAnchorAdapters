@@ -21,7 +21,7 @@ public class TabularInstanceVisualizer {
      *
      * @param mappings the mappings used for transforming values
      */
-    public TabularInstanceVisualizer(Map<GenericColumn, Map<Object, Integer>> mappings) {
+    TabularInstanceVisualizer(Map<GenericColumn, Map<Object, Integer>> mappings) {
         this.featureValueMapping = mappings;
     }
 
