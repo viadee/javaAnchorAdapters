@@ -95,7 +95,7 @@ public class AnchorTabular {
         int[] discretizedLabels = null;
         if (targetColumn != null) {
             final int labelColumnIndex = usedColumns.indexOf(targetColumn);
-            transformedLabels = extractColumn(transformedData, labelColumnIndex);
+            transformedLabels = extractObjectColumn(transformedData, labelColumnIndex);
             discretizedLabels = Stream.of(extractIntegerColumn(discretizedData, labelColumnIndex)).mapToInt(i -> i).toArray();
             transformedData = removeColumn(transformedData, labelColumnIndex);
             discretizedData = removeIntegerColumn(discretizedData, labelColumnIndex);
