@@ -1,6 +1,10 @@
 package de.viadee.anchorj.tabular.discretizer;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -8,6 +12,8 @@ import java.util.stream.Stream;
  * Discretizer partitioning data into n specified classes using their mean values as a class label
  */
 public class PercentileMedianDiscretizer implements Discretizer {
+    private static final long serialVersionUID = -5389805012441004957L;
+
     private final int classCount;
     private Map<Number, Integer> medianValueMapping;
 
@@ -28,7 +34,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     @Override
-    public void fit(Object[] values) {
+    public void fit(Serializable[] values) {
         final List<Number> numbers = Stream.of(values).map(i -> (Number) i)
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
@@ -55,7 +61,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     @Override
-    public Integer apply(Object o) {
+    public Integer apply(Serializable o) {
         return medianValueMapping.get(o);
     }
 }

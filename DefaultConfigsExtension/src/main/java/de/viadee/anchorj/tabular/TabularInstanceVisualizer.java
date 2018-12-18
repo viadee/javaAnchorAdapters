@@ -4,6 +4,7 @@ import de.viadee.anchorj.AnchorCandidate;
 import de.viadee.anchorj.AnchorResult;
 import de.viadee.anchorj.tabular.column.GenericColumn;
 
+import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -13,15 +14,16 @@ import java.util.stream.Collectors;
 /**
  * May be used to visualize an instance of the algorithms result for the user.
  */
+@SuppressWarnings({ "unused", "WeakerAccess" })
 public class TabularInstanceVisualizer {
-    private final Map<GenericColumn, Map<Object, Integer>> featureValueMapping;
+    private final Map<GenericColumn, Map<Serializable, Integer>> featureValueMapping;
 
     /**
      * Constructs the instance.
      *
      * @param mappings the mappings used for transforming values
      */
-    TabularInstanceVisualizer(Map<GenericColumn, Map<Object, Integer>> mappings) {
+    TabularInstanceVisualizer(Map<GenericColumn, Map<Serializable, Integer>> mappings) {
         this.featureValueMapping = mappings;
     }
 
@@ -45,7 +47,7 @@ public class TabularInstanceVisualizer {
         final List<String> result = new ArrayList<>();
         for (int i = 0; i < instance.getFeatures().length; i++) {
             final GenericColumn column = instance.getFeatures()[i];
-            final Object transformedValue = instance.getTransformedValue(column);
+            final Serializable transformedValue = instance.getTransformedValue(column);
             final Integer discretizedValue = instance.getValue(column);
 
             result.add(column.getName() + "='" + transformedValue.toString() + "'");
@@ -58,10 +60,10 @@ public class TabularInstanceVisualizer {
     }
 
     private String describeValue(TabularInstance instance, GenericColumn feature) {
-        final Map<Object, Integer> mapping = featureValueMapping.get(feature);
-        final List<Object> belongingValues = new ArrayList<>();
+        final Map<Serializable, Integer> mapping = featureValueMapping.get(feature);
+        final List<Serializable> belongingValues = new ArrayList<>();
 
-        for (final Map.Entry<Object, Integer> entry : mapping.entrySet()) {
+        for (final Map.Entry<Serializable, Integer> entry : mapping.entrySet()) {
             if (entry.getValue().equals(instance.getValue(feature))) {
                 belongingValues.add(entry.getKey());
             }
@@ -76,7 +78,7 @@ public class TabularInstanceVisualizer {
                     .sorted(Comparator.comparingDouble(Number::doubleValue)).collect(Collectors.toList());
             return " IN RANGE [" + numberList.get(0) + "," + numberList.get(numberList.size() - 1) + "]";
         }
-        return " IN [" + belongingValues.stream().map(Object::toString).collect(Collectors.joining(",")) + "]";
+        return " IN [" + belongingValues.stream().map(Serializable::toString).collect(Collectors.joining(",")) + "]";
     }
 
     /**
@@ -119,7 +121,7 @@ public class TabularInstanceVisualizer {
             String[] current = new String[3];
             current[0] = "===Global Result #" + (i + 1) + "===";
             current[1] = visualizeResult(anchorResults.get(i));
-            current[2] = "HAVING EXLCUSIVE COVERAGE OF ";
+            current[2] = "HAVING EXCLUSIVE COVERAGE OF ";
             result.add(String.join(System.lineSeparator(), current));
         }
         return String.join(System.lineSeparator(), result);

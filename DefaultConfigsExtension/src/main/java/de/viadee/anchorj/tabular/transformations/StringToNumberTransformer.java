@@ -1,33 +1,20 @@
 package de.viadee.anchorj.tabular.transformations;
 
+import java.io.Serializable;
+
 /**
  * Used to convert object or string values to arbitrary numbers.
  * See e.g. {@link StringToIntTransformer} and {@link StringToDoubleTransformer} for specific implementations
  */
-abstract class StringToNumberTransformer {
+@SuppressWarnings("WeakerAccess")
+public abstract class StringToNumberTransformer {
 
-    private static Number parse(String str) {
-        Number number;
-        try {
-            number = Float.parseFloat(str);
-        } catch (NumberFormatException e) {
-            try {
-                number = Double.parseDouble(str);
-            } catch (NumberFormatException e1) {
-                try {
-                    number = Integer.parseInt(str);
-                } catch (NumberFormatException e2) {
-                    try {
-                        number = Long.parseLong(str);
-                    } catch (NumberFormatException e3) {
-                        throw e3;
-                    }
-                }
-            }
-        }
-        return number;
-    }
-
+    /**
+     * @param str the string to parse
+     * @return the parsed string or an Exception
+     * @throws NumberFormatException if its not possible to parse
+     */
+    abstract Number parse(String str) throws NumberFormatException;
 
     /**
      * Converts values to numbers
@@ -36,7 +23,7 @@ abstract class StringToNumberTransformer {
      * @return the resultant numbers
      * @throws NumberFormatException if an object could not be read
      */
-    protected static Number[] tryConvertToNumber(Object[] values) throws NumberFormatException {
+    protected Number[] tryConvertToNumber(Serializable[] values) throws NumberFormatException {
         Number[] result = new Number[values.length];
         for (int i = 0; i < values.length; i++) {
             try {
@@ -47,8 +34,7 @@ abstract class StringToNumberTransformer {
                 if (values[i] instanceof Number) {
                     result[i] = (Number) values[i];
                 } else if (values[i] instanceof String) {
-                    String value = (String) values[i];
-                    result[i] = parse(value.trim());
+                    result[i] = parse(values[i].toString().trim());
                 } else if (values[i] instanceof Throwable) {
                     // If an exception in the stream is thrown it is put into the stream itself?!
                     throw (Throwable) values[i];

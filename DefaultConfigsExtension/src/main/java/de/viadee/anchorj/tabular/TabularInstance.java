@@ -1,21 +1,25 @@
 package de.viadee.anchorj.tabular;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 import de.viadee.anchorj.DataInstance;
 import de.viadee.anchorj.tabular.column.GenericColumn;
-
-import java.util.Arrays;
 
 /**
  * Represents an instance (i.e. row) of a data table.
  * <p>
  * Holds both discretized and non-discretized values
  */
-public class TabularInstance implements DataInstance<Object[]> {
+@SuppressWarnings({ "WeakerAccess", "unused" })
+public class TabularInstance implements DataInstance<Serializable[]> {
+    private static final long serialVersionUID = -2986158305227955506L;
+
     private final GenericColumn[] features;
     private final GenericColumn targetFeature;
-    private final Object[] transformedInstance;
+    private final Serializable[] transformedInstance;
     private final Integer[] discretizedInstance;
-    private final Object transformedLabel;
+    private final Serializable transformedLabel;
     private final Integer discretizedLabel;
 
     /**
@@ -29,8 +33,8 @@ public class TabularInstance implements DataInstance<Object[]> {
      * @param transformedLabel    the original label, if any
      * @param discretizedLabel    the discretized original label, if any
      */
-    public TabularInstance(GenericColumn[] features, GenericColumn targetFeature, Object[] transformedInstance,
-                           Integer[] discretizedInstance, Object transformedLabel, Integer discretizedLabel) {
+    public TabularInstance(GenericColumn[] features, GenericColumn targetFeature, Serializable[] transformedInstance,
+                           Integer[] discretizedInstance, Serializable transformedLabel, Integer discretizedLabel) {
         this.features = features;
         this.targetFeature = targetFeature;
         this.transformedInstance = transformedInstance;
@@ -40,7 +44,7 @@ public class TabularInstance implements DataInstance<Object[]> {
     }
 
     /**
-     * Copy constructor using System.arraycopy
+     * Copy constructor using {@link System#arraycopy}
      *
      * @param instanceToClone the instance to be cloned
      */
@@ -49,7 +53,7 @@ public class TabularInstance implements DataInstance<Object[]> {
         this.targetFeature = instanceToClone.targetFeature;
         this.discretizedLabel = null;
         this.transformedLabel = null;
-        this.transformedInstance = new Object[instanceToClone.transformedInstance.length];
+        this.transformedInstance = new Serializable[instanceToClone.transformedInstance.length];
         this.discretizedInstance = new Integer[instanceToClone.discretizedInstance.length];
         System.arraycopy(instanceToClone.transformedInstance, 0, this.transformedInstance, 0, transformedInstance.length);
         System.arraycopy(instanceToClone.discretizedInstance, 0, this.discretizedInstance, 0, discretizedInstance.length);
@@ -58,7 +62,7 @@ public class TabularInstance implements DataInstance<Object[]> {
     /**
      * @return the transformed instance created before discretization
      */
-    public Object[] getTransformedInstance() {
+    public Serializable[] getTransformedInstance() {
         return transformedInstance;
     }
 
@@ -72,23 +76,12 @@ public class TabularInstance implements DataInstance<Object[]> {
     }
 
     /**
-     * @param feature the feature whose transformed value to obtain
-     * @return the transformed value
-     */
-    public Object getTransformedValue(GenericColumn feature) {
-        final int index = Arrays.asList(features).indexOf(feature);
-        if (index < 0)
-            throw new IllegalArgumentException("Feature not existant");
-        return transformedInstance[index];
-    }
-
-    /**
      * Gets the transformed value of a feature name
      *
      * @param featureName the feature's name
      * @return the corresponding value
      */
-    public Object getTransformedValue(String featureName) {
+    public Serializable getTransformedValue(String featureName) {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
@@ -99,7 +92,19 @@ public class TabularInstance implements DataInstance<Object[]> {
                 break;
             }
         }
-        return getTransformedValue(features[featureIndex]);
+        return getTransformedValue(featureIndex);
+    }
+
+    /**
+     * @param feature the feature whose transformed value to obtain
+     * @return the transformed value
+     */
+    public Serializable getTransformedValue(GenericColumn feature) {
+        return getTransformedValue(Arrays.asList(features).indexOf(feature));
+    }
+
+    public Serializable getTransformedValue(int index) {
+        return this.transformedInstance[index];
     }
 
     /**
@@ -107,10 +112,7 @@ public class TabularInstance implements DataInstance<Object[]> {
      * @return the discretized value
      */
     public Integer getValue(GenericColumn feature) {
-        final int index = Arrays.asList(features).indexOf(feature);
-        if (index < 0)
-            throw new IllegalArgumentException("Feature not existant");
-        return discretizedInstance[index];
+        return this.getValue(Arrays.asList(features).indexOf(feature));
     }
 
     /**
@@ -130,7 +132,11 @@ public class TabularInstance implements DataInstance<Object[]> {
                 break;
             }
         }
-        return getValue(features[featureIndex]);
+        return getValue(featureIndex);
+    }
+
+    public Integer getValue(int index) {
+        return this.discretizedInstance[index];
     }
 
     @Override
@@ -148,7 +154,7 @@ public class TabularInstance implements DataInstance<Object[]> {
     /**
      * @return the transformed label
      */
-    public Object getTransformedLabel() {
+    public Serializable getTransformedLabel() {
         return transformedLabel;
     }
 

@@ -1,16 +1,19 @@
 package de.viadee.anchorj.tabular.discretizer;
 
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.stream.Stream;
+
+import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 
 /**
  * Discretizes data by using percentiles.
  * <p>
  * Creates new groups ranging from 0..percentileCount
  */
+@SuppressWarnings("unused")
 public class NominalPercentileDiscretizer implements Discretizer {
+    private static final long serialVersionUID = 6338528106659032376L;
 
     private final int[] percentiles;
     private LinkedHashSet<Double> fittedPercentiles;
@@ -36,7 +39,7 @@ public class NominalPercentileDiscretizer implements Discretizer {
     }
 
     @Override
-    public void fit(Object[] values) {
+    public void fit(Serializable[] values) {
         double[] columnAsDouble = Stream.of(values).mapToDouble(v -> ((Number) v).doubleValue()).toArray();
         fittedPercentiles = new LinkedHashSet<>();
         Percentile percentile = new Percentile();
@@ -47,7 +50,7 @@ public class NominalPercentileDiscretizer implements Discretizer {
     }
 
     @Override
-    public Integer apply(Object o) {
+    public Integer apply(Serializable o) {
         return searchSorted(fittedPercentiles, (Number) o);
     }
 }

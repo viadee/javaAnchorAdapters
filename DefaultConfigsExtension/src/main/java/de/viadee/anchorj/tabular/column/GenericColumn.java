@@ -1,17 +1,20 @@
 package de.viadee.anchorj.tabular.column;
 
-import de.viadee.anchorj.tabular.discretizer.Discretizer;
-import de.viadee.anchorj.tabular.transformations.Transformer;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
+
+import de.viadee.anchorj.tabular.discretizer.Discretizer;
+import de.viadee.anchorj.tabular.transformations.Transformer;
 
 /**
  * Represents the type of a column - whether the contained data is categorical or nominal
  */
 public class GenericColumn implements Serializable {
+    private static final long serialVersionUID = -7907742161569543398L;
+
     private final String name;
     private List<Transformer> transformations;
     private Discretizer discretizer;
@@ -19,6 +22,7 @@ public class GenericColumn implements Serializable {
     /**
      * @param name the column's name
      */
+    @SuppressWarnings("unused")
     public GenericColumn(String name) {
         this(name, new ArrayList<>(), null);
     }
@@ -28,6 +32,7 @@ public class GenericColumn implements Serializable {
      * @param transformations the transformations to apply before discretization
      * @param discretizer     the discretization mapping the column to classes
      */
+    @SuppressWarnings("WeakerAccess")
     public GenericColumn(String name, List<Transformer> transformations,
                          Discretizer discretizer) {
         this.name = name;
@@ -43,6 +48,7 @@ public class GenericColumn implements Serializable {
      * @param transformation the transformation to use
      * @return this object to use for further configuration
      */
+    @SuppressWarnings("unused")
     public GenericColumn addTransformation(Transformer transformation) {
         this.transformations.add(transformation);
         return this;
@@ -63,10 +69,11 @@ public class GenericColumn implements Serializable {
      * @param values the values to transform
      * @return the transformation's result
      */
-    public Object[] transform(Object[] values) {
-        if (transformations == null || transformations.isEmpty())
+    public Serializable[] transform(Serializable[] values) {
+        if (transformations == null || transformations.isEmpty()) {
             return values;
-        Object[] result = null;
+        }
+        Serializable[] result = null;
         final ListIterator<Transformer> iter = transformations.listIterator();
         while (iter.hasNext()) {
             if (!iter.hasPrevious())
@@ -104,6 +111,21 @@ public class GenericColumn implements Serializable {
      */
     public boolean isDoUse() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GenericColumn that = (GenericColumn) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(transformations, that.transformations) &&
+                Objects.equals(discretizer, that.discretizer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, transformations, discretizer);
     }
 
     @Override

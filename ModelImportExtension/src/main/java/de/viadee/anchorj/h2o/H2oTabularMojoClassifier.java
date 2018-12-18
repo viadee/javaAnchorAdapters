@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.Function;
 
+@SuppressWarnings("WeakerAccess")
 public class H2oTabularMojoClassifier<T extends TabularInstance> implements ClassificationFunction<T> {
     private static final long serialVersionUID = -5889212341625113792L;
 
@@ -43,7 +44,7 @@ public class H2oTabularMojoClassifier<T extends TabularInstance> implements Clas
 
     @Override
     public int predict(final T instance) {
-        Object[] instanceValues;
+        Serializable[] instanceValues;
         if (instance.getTransformedInstance() != null) {
             instanceValues = instance.getTransformedInstance();
         } else {

@@ -1,14 +1,17 @@
 package de.viadee.anchorj.text;
 
-import de.viadee.anchorj.DataInstance;
-
 import java.util.function.Function;
+
+import de.viadee.anchorj.DataInstance;
 
 /**
  * An instance used to described a text piece (e.g. content)
  */
+@SuppressWarnings("WeakerAccess")
 public class TextInstance implements DataInstance<String[]> {
     private static final Function<String, String[]> DEFAULT_TOKENIZER = s -> s.split(" ");
+
+    private static final long serialVersionUID = 3964148380516458903L;
     private final String[] tokens;
 
     /**

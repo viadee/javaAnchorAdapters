@@ -1,5 +1,6 @@
 package de.viadee.anchorj.tabular.discretizer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,12 +8,14 @@ import java.util.Map;
  * Discretizer mapping each value type to a unique integer value
  */
 public class UniqueValueDiscretizer implements Discretizer {
-    private final Map<Object, Integer> valueToIndexDiscretizer = new HashMap<>();
+    private static final long serialVersionUID = -6185947730488220070L;
+
+    private final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
 
     @Override
-    public void fit(Object[] values) {
+    public void fit(Serializable[] values) {
         int index = 0;
-        for (Object object : values) {
+        for (Serializable object : values) {
             final Integer previous = valueToIndexDiscretizer.putIfAbsent(object, index);
             if (previous == null)
                 index++;
@@ -20,7 +23,7 @@ public class UniqueValueDiscretizer implements Discretizer {
     }
 
     @Override
-    public Integer apply(Object o) {
+    public Integer apply(Serializable o) {
         final Integer result = valueToIndexDiscretizer.get(o);
         if (result == null)
             throw new IllegalArgumentException("Object did not appear during fitting");

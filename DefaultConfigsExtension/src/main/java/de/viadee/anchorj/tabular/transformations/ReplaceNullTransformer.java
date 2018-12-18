@@ -1,20 +1,24 @@
 package de.viadee.anchorj.tabular.transformations;
 
+import java.io.Serializable;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
  * Transformer allowing to easily swap null and empty string values with a defined value
  */
+@SuppressWarnings("WeakerAccess")
 public class ReplaceNullTransformer implements Transformer {
-    private final Supplier<Object> valueSupplier;
+    private static final long serialVersionUID = 6419476632394236169L;
+
+    private final SerializableSupplier valueSupplier;
 
     /**
      * Instantiates the instance
      *
      * @param removeWith the value to replace null values with
      */
-    public ReplaceNullTransformer(Object removeWith) {
+    public ReplaceNullTransformer(Serializable removeWith) {
         this(() -> removeWith);
     }
 
@@ -23,12 +27,17 @@ public class ReplaceNullTransformer implements Transformer {
      *
      * @param valueSupplier the supplier for a value
      */
-    public ReplaceNullTransformer(Supplier<Object> valueSupplier) {
+    public ReplaceNullTransformer(SerializableSupplier valueSupplier) {
         this.valueSupplier = valueSupplier;
     }
 
     @Override
-    public Object[] apply(Object[] objects) {
-        return Stream.of(objects).map(o -> (o == null || "".equals(o)) ? valueSupplier.get() : o).toArray(Object[]::new);
+    public Serializable[] apply(Serializable[] objects) {
+        return Stream.of(objects).map(o -> (o == null || "".equals(o)) ? valueSupplier.get() : o).toArray(Serializable[]::new);
     }
+
+    public interface SerializableSupplier extends Supplier<Serializable>, Serializable {
+
+    }
+
 }
