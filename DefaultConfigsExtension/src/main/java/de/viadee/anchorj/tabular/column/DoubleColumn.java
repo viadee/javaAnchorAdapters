@@ -24,8 +24,8 @@ public class DoubleColumn extends NumberColumn {
      *
      * @param name the column's name
      */
-    public DoubleColumn(String name) {
-        this(name, null, null);
+    public DoubleColumn(String name, int originalColumnIndex) {
+        this(name, originalColumnIndex, null, null);
     }
 
     /**
@@ -35,8 +35,8 @@ public class DoubleColumn extends NumberColumn {
      * @param transformers the object value to replace null values with. Must be convertible to double values
      * @param discretizer  the discretizer to use
      */
-    public DoubleColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, transformers, discretizer);
+    public DoubleColumn(String name, int originalColumnIndex, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, originalColumnIndex, transformers, discretizer);
     }
 
     /**
@@ -45,8 +45,8 @@ public class DoubleColumn extends NumberColumn {
      * @param name the column's name
      * @return the corresponding column object
      */
-    public static DoubleColumn fromStringInput(String name) {
-        return fromStringInput(name, null, null);
+    public static DoubleColumn fromStringInput(String name, int originalColumnIndex) {
+        return fromStringInput(name, originalColumnIndex, null, null);
     }
 
     /**
@@ -56,8 +56,8 @@ public class DoubleColumn extends NumberColumn {
      * @param discretizer the discretizer to use
      * @return the corresponding column object
      */
-    public static DoubleColumn fromStringInput(String name, Discretizer discretizer) {
-        return fromStringInput(name, null, discretizer);
+    public static DoubleColumn fromStringInput(String name, int originalColumnIndex, Discretizer discretizer) {
+        return fromStringInput(name, originalColumnIndex, null, discretizer);
     }
 
     /**
@@ -67,8 +67,8 @@ public class DoubleColumn extends NumberColumn {
      * @param classCount the count of classes to partition the data in
      * @return the corresponding column object
      */
-    public static DoubleColumn fromStringInput(String name, int classCount) {
-        return fromStringInput(name, null, classCount);
+    public static DoubleColumn fromStringInput(String name, int originalColumnIndex, int classCount) {
+        return fromStringInput(name, originalColumnIndex, null, classCount);
     }
 
     /**
@@ -79,8 +79,8 @@ public class DoubleColumn extends NumberColumn {
      * @param discretizer the discretizer to use
      * @return the corresponding column object
      */
-    public static DoubleColumn fromStringInput(String name, Serializable replaceNull, Discretizer discretizer) {
-        return new DoubleColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),
+    public static DoubleColumn fromStringInput(String name, int originalColumnIndex, Serializable replaceNull, Discretizer discretizer) {
+        return new DoubleColumn(name, originalColumnIndex, Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),
                 (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
 
@@ -92,8 +92,9 @@ public class DoubleColumn extends NumberColumn {
      * @param classCount  the count of classes to partition the data in
      * @return the corresponding column object
      */
-    public static DoubleColumn fromStringInput(String name, Serializable replaceNull, int classCount) {
-        return new DoubleColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),
+    public static DoubleColumn fromStringInput(String name, int originalColumnIndex, Serializable replaceNull, int classCount) {
+        return new DoubleColumn(name, originalColumnIndex, Arrays.asList(createNullTransformer(replaceNull),
+                new StringToDoubleTransformer()),
                 (classCount < 1) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

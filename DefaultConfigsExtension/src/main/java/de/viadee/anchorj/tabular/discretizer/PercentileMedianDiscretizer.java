@@ -62,7 +62,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     @Override
-    public DiscretizerRelation unFit(int value) {
+    public DiscretizerRelation unApply(int value) {
         return this.discretizerRelations.stream().filter((relation) -> Objects.equals(relation.getDiscretizedValue(), value))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Discrete value " + value + " not in discretized bounds"));
     }

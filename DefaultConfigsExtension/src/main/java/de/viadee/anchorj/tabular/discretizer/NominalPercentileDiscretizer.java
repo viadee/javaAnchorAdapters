@@ -51,7 +51,7 @@ public class NominalPercentileDiscretizer implements Discretizer {
     }
 
     @Override
-    public DiscretizerRelation unFit(int value) {
+    public DiscretizerRelation unApply(int value) {
         // TODO implement
         throw new IllegalStateException("Method not implemented");
     }

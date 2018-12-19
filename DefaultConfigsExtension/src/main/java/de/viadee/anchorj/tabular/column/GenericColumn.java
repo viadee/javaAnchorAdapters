@@ -19,12 +19,14 @@ public class GenericColumn implements Serializable {
     private List<Transformer> transformations;
     private Discretizer discretizer;
 
+    private final int originalColumnIndex;
+
     /**
      * @param name the column's name
      */
     @SuppressWarnings("unused")
-    public GenericColumn(String name) {
-        this(name, new ArrayList<>(), null);
+    public GenericColumn(String name, int originalColumnIndex) {
+        this(name, originalColumnIndex, new ArrayList<>(), null);
     }
 
     /**
@@ -33,11 +35,11 @@ public class GenericColumn implements Serializable {
      * @param discretizer     the discretization mapping the column to classes
      */
     @SuppressWarnings("WeakerAccess")
-    public GenericColumn(String name, List<Transformer> transformations,
-                         Discretizer discretizer) {
+    public GenericColumn(String name, int originalColumnIndex, List<Transformer> transformations, Discretizer discretizer) {
         this.name = name;
         this.transformations = (transformations == null) ? new ArrayList<>() : new ArrayList<>(transformations);
         this.discretizer = discretizer;
+        this.originalColumnIndex = originalColumnIndex;
     }
 
     /**
@@ -104,6 +106,10 @@ public class GenericColumn implements Serializable {
         return this;
     }
 
+    public int getOriginalColumnIndex() {
+        return originalColumnIndex;
+    }
+
     /**
      * Specifies whether the column is to be contained in explanations
      *
@@ -118,18 +124,24 @@ public class GenericColumn implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenericColumn that = (GenericColumn) o;
-        return Objects.equals(name, that.name) &&
+        return originalColumnIndex == that.originalColumnIndex &&
+                Objects.equals(name, that.name) &&
                 Objects.equals(transformations, that.transformations) &&
                 Objects.equals(discretizer, that.discretizer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, transformations, discretizer);
+        return Objects.hash(name, transformations, discretizer, originalColumnIndex);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " {" + name + "}";
+        return "GenericColumn{" +
+                "name='" + name + '\'' +
+                ", transformations=" + transformations +
+                ", discretizer=" + discretizer +
+                ", originalColumnIndex=" + originalColumnIndex +
+                '}';
     }
 }
