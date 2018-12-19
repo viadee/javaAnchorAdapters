@@ -31,8 +31,9 @@ public class NominalPercentileDiscretizer implements Discretizer {
     private static int searchSorted(LinkedHashSet<Double> set, Number x) {
         int i = 0;
         for (Double current : set) {
-            if (x.doubleValue() <= current)
+            if (x.doubleValue() <= current) {
                 break;
+            }
             i++;
         }
         return i;
@@ -47,6 +48,12 @@ public class NominalPercentileDiscretizer implements Discretizer {
             double evaluate = percentile.evaluate(columnAsDouble, p);
             fittedPercentiles.add(evaluate);
         }
+    }
+
+    @Override
+    public DiscretizerRelation unFit(int value) {
+        // TODO implement
+        throw new IllegalStateException("Method not implemented");
     }
 
     @Override

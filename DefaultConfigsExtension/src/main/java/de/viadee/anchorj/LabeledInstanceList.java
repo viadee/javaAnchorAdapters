@@ -17,6 +17,8 @@ import java.util.stream.IntStream;
  */
 @Deprecated
 public abstract class LabeledInstanceList<T extends DataInstance<?>> extends AbstractList<T> implements Serializable {
+    private static final long serialVersionUID = 6638791181736377145L;
+
     protected final T[] dataInstances;
     protected final int[] labels;
     protected final int featureCount;

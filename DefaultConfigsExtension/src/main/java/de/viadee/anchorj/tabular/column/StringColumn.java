@@ -6,6 +6,7 @@ import de.viadee.anchorj.tabular.transformations.MapBasedTransformer;
 import de.viadee.anchorj.tabular.transformations.ReplaceNullTransformer;
 import de.viadee.anchorj.tabular.transformations.Transformer;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,9 @@ import java.util.Map;
  * <p>
  * May e.g. be used when column is read from a CSV file and is represented by integer values
  */
+@SuppressWarnings({ "unused", "WeakerAccess" })
 public class StringColumn extends NumberColumn {
+    private static final long serialVersionUID = -7678371903173096032L;
 
     /**
      * Instantiates the column
@@ -44,7 +47,7 @@ public class StringColumn extends NumberColumn {
      * @param mapTransformation a map used for transformations, see
      *                          {@link de.viadee.anchorj.tabular.transformations.MapBasedTransformer}
      */
-    public StringColumn(String name, Map<String, String> mapTransformation) {
+    public StringColumn(String name, Map<Serializable, Serializable> mapTransformation) {
         this(name, Collections.singletonList(new MapBasedTransformer(mapTransformation)), null);
     }
 
@@ -56,7 +59,7 @@ public class StringColumn extends NumberColumn {
      * @param mapTransformation a map used for transformations, see
      *                          {@link de.viadee.anchorj.tabular.transformations.MapBasedTransformer}
      */
-    public StringColumn(String name, String replaceNullValue, Map<String, String> mapTransformation) {
+    public StringColumn(String name, String replaceNullValue, Map<Serializable, Serializable> mapTransformation) {
         this(name, Arrays.asList(
                 new ReplaceNullTransformer(replaceNullValue),
                 new MapBasedTransformer(mapTransformation)),

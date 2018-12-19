@@ -11,14 +11,14 @@ import java.util.Map;
 public class MapBasedTransformer implements Transformer {
     private static final long serialVersionUID = -8869283260825890867L;
 
-    private final Map<String, String> transformationMap;
+    private final Map<Serializable, Serializable> transformationMap;
 
     /**
      * Creates the instance
      *
      * @param transformationMap the map used for transforming the data
      */
-    public MapBasedTransformer(final Map<String, String> transformationMap) {
+    public MapBasedTransformer(final Map<Serializable, Serializable> transformationMap) {
         this.transformationMap = transformationMap;
     }
 
@@ -26,10 +26,9 @@ public class MapBasedTransformer implements Transformer {
     public Serializable[] apply(Serializable[] objects) {
         Serializable[] result = new Serializable[objects.length];
         for (int i = 0; i < result.length; i++) {
-            String entry = (String) objects[i];
-            String transformValue = transformationMap.get(entry);
+            Serializable transformValue = transformationMap.get(objects[i]);
             // Only apply transform if it is possible
-            result[i] = (transformValue == null) ? entry : transformValue;
+            result[i] = (transformValue == null) ? objects[i] : transformValue;
         }
         return result;
     }

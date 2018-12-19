@@ -9,6 +9,7 @@ import java.util.function.Function;
  * Discretization is used by Anchors tabular to perturb instances and find similar neighbours.
  *
  */
+@SuppressWarnings("unused")
 public interface Discretizer extends Function<Serializable, Integer>, Serializable {
 
     /**
@@ -17,4 +18,6 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      * @param values the domain
      */
     void fit(Serializable[] values);
+
+    DiscretizerRelation unFit(int value);
 }

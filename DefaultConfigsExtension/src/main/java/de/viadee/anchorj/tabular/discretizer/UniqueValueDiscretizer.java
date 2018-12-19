@@ -17,9 +17,18 @@ public class UniqueValueDiscretizer implements Discretizer {
         int index = 0;
         for (Serializable object : values) {
             final Integer previous = valueToIndexDiscretizer.putIfAbsent(object, index);
-            if (previous == null)
+            if (previous == null) {
                 index++;
+            }
         }
+    }
+
+    @Override
+    public DiscretizerRelation unFit(int value) {
+        Map.Entry<Serializable, Integer> disc = valueToIndexDiscretizer.entrySet().stream().filter((entry) -> entry.getValue().equals(value))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("No value for discrete " + value + " found"));
+
+        return new DiscretizerRelation(disc.getValue(), disc.getKey());
     }
 
     @Override

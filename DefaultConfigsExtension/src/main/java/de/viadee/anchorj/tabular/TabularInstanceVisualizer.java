@@ -1,15 +1,19 @@
 package de.viadee.anchorj.tabular;
 
-import de.viadee.anchorj.AnchorCandidate;
-import de.viadee.anchorj.AnchorResult;
-import de.viadee.anchorj.tabular.column.GenericColumn;
-
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import de.viadee.anchorj.AnchorCandidate;
+import de.viadee.anchorj.AnchorResult;
+import de.viadee.anchorj.tabular.column.GenericColumn;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
@@ -23,7 +27,7 @@ public class TabularInstanceVisualizer {
      *
      * @param mappings the mappings used for transforming values
      */
-    TabularInstanceVisualizer(Map<GenericColumn, Map<Serializable, Integer>> mappings) {
+    public TabularInstanceVisualizer(Map<GenericColumn, Map<Serializable, Integer>> mappings) {
         this.featureValueMapping = mappings;
     }
 
@@ -76,6 +80,7 @@ public class TabularInstanceVisualizer {
         if (belongingValues.stream().allMatch(o -> o instanceof Number)) {
             final List<Number> numberList = belongingValues.stream().map(o -> (Number) o)
                     .sorted(Comparator.comparingDouble(Number::doubleValue)).collect(Collectors.toList());
+            // TODO test this behavior
             return " IN RANGE [" + numberList.get(0) + "," + numberList.get(numberList.size() - 1) + "]";
         }
         return " IN [" + belongingValues.stream().map(Serializable::toString).collect(Collectors.joining(",")) + "]";
@@ -106,7 +111,7 @@ public class TabularInstanceVisualizer {
                 System.lineSeparator() +
                 "THEN PREDICT " + labelText +
                 System.lineSeparator();
-                // TODO do something + "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
+        // TODO do something + "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
     }
 
     /**
@@ -126,4 +131,5 @@ public class TabularInstanceVisualizer {
         }
         return String.join(System.lineSeparator(), result);
     }
+
 }

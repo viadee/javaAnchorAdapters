@@ -1,10 +1,10 @@
 package de.viadee.anchorj.tabular.discretizer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,7 +15,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
     private static final long serialVersionUID = -5389805012441004957L;
 
     private final int classCount;
-    private Map<Number, Integer> medianValueMapping;
+    private List<DiscretizerRelation> discretizerRelations;
 
     /**
      * Creates the discretizer.
@@ -27,10 +27,11 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     private static double medianIndexValue(List<Number> list) {
-        if (list.size() % 2 == 0)
+        if (list.size() % 2 == 0) {
             return (list.get(list.size() / 2).doubleValue() + list.get(list.size() / 2 - 1).doubleValue()) / 2;
-        else
+        } else {
             return list.get(list.size() / 2).doubleValue();
+        }
     }
 
     @Override
@@ -38,7 +39,8 @@ public class PercentileMedianDiscretizer implements Discretizer {
         final List<Number> numbers = Stream.of(values).map(i -> (Number) i)
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
-        medianValueMapping = new HashMap<>();
+        discretizerRelations = new ArrayList<>(this.classCount);
+
         final int classes = Math.min(classCount, numbers.size());
         final int countPerClass = numbers.size() / classes;
         int backlog = numbers.size() % classes;
@@ -51,17 +53,26 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 backlog--;
             }
             List<Number> sublist = numbers.subList(startIndex, endIndex);
-            final double medianValue = medianIndexValue(sublist);
-            for (Number num : sublist) {
-                if (!medianValueMapping.containsKey(num))
-                    medianValueMapping.put(num, (int) medianValue);
-            }
+            final int medianValue = (int) medianIndexValue(sublist);
+            discretizerRelations.add(new DiscretizerRelation(medianValue,
+                    sublist.get(0).doubleValue(),
+                    sublist.get(sublist.size() - 1).doubleValue()));
 
         }
     }
 
     @Override
+    public DiscretizerRelation unFit(int value) {
+        return this.discretizerRelations.stream().filter((relation) -> Objects.equals(relation.getDiscretizedValue(), value))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Discrete value " + value + " not in discretized bounds"));
+    }
+
+    @Override
     public Integer apply(Serializable o) {
-        return medianValueMapping.get(o);
+        double value = (double) o;
+        return this.discretizerRelations.stream()
+                .filter((relation) -> value >= relation.getConditionMin() && value <= relation.getConditionMax())
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("Value " + o + " not in discretizer bounds"))
+                .getDiscretizedValue();
     }
 }
