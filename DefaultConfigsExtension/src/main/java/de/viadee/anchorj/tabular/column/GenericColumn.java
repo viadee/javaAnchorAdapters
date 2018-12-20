@@ -19,14 +19,12 @@ public class GenericColumn implements Serializable {
     private List<Transformer> transformations;
     private Discretizer discretizer;
 
-    private final int originalColumnIndex;
-
     /**
      * @param name the column's name
      */
     @SuppressWarnings("unused")
-    public GenericColumn(String name, int originalColumnIndex) {
-        this(name, originalColumnIndex, new ArrayList<>(), null);
+    public GenericColumn(String name) {
+        this(name, new ArrayList<>(), null);
     }
 
     /**
@@ -35,11 +33,10 @@ public class GenericColumn implements Serializable {
      * @param discretizer     the discretization mapping the column to classes
      */
     @SuppressWarnings("WeakerAccess")
-    public GenericColumn(String name, int originalColumnIndex, List<Transformer> transformations, Discretizer discretizer) {
+    public GenericColumn(String name, List<Transformer> transformations, Discretizer discretizer) {
         this.name = name;
         this.transformations = (transformations == null) ? new ArrayList<>() : new ArrayList<>(transformations);
         this.discretizer = discretizer;
-        this.originalColumnIndex = originalColumnIndex;
     }
 
     /**
@@ -86,6 +83,22 @@ public class GenericColumn implements Serializable {
         return result;
     }
 
+    public Serializable transform(Serializable value) {
+        if (this.transformations == null || this.transformations.isEmpty()) {
+            return value;
+        }
+        Serializable result = value;
+        for (Transformer transformation : this.transformations) {
+            result = transformation.apply(result);
+        }
+
+        return result;
+    }
+
+    public List<Transformer> getTransformations() {
+        return transformations;
+    }
+
     /**
      * Gets the discretizer.
      *
@@ -106,10 +119,6 @@ public class GenericColumn implements Serializable {
         return this;
     }
 
-    public int getOriginalColumnIndex() {
-        return originalColumnIndex;
-    }
-
     /**
      * Specifies whether the column is to be contained in explanations
      *
@@ -124,15 +133,14 @@ public class GenericColumn implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenericColumn that = (GenericColumn) o;
-        return originalColumnIndex == that.originalColumnIndex &&
-                Objects.equals(name, that.name) &&
+        return Objects.equals(name, that.name) &&
                 Objects.equals(transformations, that.transformations) &&
                 Objects.equals(discretizer, that.discretizer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, transformations, discretizer, originalColumnIndex);
+        return Objects.hash(name, transformations, discretizer);
     }
 
     @Override
@@ -141,7 +149,6 @@ public class GenericColumn implements Serializable {
                 "name='" + name + '\'' +
                 ", transformations=" + transformations +
                 ", discretizer=" + discretizer +
-                ", originalColumnIndex=" + originalColumnIndex +
                 '}';
     }
 }

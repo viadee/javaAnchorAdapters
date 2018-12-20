@@ -69,9 +69,10 @@ public class PercentileMedianDiscretizer implements Discretizer {
 
     @Override
     public Integer apply(Serializable o) {
-        double value = (double) o;
+        Number value = (Number) o;
         return this.discretizerRelations.stream()
-                .filter((relation) -> value >= relation.getConditionMin() && value <= relation.getConditionMax())
+                .filter((relation) -> value.doubleValue() >= relation.getConditionMin()
+                        && value.doubleValue() <= relation.getConditionMax())
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("Value " + o + " not in discretizer bounds"))
                 .getDiscretizedValue();
     }

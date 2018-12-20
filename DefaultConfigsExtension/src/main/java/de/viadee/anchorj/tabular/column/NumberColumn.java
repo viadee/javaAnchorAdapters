@@ -21,8 +21,8 @@ abstract class NumberColumn extends GenericColumn {
      *
      * @param name the column's name
      */
-    NumberColumn(String name, int originalColumnIndex) {
-        this(name, originalColumnIndex, null, null);
+    NumberColumn(String name) {
+        this(name, null, null);
     }
 
     /**
@@ -32,8 +32,8 @@ abstract class NumberColumn extends GenericColumn {
      * @param transformers the object value to replace null values with. Must be convertible to Integer values
      * @param discretizer  the discretizer to use
      */
-    NumberColumn(String name, int originalColumnIndex, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, originalColumnIndex, transformers, discretizer);
+    NumberColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers, discretizer);
     }
 
     /**

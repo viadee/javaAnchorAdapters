@@ -24,8 +24,8 @@ public class IntegerColumn extends NumberColumn {
      *
      * @param name the column's name
      */
-    public IntegerColumn(String name, int originalColumnIndex) {
-        this(name, originalColumnIndex, null, null);
+    public IntegerColumn(String name) {
+        this(name, null, null);
     }
 
     /**
@@ -35,8 +35,8 @@ public class IntegerColumn extends NumberColumn {
      * @param transformers the object value to replace null values with. Must be convertible to Integer values
      * @param discretizer  the discretizer to use
      */
-    public IntegerColumn(String name, int originalColumnIndex, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, originalColumnIndex, transformers, discretizer);
+    public IntegerColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers, discretizer);
     }
 
     /**
@@ -45,8 +45,8 @@ public class IntegerColumn extends NumberColumn {
      * @param name the column's name
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, int originalColumnIndex) {
-        return fromStringInput(name, originalColumnIndex, null, null);
+    public static IntegerColumn fromStringInput(String name) {
+        return fromStringInput(name, null, null);
     }
 
     /**
@@ -56,8 +56,8 @@ public class IntegerColumn extends NumberColumn {
      * @param discretizer the discretizer to use
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, int originalColumnIndex, Discretizer discretizer) {
-        return fromStringInput(name, originalColumnIndex, null, discretizer);
+    public static IntegerColumn fromStringInput(String name, Discretizer discretizer) {
+        return fromStringInput(name, null, discretizer);
     }
 
     /**
@@ -67,8 +67,8 @@ public class IntegerColumn extends NumberColumn {
      * @param classCount the count of classes to partition the data in
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, int originalColumnIndex, int classCount) {
-        return fromStringInput(name, originalColumnIndex, null, classCount);
+    public static IntegerColumn fromStringInput(String name, int classCount) {
+        return fromStringInput(name, null, classCount);
     }
 
     /**
@@ -79,8 +79,8 @@ public class IntegerColumn extends NumberColumn {
      * @param discretizer the discretizer to use
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, int originalColumnIndex, Serializable replaceNull, Discretizer discretizer) {
-        return new IntegerColumn(name, originalColumnIndex, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
+    public static IntegerColumn fromStringInput(String name, Serializable replaceNull, Discretizer discretizer) {
+        return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
                 (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
 
@@ -92,8 +92,8 @@ public class IntegerColumn extends NumberColumn {
      * @param classCount  the count of classes to partition the data in
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, int originalColumnIndex, Serializable replaceNull, int classCount) {
-        return new IntegerColumn(name, originalColumnIndex, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
+    public static IntegerColumn fromStringInput(String name, Serializable replaceNull, int classCount) {
+        return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
                 (classCount == 0) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

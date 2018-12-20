@@ -2,7 +2,6 @@ package de.viadee.anchorj.tabular.transformations;
 
 import java.io.Serializable;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * Transformer allowing to easily swap null and empty string values with a defined value
@@ -32,8 +31,8 @@ public class ReplaceNullTransformer implements Transformer {
     }
 
     @Override
-    public Serializable[] apply(Serializable[] objects) {
-        return Stream.of(objects).map(o -> (o == null || "".equals(o)) ? valueSupplier.get() : o).toArray(Serializable[]::new);
+    public Serializable apply(Serializable object) {
+        return (object == null || "".equals(object)) ? valueSupplier.get() : object;
     }
 
     public interface SerializableSupplier extends Supplier<Serializable>, Serializable {

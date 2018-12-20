@@ -26,8 +26,8 @@ public class StringColumn extends NumberColumn {
      *
      * @param name the column's name
      */
-    public StringColumn(String name, int originalColumnIndex) {
-        this(name, originalColumnIndex, null, (Discretizer) null);
+    public StringColumn(String name) {
+        this(name, null, (Discretizer) null);
     }
 
     /**
@@ -36,8 +36,8 @@ public class StringColumn extends NumberColumn {
      * @param name             the column's name
      * @param replaceNullValue the value to replace null values with
      */
-    public StringColumn(String name, int originalColumnIndex, String replaceNullValue) {
-        this(name, originalColumnIndex, Collections.singletonList(new ReplaceNullTransformer(replaceNullValue)), null);
+    public StringColumn(String name, String replaceNullValue) {
+        this(name, Collections.singletonList(new ReplaceNullTransformer(replaceNullValue)), null);
     }
 
     /**
@@ -47,8 +47,8 @@ public class StringColumn extends NumberColumn {
      * @param mapTransformation a map used for transformations, see
      *                          {@link de.viadee.anchorj.tabular.transformations.MapBasedTransformer}
      */
-    public StringColumn(String name, int originalColumnIndex, Map<Serializable, Serializable> mapTransformation) {
-        this(name, originalColumnIndex, Collections.singletonList(new MapBasedTransformer(mapTransformation)), null);
+    public StringColumn(String name, Map<Serializable, Serializable> mapTransformation) {
+        this(name, Collections.singletonList(new MapBasedTransformer(mapTransformation)), null);
     }
 
     /**
@@ -59,8 +59,8 @@ public class StringColumn extends NumberColumn {
      * @param mapTransformation a map used for transformations, see
      *                          {@link de.viadee.anchorj.tabular.transformations.MapBasedTransformer}
      */
-    public StringColumn(String name, int originalColumnIndex, String replaceNullValue, Map<Serializable, Serializable> mapTransformation) {
-        this(name, originalColumnIndex, Arrays.asList(
+    public StringColumn(String name, String replaceNullValue, Map<Serializable, Serializable> mapTransformation) {
+        this(name, Arrays.asList(
                 new ReplaceNullTransformer(replaceNullValue),
                 new MapBasedTransformer(mapTransformation)),
                 null);
@@ -72,8 +72,8 @@ public class StringColumn extends NumberColumn {
      * @param name        the column's name
      * @param transformer the transformation to apply
      */
-    public StringColumn(String name, int originalColumnIndex, Transformer transformer) {
-        this(name, originalColumnIndex, Collections.singletonList(transformer), null);
+    public StringColumn(String name, Transformer transformer) {
+        this(name, Collections.singletonList(transformer), null);
     }
 
     /**
@@ -83,7 +83,7 @@ public class StringColumn extends NumberColumn {
      * @param transformers the transformations to apply
      * @param discretizer  the discretizer to use
      */
-    public StringColumn(String name, int originalColumnIndex, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, originalColumnIndex, transformers, (discretizer != null) ? discretizer : new UniqueValueDiscretizer());
+    public StringColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers, (discretizer != null) ? discretizer : new UniqueValueDiscretizer());
     }
 }

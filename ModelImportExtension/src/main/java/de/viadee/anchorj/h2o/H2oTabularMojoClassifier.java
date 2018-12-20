@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.Function;
 
-@SuppressWarnings("WeakerAccess")
 public class H2oTabularMojoClassifier<T extends TabularInstance> implements ClassificationFunction<T> {
     private static final long serialVersionUID = -5889212341625113792L;
 

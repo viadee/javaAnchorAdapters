@@ -122,19 +122,20 @@ public final class ArrayUtils {
         return result;
     }
 
-    public static Serializable[] transformToIntArray(Serializable[] value) {
-        Serializable[] intRow = new Integer[value.length];
+    public static Integer[] transformToIntArray(Serializable[] value) {
+        Integer[] intRow = new Integer[value.length];
         for (int j = 0; j < value.length; j++) {
             Serializable cell = value[j];
-            if (cell instanceof Integer)
-                intRow[j] = cell;
+            if (cell == null) {
+                intRow[j] = null;
+            } else if (cell instanceof Integer)
+                intRow[j] = (Integer) cell;
             else {
+                //noinspection CaughtExceptionImmediatelyRethrown
                 try {
                     intRow[j] = Integer.valueOf((String) cell);
                 } catch (Exception e) {
-                    // Just store the string
-                    //noinspection ConstantConditions
-                    intRow[j] = cell;
+                    throw e;
                 }
             }
         }

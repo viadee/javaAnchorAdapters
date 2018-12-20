@@ -11,15 +11,15 @@ public class IgnoredColumn extends GenericColumn {
      *
      * @param name a name for reasons of clarity and comprehensibility
      */
-    public IgnoredColumn(String name, int originalColumnIndex) {
-        super(name, originalColumnIndex, null, null);
+    public IgnoredColumn(String name) {
+        super(name, null, null);
     }
 
     /**
      * Instantiates the column
      */
-    public IgnoredColumn(int originalColumnIndex) {
-        super(null, originalColumnIndex, null, null);
+    public IgnoredColumn() {
+        super(null, null, null);
     }
 
     @Override
