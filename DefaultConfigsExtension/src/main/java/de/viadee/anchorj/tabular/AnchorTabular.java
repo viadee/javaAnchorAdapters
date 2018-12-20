@@ -322,8 +322,8 @@ public class AnchorTabular {
          * @return the {@link AnchorTabular} instance
          */
         public AnchorTabular build(Collection<String[]> dataCollection, boolean excludeFirst) {
-            if (targetColumn == null)
-                throw new IllegalArgumentException("Not target column specified");
+            //if (targetColumn == null)
+            //    throw new IllegalArgumentException("No target column specified");
             for (String[] fileContent : dataCollection) {
                 if (fileContent.length != columnDescriptions.size()) {
                     throw new IllegalArgumentException("InternalColumn count does not match loaded data's columns. " +
