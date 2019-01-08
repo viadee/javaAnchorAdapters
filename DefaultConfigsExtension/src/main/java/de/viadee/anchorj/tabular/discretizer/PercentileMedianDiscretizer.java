@@ -1,16 +1,15 @@
 package de.viadee.anchorj.tabular.discretizer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import de.viadee.anchorj.tabular.column.GenericColumn;
 
 /**
  * Discretizer partitioning data into n specified classes using their mean values as a class label
@@ -19,8 +18,8 @@ public class PercentileMedianDiscretizer implements Discretizer {
     private static final long serialVersionUID = -5389805012441004957L;
 
     private final int classCount;
-    private List<DiscretizerRelation> discretizerRelations;
-    private List<Number> singleClassValues;
+    private Set<DiscretizerRelation> discretizerRelations;
+    private final List<Number> singleClassValues;
 
     /**
      * Creates the discretizer.
@@ -46,8 +45,8 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     @Override
-    public void fit(GenericColumn column, Serializable[] values) {
-        discretizerRelations = new ArrayList<>(this.classCount);
+    public void fit(Serializable[] values) {
+        discretizerRelations = new HashSet<>(this.classCount);
         for (Number singleClassValue : this.singleClassValues) {
             discretizerRelations.add(new DiscretizerRelation(singleClassValue.intValue(),
                     singleClassValue.doubleValue(), singleClassValue.doubleValue()));

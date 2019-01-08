@@ -48,7 +48,7 @@ public abstract class NumberColumn extends GenericColumn {
         );
     }
 
-    public static final class ThrowExceptionOnNull implements ReplaceNullTransformer.SerializableSupplier {
+    private static final class ThrowExceptionOnNull implements ReplaceNullTransformer.SerializableSupplier {
         private static final long serialVersionUID = -1290766005381209256L;
 
         @Override

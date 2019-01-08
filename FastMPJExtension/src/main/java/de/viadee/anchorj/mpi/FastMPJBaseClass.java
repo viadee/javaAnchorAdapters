@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for all FastMPJ explainers
  */
-abstract class FastMPJBaseClass {
+public abstract class FastMPJBaseClass {
     private static final Logger LOGGER = LoggerFactory.getLogger(FastMPJBaseClass.class);
 
     private static boolean isFinalizeCalled = false;

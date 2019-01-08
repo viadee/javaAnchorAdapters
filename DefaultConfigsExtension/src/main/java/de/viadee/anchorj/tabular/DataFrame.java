@@ -14,7 +14,7 @@ import de.viadee.anchorj.tabular.transformations.Transformer;
  */
 public class DataFrame {
 
-    private LinkedList<GenericColumn> columns;
+    private final LinkedList<GenericColumn> columns;
 
     private Serializable[][] dataFrame;
 

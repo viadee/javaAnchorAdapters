@@ -9,7 +9,7 @@ import java.util.*;
  * Provides methods to shuffle and split a dataset in order to create variable sized subsets
  * for e.g. training, testing and validation
  */
-public final class ShuffleSplit {
+public enum ShuffleSplit {;
 
     /**
      * Shuffles and splits this list into two.

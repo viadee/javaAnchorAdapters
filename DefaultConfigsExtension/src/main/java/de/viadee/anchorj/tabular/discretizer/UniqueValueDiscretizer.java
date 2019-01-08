@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.viadee.anchorj.tabular.column.GenericColumn;
-
 /**
  * Discretizer mapping each value type to a unique integer value
  */
@@ -15,7 +13,7 @@ public class UniqueValueDiscretizer implements Discretizer {
     private final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
 
     @Override
-    public void fit(GenericColumn column, Serializable[] values) {
+    public void fit(Serializable[] values) {
         int index = 0;
         for (Serializable object : values) {
             final Integer previous = valueToIndexDiscretizer.putIfAbsent(object, index);

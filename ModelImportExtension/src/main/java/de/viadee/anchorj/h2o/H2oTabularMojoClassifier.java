@@ -71,6 +71,7 @@ public class H2oTabularMojoClassifier<T extends TabularInstance> implements Clas
         return modelWrapper;
     }
 
+    @FunctionalInterface
     public interface SerializableFunction extends Function<AbstractPrediction, Integer>, Serializable {
     }
 

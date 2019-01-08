@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class AnchorTabular {
 
     private final GenericColumn targetColumn;
     private GenericColumn[] finalColumns;
-    private GenericColumn[] originalColumns;
+    private final GenericColumn[] originalColumns;
     private final TabularInstanceVisualizer tabularInstanceVisualizer;
     private TabularInstance[] tabularInstances;
 
@@ -55,7 +54,7 @@ public class AnchorTabular {
                 column.setDiscretizer(new UniqueValueDiscretizer());
             }
 
-            column.getDiscretizer().fit(column, column.transformForAnchor(dataFrame.getColumn(column)));
+            column.getDiscretizer().fit(column.transformForAnchor(dataFrame.getColumn(column)));
         }
     }
 
@@ -168,22 +167,6 @@ public class AnchorTabular {
                 targetColumn,
                 tabularInstanceVisualizer
         );
-    }
-
-    /**
-     * Iterates through the column description and removes all ignored columns.
-     *
-     * @param columnDescription list of columns
-     */
-    private static List<String> removeUnusedColumns(List<GenericColumn> columnDescription) {
-        List<String> columnsToDelete = new LinkedList<>();
-        for (GenericColumn column : columnDescription) {
-            if (!column.isDoUse()) {
-                columnsToDelete.add(column.getName());
-            }
-        }
-
-        return columnsToDelete;
     }
 
     /**

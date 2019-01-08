@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
  * Used to extract all instances out of a document
  */
 public class TextDataList extends LabeledInstanceList<TextInstance> {
+    private static final long serialVersionUID = 1379410214096614864L;
 
     private TextDataList(final TextInstance[] dataInstances, final int[] labels) {
         super(dataInstances, labels);

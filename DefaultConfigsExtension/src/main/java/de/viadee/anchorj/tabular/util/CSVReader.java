@@ -13,7 +13,7 @@ import org.apache.commons.csv.CSVRecord;
 /**
  * Provides methods to parse a CSV file
  */
-public final class CSVReader {
+public enum CSVReader {;
 
     /**
      * Loads a CSV file from the resources path

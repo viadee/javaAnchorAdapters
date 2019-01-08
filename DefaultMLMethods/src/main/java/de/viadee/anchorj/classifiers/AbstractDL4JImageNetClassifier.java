@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
  * Abstract superclass for DL4J CNN classifiers
  */
 abstract class AbstractDL4JImageNetClassifier implements ClassificationFunction<ImageInstance> {
+    private static final long serialVersionUID = 880894269632132027L;
 
     private final Dimension requiredDimension;
     private final ComputationGraph computationGraph;

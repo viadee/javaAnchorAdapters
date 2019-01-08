@@ -11,6 +11,8 @@ import java.io.IOException;
  * A DL4J VGG16 classifier.
  */
 public class VGG16 extends AbstractDL4JImageNetClassifier {
+    private static final long serialVersionUID = -8202666256389699706L;
+
     private static final Dimension REQUIRED_DIMENSION = new Dimension(224, 224);
 
     /**

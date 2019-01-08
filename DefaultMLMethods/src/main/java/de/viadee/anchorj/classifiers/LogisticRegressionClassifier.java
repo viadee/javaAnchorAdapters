@@ -6,6 +6,8 @@ import smile.classification.LogisticRegression;
  * Implements a logistic regression classifier.
  */
 public class LogisticRegressionClassifier extends AbstractTextEnabledNumericClassifier {
+    private static final long serialVersionUID = -1793494557059339703L;
+
     private LogisticRegression logisticRegression;
 
     @Override

@@ -18,6 +18,8 @@ import java.util.Set;
  * In order to perturb text, please implement e.g. a Word2Vec model providing the alternatives needed.
  */
 public class TextPerturbationFunction implements ReconfigurablePerturbationFunction<TextInstance> {
+    private static final long serialVersionUID = -2670647199875638877L;
+
     private final TextInstance textInstance;
     private final double tokenChangeProbability;
     private final List<List<String>> alternatives;

@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  * Provides methods to balance a dataset,
  * i.e. remove instances so that so that each label has the same amount of instances
  */
-public final class Balancer {
+public enum Balancer {;
 
     /**
      * Truncates the set of instances so that each label has the same amount of instances

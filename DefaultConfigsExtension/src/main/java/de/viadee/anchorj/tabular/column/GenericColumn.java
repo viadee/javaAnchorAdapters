@@ -15,8 +15,8 @@ public class GenericColumn implements Serializable {
     private static final long serialVersionUID = -7907742161569543398L;
 
     private final String name;
-    private List<Transformer> dataTransformations;
-    private List<Transformer> anchorTransformers;
+    private final List<Transformer> dataTransformations;
+    private final List<Transformer> anchorTransformers;
     private Discretizer discretizer;
 
     /**

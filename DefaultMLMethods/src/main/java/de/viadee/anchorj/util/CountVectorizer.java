@@ -14,6 +14,7 @@ import java.util.Map;
  * https://gist.github.com/alexeygrigorev/6238341f79bd81b79879607226120ae4</a>
  */
 public final class CountVectorizer implements Serializable {
+    private static final long serialVersionUID = -8758157039821033639L;
 
     /**
      * The type Count vectorizer builder.

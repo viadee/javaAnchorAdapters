@@ -16,6 +16,7 @@ import java.util.List;
  * A DL4J YOLO2 classifier.
  */
 public class YOLO2 extends AbstractDL4JImageNetClassifier {
+    private static final long serialVersionUID = -7178574918228681653L;
 
     private final String[] CLASSES = {"person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train",
             "truck", "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat",

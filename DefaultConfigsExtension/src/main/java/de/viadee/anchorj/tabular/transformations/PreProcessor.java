@@ -10,7 +10,7 @@ import java.util.function.Function;
 public abstract class PreProcessor implements Function<Serializable[][], Serializable[][]>, Serializable {
     private static final long serialVersionUID = 3269540580048583929L;
 
-    private Integer processColumn;
+    private final Integer processColumn;
 
     public PreProcessor(Integer processColumn) {
         this.processColumn = processColumn;

@@ -21,6 +21,7 @@ import java.util.stream.Stream;
  * The results returned are not of good quality.
  */
 public class OpenNLPTextPerturbationFunction extends TextPerturbationFunction {
+    private static final long serialVersionUID = 4413797749568264622L;
 
     /**
      * Instantiates the OpenNLP perturbator

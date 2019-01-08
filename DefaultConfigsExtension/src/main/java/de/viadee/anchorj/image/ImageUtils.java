@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 /**
  * Offers utility methods to manipulate images.
  */
-public final class ImageUtils {
+public enum ImageUtils {;
 
     /**
      * Resize and crop a {@link BufferedImage}.

@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
  * Abstract classifier enabling predictions of String data by using vectorization
  */
 public abstract class AbstractTextEnabledNumericClassifier implements NumericClassifier {
+    private static final long serialVersionUID = -1193554418216143033L;
+
     private static final Pattern WORD_PATTERN = Pattern.compile("(?u)\\b\\w\\w+\\b");
     private CountVectorizer vectorizer;
 

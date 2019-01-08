@@ -12,10 +12,7 @@ import java.util.stream.Stream;
  *
  * For more information, see <a href=http://www.kev-smith.com/papers/SLIC_Superpixels.pdf>here.</a>
  */
-public final class SLICSuperpixelation {
-
-    private SLICSuperpixelation() {
-    }
+public enum SLICSuperpixelation {;
 
     /**
      * Extracts superpixels out of an image.

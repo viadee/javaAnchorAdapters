@@ -7,10 +7,7 @@ import java.util.stream.Stream;
 /**
  * Provides some basic functions to handle arrays.
  */
-public final class ArrayUtils {
-
-    private ArrayUtils() {
-    }
+public enum ArrayUtils {;
 
     /**
      * Appends a column to an existing table

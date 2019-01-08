@@ -35,6 +35,8 @@ import java.util.stream.IntStream;
  * @param <T> Type of the {@link DataInstance}
  */
 public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBaseClass implements SamplingService {
+    private static final long serialVersionUID = -433861851523600400L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FastMPJSamplingService.class);
 
 
@@ -113,7 +115,8 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
         if (!isInitialized())
             throw new IllegalArgumentException("initialize() must have been called before using the FastMPJ service");
         return new SamplingSession() {
-            protected final Map<AnchorCandidate, Integer> samplingCountMap = new LinkedHashMap<>();
+            private static final long serialVersionUID = 1211871920035699406L;
+            final Map<AnchorCandidate, Integer> samplingCountMap = new LinkedHashMap<>();
 
             @Override
             public SamplingSession registerCandidateEvaluation(AnchorCandidate candidate, int count) {
