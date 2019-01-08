@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 /**
  * Provides some basic functions to handle arrays.
  */
-@SuppressWarnings({ "unused", "WeakerAccess" })
 public final class ArrayUtils {
 
     private ArrayUtils() {

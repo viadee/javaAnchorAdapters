@@ -3,12 +3,13 @@ package de.viadee.anchorj.tabular.discretizer;
 import java.io.Serializable;
 import java.util.function.Function;
 
+import de.viadee.anchorj.tabular.column.GenericColumn;
+
 /**
  * Represents functionality every column needs to provide: discretization.
  * <p>
  * Discretization is used by Anchors tabular to perturb instances and find similar neighbours.
  */
-@SuppressWarnings("unused")
 public interface Discretizer extends Function<Serializable, Integer>, Serializable {
 
     default Integer[] apply(Serializable[] data) {
@@ -25,7 +26,7 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      *
      * @param values the domain
      */
-    void fit(Serializable[] values);
+    void fit(GenericColumn column, Serializable[] values);
 
     DiscretizerRelation unApply(int value);
 }

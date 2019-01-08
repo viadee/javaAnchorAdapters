@@ -5,13 +5,13 @@ import java.util.LinkedHashSet;
 import java.util.stream.Stream;
 
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
+import de.viadee.anchorj.tabular.column.GenericColumn;
 
 /**
  * Discretizes data by using percentiles.
  * <p>
  * Creates new groups ranging from 0..percentileCount
  */
-@SuppressWarnings("unused")
 public class NominalPercentileDiscretizer implements Discretizer {
     private static final long serialVersionUID = 6338528106659032376L;
 
@@ -40,7 +40,7 @@ public class NominalPercentileDiscretizer implements Discretizer {
     }
 
     @Override
-    public void fit(Serializable[] values) {
+    public void fit(GenericColumn column, Serializable[] values) {
         double[] columnAsDouble = Stream.of(values).mapToDouble(v -> ((Number) v).doubleValue()).toArray();
         fittedPercentiles = new LinkedHashSet<>();
         Percentile percentile = new Percentile();

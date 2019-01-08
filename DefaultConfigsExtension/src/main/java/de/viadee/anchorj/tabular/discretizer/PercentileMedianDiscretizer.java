@@ -2,11 +2,15 @@ package de.viadee.anchorj.tabular.discretizer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import de.viadee.anchorj.tabular.column.GenericColumn;
 
 /**
  * Discretizer partitioning data into n specified classes using their mean values as a class label
@@ -16,14 +20,21 @@ public class PercentileMedianDiscretizer implements Discretizer {
 
     private final int classCount;
     private List<DiscretizerRelation> discretizerRelations;
+    private List<Number> singleClassValues;
 
     /**
      * Creates the discretizer.
      *
-     * @param classCount the amount of classes to use
+     * @param classCount        the amount of classes to use
+     * @param singleClassValues values which each of them should be a class like null values
      */
-    public PercentileMedianDiscretizer(int classCount) {
+    public PercentileMedianDiscretizer(int classCount, Number... singleClassValues) {
         this.classCount = classCount;
+        if (singleClassValues == null || singleClassValues.length == 0) {
+            this.singleClassValues = Collections.emptyList();
+        } else {
+            this.singleClassValues = Arrays.asList(singleClassValues);
+        }
     }
 
     private static double medianIndexValue(List<Number> list) {
@@ -35,11 +46,21 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     @Override
-    public void fit(Serializable[] values) {
-        final List<Number> numbers = Stream.of(values).map(i -> (Number) i)
+    public void fit(GenericColumn column, Serializable[] values) {
+        discretizerRelations = new ArrayList<>(this.classCount);
+        for (Number singleClassValue : this.singleClassValues) {
+            discretizerRelations.add(new DiscretizerRelation(singleClassValue.intValue(),
+                    singleClassValue.doubleValue(), singleClassValue.doubleValue()));
+        }
+        List<Number> numbers = Stream.of(values).map(i -> (Number) i)
+                .filter(number -> !singleClassValues.contains(number))
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
-        discretizerRelations = new ArrayList<>(this.classCount);
+
+        if (values.length > 0 && numbers.size() <= 0) {
+            // all values are null
+            return;
+        }
 
         final int classes = Math.min(classCount, numbers.size());
         final int countPerClass = numbers.size() / classes;
@@ -70,10 +91,12 @@ public class PercentileMedianDiscretizer implements Discretizer {
     @Override
     public Integer apply(Serializable o) {
         Number value = (Number) o;
-        return this.discretizerRelations.stream()
-                .filter((relation) -> value.doubleValue() >= relation.getConditionMin()
-                        && value.doubleValue() <= relation.getConditionMax())
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Value " + o + " not in discretizer bounds"))
-                .getDiscretizedValue();
+        for (DiscretizerRelation relation : this.discretizerRelations) {
+            if (value.doubleValue() >= relation.getConditionMin() && value.doubleValue() <= relation.getConditionMax()) {
+                return relation.getDiscretizedValue();
+            }
+        }
+
+        throw new IllegalArgumentException("Value " + o + " not in discretizer bounds");
     }
 }

@@ -16,7 +16,6 @@ import de.viadee.anchorj.tabular.discretizer.DiscretizerRelation;
 /**
  * May be used to visualize an instance of the algorithms result for the user.
  */
-@SuppressWarnings({ "unused", "WeakerAccess" })
 public class TabularInstanceVisualizer {
 
     private static AnchorCandidate getCandidateForFeatureNr(AnchorResult<?> result, Integer featureNr) {
@@ -40,7 +39,6 @@ public class TabularInstanceVisualizer {
         for (int i = 0; i < instance.getFeatures().length; i++) {
             final GenericColumn column = instance.getFeatures()[i];
             final Serializable transformedValue = instance.getTransformedValue(column);
-            final Integer discretizedValue = instance.getValue(column);
 
             result.add(column.getName() + "='" + transformedValue.toString() + "'");
         }
@@ -56,9 +54,9 @@ public class TabularInstanceVisualizer {
         DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
         switch (relation.getFeatureType()) {
             case METRIC:
-                return " IN RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
+                return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
             case CATEGORICAL:
-                return "='" + relation.getCategoricalValue() + "'";
+                return " = '" + relation.getCategoricalValue() + "'";
             case UNDEFINED:
             default:
                 throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");

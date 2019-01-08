@@ -18,7 +18,6 @@ import de.viadee.anchorj.global.ReconfigurablePerturbationFunction;
  * <p>
  * Creating a custom de.viadee.anchorj.tabular perturbation function is highly application specific.
  */
-@SuppressWarnings({ "WeakerAccess" })
 public class TabularPerturbationFunction implements ReconfigurablePerturbationFunction<TabularInstance> {
     private static final long serialVersionUID = 5592705226886781336L;
 
@@ -34,7 +33,6 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
      * @param instance         the {@link TabularInstance} to perturb.
      * @param perturbationData an array of data to generate perturbations from
      */
-    @SuppressWarnings({ "unused" })
     public TabularPerturbationFunction(TabularInstance instance, TabularInstance[] perturbationData) {
         this(instance, perturbationData, null);
     }

@@ -7,7 +7,6 @@ import java.util.function.Function;
 /**
  *
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class PreProcessor implements Function<Serializable[][], Serializable[][]>, Serializable {
     private static final long serialVersionUID = 3269540580048583929L;
 

@@ -8,18 +8,18 @@ public class IgnoredColumn extends GenericColumn {
 
     /**
      * Instantiates the column
-     *
-     * @param name a name for reasons of clarity and comprehensibility
      */
-    public IgnoredColumn(String name) {
-        super(name, null, null);
+    public IgnoredColumn() {
+        this(null);
     }
 
     /**
      * Instantiates the column
+     *
+     * @param name a name for reasons of clarity and comprehensibility
      */
-    public IgnoredColumn() {
-        super(null, null, null);
+    public IgnoredColumn(String name) {
+        super(name, null, null, null);
     }
 
     @Override

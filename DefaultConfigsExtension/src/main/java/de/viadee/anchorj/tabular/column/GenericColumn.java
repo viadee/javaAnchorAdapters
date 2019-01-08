@@ -3,7 +3,6 @@ package de.viadee.anchorj.tabular.column;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 import de.viadee.anchorj.tabular.discretizer.Discretizer;
@@ -16,41 +15,83 @@ public class GenericColumn implements Serializable {
     private static final long serialVersionUID = -7907742161569543398L;
 
     private final String name;
-    private List<Transformer> transformations;
+    private List<Transformer> dataTransformations;
+    private List<Transformer> anchorTransformers;
     private Discretizer discretizer;
 
     /**
      * @param name the column's name
      */
-    @SuppressWarnings("unused")
     public GenericColumn(String name) {
-        this(name, new ArrayList<>(), null);
+        this(name, null, null, null);
     }
 
     /**
      * @param name            the column's name
-     * @param transformations the transformations to apply before discretization
+     * @param dataTransformations the transformations to apply for the predict data
+     * @param anchorTransformers the transformations to apply before discretization for anchor
      * @param discretizer     the discretization mapping the column to classes
      */
-    @SuppressWarnings("WeakerAccess")
-    public GenericColumn(String name, List<Transformer> transformations, Discretizer discretizer) {
+    public GenericColumn(String name, List<Transformer> dataTransformations, List<Transformer> anchorTransformers, Discretizer discretizer) {
         this.name = name;
-        this.transformations = (transformations == null) ? new ArrayList<>() : new ArrayList<>(transformations);
+        this.dataTransformations = (dataTransformations == null) ? new ArrayList<>() : new ArrayList<>(dataTransformations);
+        this.anchorTransformers = (anchorTransformers == null) ? new ArrayList<>() : new ArrayList<>(anchorTransformers);
         this.discretizer = discretizer;
     }
 
     /**
      * Adds a transformation.
      * <p>
-     * All transformations are executed by the list's order
+     * All dataTransformations are executed by the list's order
      *
      * @param transformation the transformation to use
      * @return this object to use for further configuration
      */
-    @SuppressWarnings("unused")
-    public GenericColumn addTransformation(Transformer transformation) {
-        this.transformations.add(transformation);
+    public GenericColumn addDataTransformer(Transformer transformation) {
+        this.dataTransformations.add(transformation);
         return this;
+    }
+
+    /**
+     * Adds a predictTransformation.
+     * <p>
+     * All dataTransformations are executed by the list's order before calling predict. Useful when having NullTransformations to re transformData to a null value
+     *
+     * @param predictTransformation the predictTransformation to use
+     * @return this object to use for further configuration
+     */
+    public GenericColumn addAnchorTransformer(Transformer predictTransformation) {
+        this.dataTransformations.add(predictTransformation);
+        return this;
+    }
+
+    public Serializable[] transformForAnchor(Serializable[] data) {
+        return transform(this.anchorTransformers, data);
+    }
+
+    /**
+     * Uses the specified dataTransformations to map the values to transformed results
+     *
+     * @param values the values to transformData
+     * @return the transformation's result
+     */
+    public Serializable[] transformData(Serializable[] values) {
+        return transform(this.dataTransformations, values);
+    }
+
+    public Serializable transformData(Serializable value) {
+        return transform(this.dataTransformations, new Serializable[]{value})[0];
+    }
+
+    private static Serializable[] transform(List<Transformer> transformations, Serializable[] data) {
+        Serializable[] result = data;
+        if (transformations != null && !transformations.isEmpty()) {
+            for (Transformer transformation : transformations) {
+                result = transformation.apply(result);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -62,41 +103,12 @@ public class GenericColumn implements Serializable {
         return name;
     }
 
-    /**
-     * Uses the specified transformations to map the values to transformed results
-     *
-     * @param values the values to transform
-     * @return the transformation's result
-     */
-    public Serializable[] transform(Serializable[] values) {
-        if (transformations == null || transformations.isEmpty()) {
-            return values;
-        }
-        Serializable[] result = null;
-        final ListIterator<Transformer> iter = transformations.listIterator();
-        while (iter.hasNext()) {
-            if (!iter.hasPrevious())
-                result = iter.next().apply(values);
-            else
-                result = iter.next().apply(result);
-        }
-        return result;
+    public List<Transformer> getDataTransformations() {
+        return dataTransformations;
     }
 
-    public Serializable transform(Serializable value) {
-        if (this.transformations == null || this.transformations.isEmpty()) {
-            return value;
-        }
-        Serializable result = value;
-        for (Transformer transformation : this.transformations) {
-            result = transformation.apply(result);
-        }
-
-        return result;
-    }
-
-    public List<Transformer> getTransformations() {
-        return transformations;
+    public List<Transformer> getAnchorTransformations() {
+        return dataTransformations;
     }
 
     /**
@@ -134,20 +146,22 @@ public class GenericColumn implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         GenericColumn that = (GenericColumn) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(transformations, that.transformations) &&
+                Objects.equals(dataTransformations, that.dataTransformations) &&
+                Objects.equals(anchorTransformers, that.anchorTransformers) &&
                 Objects.equals(discretizer, that.discretizer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, transformations, discretizer);
+        return Objects.hash(name, dataTransformations, anchorTransformers, discretizer);
     }
 
     @Override
     public String toString() {
         return "GenericColumn{" +
                 "name='" + name + '\'' +
-                ", transformations=" + transformations +
+                ", dataTransformations=" + dataTransformations +
+                ", anchorTransformers=" + anchorTransformers +
                 ", discretizer=" + discretizer +
                 '}';
     }

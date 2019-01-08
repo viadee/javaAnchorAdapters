@@ -43,29 +43,42 @@ public class AnchorTabular {
         this.tabularInstanceVisualizer = tabularInstanceVisualizer;
     }
 
+    private static void fitData(final GenericColumn[] originalColumns, final Collection<String[]> dataCollection) {
+        DataFrame dataFrame = new DataFrame(originalColumns, dataCollection);
+        removeIgnoredColumns(dataFrame);
+        applyTransformationsOfData(dataFrame);
+
+        for (int i = 0; i < dataFrame.getNCols(); i++) {
+            GenericColumn column = dataFrame.getColumns().get(i);
+            // Discretize. If no discretizer is set, set a default one
+            if (column.getDiscretizer() == null) {
+                column.setDiscretizer(new UniqueValueDiscretizer());
+            }
+
+            column.getDiscretizer().fit(column, column.transformForAnchor(dataFrame.getColumn(column)));
+        }
+    }
+
     public static TabularInstance[] preprocessData(AnchorTabular tabular,
                                                    final Collection<String[]> dataCollection,
                                                    boolean doBalance) {
 
         DataFrame dataFrame = new DataFrame(tabular.originalColumns, dataCollection);
-        List<String> columnsToDelete = dataFrame.getColumns().stream().filter(column1 -> !column1.isDoUse())
-                .map(GenericColumn::getName).collect(Collectors.toList());
-        for (String columnToDelete : columnsToDelete) {
-            dataFrame.removeColumn(columnToDelete);
-        }
+        removeIgnoredColumns(dataFrame);
+        applyTransformationsOfData(dataFrame);
 
         // Split off labels
         Serializable[] transformedLabels = null;
         Integer[] discretizedLabels = null;
         if (tabular.targetColumn != null) {
             transformedLabels = dataFrame.removeColumn(tabular.targetColumn);
-            tabular.getTargetColumn().getDiscretizer().fit(transformedLabels);
+            transformedLabels = tabular.targetColumn.transformForAnchor(transformedLabels);
             discretizedLabels = tabular.targetColumn.getDiscretizer().apply(transformedLabels);
         }
 
-        applyTransformations(dataFrame);
-
-        Integer[][] discretizedData = discretizeData(dataFrame);
+        Serializable[][] anchorTransformedData = applyTransformationsForAnchor(dataFrame);
+        Integer[][] discretizedData = discretizeData(new DataFrame(dataFrame.getColumns().toArray(new GenericColumn[0]),
+                anchorTransformedData));
 
         TabularInstance[] instances = convertToTabularInstances(tabular, dataFrame, transformedLabels,
                 discretizedLabels, discretizedData);
@@ -76,6 +89,14 @@ public class AnchorTabular {
         }
 
         return instances;
+    }
+
+    private static void removeIgnoredColumns(DataFrame dataFrame) {
+        List<String> columnsToDelete = dataFrame.getColumns().stream().filter(column1 -> !column1.isDoUse())
+                .map(GenericColumn::getName).collect(Collectors.toList());
+        for (String columnToDelete : columnsToDelete) {
+            dataFrame.removeColumn(columnToDelete);
+        }
     }
 
     private static TabularInstance[] convertToTabularInstances(AnchorTabular tabular, DataFrame dataFrame, Serializable[] transformedLabels, Integer[] discretizedLabels, Integer[][] discretizedData) {
@@ -101,24 +122,28 @@ public class AnchorTabular {
         Integer[][] discretizedData = new Integer[dataFrame.getNCols()][];
         for (int i = 0; i < dataFrame.getNCols(); i++) {
             GenericColumn column = dataFrame.getColumns().get(i);
-            // Discretize. If no discretizer is set, set a default one
-            if (column.getDiscretizer() == null) {
-                column.setDiscretizer(new UniqueValueDiscretizer());
-            }
-
-            column.getDiscretizer().fit(dataFrame.getColumn(column));
             discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());
         }
         return discretizedData;
     }
 
-    private static void applyTransformations(DataFrame dataFrame) {
+    private static void applyTransformationsOfData(DataFrame dataFrame) {
         // apply all transformations of every column
         for (GenericColumn column : dataFrame.getColumns()) {
-            for (Transformer transformer : column.getTransformations()) {
+            for (Transformer transformer : column.getDataTransformations()) {
                 dataFrame.transformColumn(column, transformer);
             }
         }
+    }
+
+    private static Serializable[][] applyTransformationsForAnchor(DataFrame dataFrame) {
+        // apply all transformations of every column
+        Serializable[][] anchorTransformedData = new Serializable[dataFrame.getNCols()][];
+        for (GenericColumn column : dataFrame.getColumns()) {
+            anchorTransformedData[dataFrame.getColumnIndex(column)] = column.transformForAnchor(dataFrame.getColumn(column));
+        }
+
+        return anchorTransformedData;
     }
 
     public TabularInstance[] getTabularInstances() {
@@ -133,12 +158,13 @@ public class AnchorTabular {
                                                      final GenericColumn targetColumn,
                                                      Collection<String[]> data) {
 
-        GenericColumn[] columns1 = columns.toArray(new GenericColumn[0]);
+        GenericColumn[] columnsArray = columns.toArray(new GenericColumn[0]);
         // Create the result explainer
         TabularInstanceVisualizer tabularInstanceVisualizer = new TabularInstanceVisualizer();
+        fitData(columnsArray, data);
 
         return new AnchorTabular(
-                columns1,
+                columnsArray,
                 targetColumn,
                 tabularInstanceVisualizer
         );
@@ -170,7 +196,7 @@ public class AnchorTabular {
     public TabularInstance[][] shuffleSplitInstances(double firstSplit, double secondSplit) {
         TabularInstance[][] firstShuffleSplitResult = ShuffleSplit.shuffleSplit(this.tabularInstances, firstSplit);
         TabularInstance[][] secondShuffleSplitResult = ShuffleSplit.shuffleSplit(firstShuffleSplitResult[1], secondSplit);
-        return new TabularInstance[][] { firstShuffleSplitResult[0], secondShuffleSplitResult[0], secondShuffleSplitResult[1] };
+        return new TabularInstance[][]{firstShuffleSplitResult[0], secondShuffleSplitResult[0], secondShuffleSplitResult[1]};
     }
 
     /**

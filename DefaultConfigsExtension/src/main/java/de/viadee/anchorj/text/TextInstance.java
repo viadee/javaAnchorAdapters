@@ -7,7 +7,6 @@ import de.viadee.anchorj.DataInstance;
 /**
  * An instance used to described a text piece (e.g. content)
  */
-@SuppressWarnings("WeakerAccess")
 public class TextInstance implements DataInstance<String[]> {
     private static final Function<String, String[]> DEFAULT_TOKENIZER = s -> s.split(" ");
 

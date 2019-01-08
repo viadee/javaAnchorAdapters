@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 /**
  * Transformer allowing to easily swap null and empty string values with a defined value
  */
-@SuppressWarnings("WeakerAccess")
 public class ReplaceNullTransformer implements Transformer {
     private static final long serialVersionUID = 6419476632394236169L;
 
@@ -35,6 +34,7 @@ public class ReplaceNullTransformer implements Transformer {
         return (object == null || "".equals(object)) ? valueSupplier.get() : object;
     }
 
+    @FunctionalInterface
     public interface SerializableSupplier extends Supplier<Serializable>, Serializable {
 
     }

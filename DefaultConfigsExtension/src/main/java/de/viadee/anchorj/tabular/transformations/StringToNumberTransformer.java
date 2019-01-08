@@ -6,7 +6,6 @@ import java.io.Serializable;
  * Used to convert object or string values to arbitrary numbers.
  * See e.g. {@link StringToIntTransformer} and {@link StringToDoubleTransformer} for specific implementations
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class StringToNumberTransformer {
 
     /**
