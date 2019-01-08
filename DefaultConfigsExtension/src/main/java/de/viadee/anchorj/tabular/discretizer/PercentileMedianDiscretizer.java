@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,6 +80,26 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     sublist.get(0).doubleValue(),
                     sublist.get(sublist.size() - 1).doubleValue()));
 
+        }
+
+        removeDuplicateDiscretizedValues();
+    }
+
+    private void removeDuplicateDiscretizedValues() {
+        List<Integer> discretizedValues = discretizerRelations.stream().map(DiscretizerRelation::getDiscretizedValue).collect(Collectors.toList());
+        if (discretizedValues.size() > new HashSet<>(discretizedValues).size()) {
+            Map<Integer, Long> valueCount = discretizerRelations.stream().map(DiscretizerRelation::getDiscretizedValue).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            for (Map.Entry<Integer, Long> entry : valueCount.entrySet()) {
+                if (entry.getValue() > 1) {
+                    List<DiscretizerRelation> discretizerRelationsWithSameCatValue = discretizerRelations.stream().filter((rel) -> rel.getDiscretizedValue() == entry.getKey()).collect(Collectors.toList());
+                    double conditionMin = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMin).min(Double::compareTo).get();
+                    double conditionMax = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMax).max(Double::compareTo).get();
+                    int discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
+                    discretizerRelations.removeAll(discretizerRelationsWithSameCatValue);
+                    discretizerRelations.add(new DiscretizerRelation(discretizedValue, conditionMin, conditionMax));
+
+                }
+            }
         }
     }
 
