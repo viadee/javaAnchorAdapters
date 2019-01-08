@@ -61,27 +61,6 @@ public class TabularInstanceVisualizer {
             default:
                 throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
         }
-
-//        final Map<Serializable, Integer> mapping = featureValueMapping.get(feature);
-//        final List<Serializable> belongingValues = new ArrayList<>();
-//
-//        for (final Map.Entry<Serializable, Integer> entry : mapping.entrySet()) {
-//            if (entry.getValue().equals(instance.getValue(feature))) {
-//                belongingValues.add(entry.getKey());
-//            }
-//        }
-//
-//        if (belongingValues.isEmpty())
-//            throw new IllegalArgumentException("Should not be empty");
-//        if (belongingValues.size() == 1)
-//            return "='" + belongingValues.get(0) + "'";
-//        if (belongingValues.stream().allMatch(o -> o instanceof Number)) {
-//            final List<Number> numberList = belongingValues.stream().map(o -> (Number) o)
-//                    .sorted(Comparator.comparingDouble(Number::doubleValue)).collect(Collectors.toList());
-//            // TODO test this behavior
-//            return " IN RANGE [" + numberList.get(0) + "," + numberList.get(numberList.size() - 1) + "]";
-//        }
-//        return " IN [" + belongingValues.stream().map(Serializable::toString).collect(Collectors.joining(",")) + "]";
     }
 
     /**
