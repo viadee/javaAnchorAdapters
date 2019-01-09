@@ -13,15 +13,18 @@ public class DiscretizerRelation implements Serializable {
         CATEGORICAL, METRIC, UNDEFINED
     }
 
-    private final FeatureType featureType;
+    private FeatureType featureType;
 
-    private final int discretizedValue;
+    private int discretizedValue;
 
-    private final Serializable categoricalValue;
+    private Serializable categoricalValue;
 
-    private final Double conditionMin;
+    private Double conditionMin;
 
-    private final Double conditionMax;
+    private Double conditionMax;
+
+    public DiscretizerRelation() {
+    }
 
     public DiscretizerRelation(int discretizedValue, Serializable categoricalValue) {
         this.featureType = FeatureType.CATEGORICAL;
@@ -37,6 +40,14 @@ public class DiscretizerRelation implements Serializable {
         this.conditionMin = conditionMin;
         this.conditionMax = conditionMax;
         this.categoricalValue = null;
+    }
+
+    public DiscretizerRelation(DiscretizerRelation copyRelation) {
+        this.featureType = copyRelation.featureType;
+        this.discretizedValue = copyRelation.discretizedValue;
+        this.categoricalValue = copyRelation.categoricalValue;
+        this.conditionMin = copyRelation.conditionMin;
+        this.conditionMax = copyRelation.conditionMax;
     }
 
     public FeatureType getFeatureType() {
@@ -57,6 +68,26 @@ public class DiscretizerRelation implements Serializable {
 
     public Double getConditionMax() {
         return conditionMax;
+    }
+
+    public void setFeatureType(FeatureType featureType) {
+        this.featureType = featureType;
+    }
+
+    public void setDiscretizedValue(int discretizedValue) {
+        this.discretizedValue = discretizedValue;
+    }
+
+    public void setCategoricalValue(Serializable categoricalValue) {
+        this.categoricalValue = categoricalValue;
+    }
+
+    public void setConditionMin(Double conditionMin) {
+        this.conditionMin = conditionMin;
+    }
+
+    public void setConditionMax(Double conditionMax) {
+        this.conditionMax = conditionMax;
     }
 
     @Override
