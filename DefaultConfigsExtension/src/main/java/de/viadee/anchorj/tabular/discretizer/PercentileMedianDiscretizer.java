@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -109,12 +110,31 @@ public class PercentileMedianDiscretizer implements Discretizer {
             removeDuplicateDiscretizedValues(values, numbers);
         }
 
-        distinctMinAndMaxValues();
+        distinctMinAndMaxValues(numbers);
     }
 
-    private void distinctMinAndMaxValues() {
+    private void distinctMinAndMaxValues(List<Number> numbers) {
+        boolean relationsWhereMinIsMaxOfOther = false;
         for (DiscretizerRelation relation : this.discretizerRelations) {
-            if ()
+            Optional<DiscretizerRelation> relationWhereMinIsMaxOfOther = this.discretizerRelations.stream()
+                    .filter(oRelation -> Objects.equals(relation.getConditionMax(), oRelation.getConditionMin()))
+                    .filter(oRelation -> relation != oRelation)
+                    .findFirst();
+
+            if (relationWhereMinIsMaxOfOther.isPresent()) {
+                relationsWhereMinIsMaxOfOther = true;
+                final DiscretizerRelation oRelation = relationWhereMinIsMaxOfOther.get();
+                Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
+                        .filter((number -> number > oRelation.getConditionMin())).min(Double::compareTo);
+                //noinspection OptionalIsPresent
+                if (newMin.isPresent()) {
+                    oRelation.setConditionMin(newMin.get());
+                }
+            }
+        }
+
+        if (relationsWhereMinIsMaxOfOther) {
+            distinctMinAndMaxValues(numbers);
         }
     }
 
@@ -130,25 +150,25 @@ public class PercentileMedianDiscretizer implements Discretizer {
             for (Map.Entry<Integer, Long> entry : valueCount.entrySet()) {
                 if (entry.getValue() > 1) {
                     List<DiscretizerRelation> discretizerRelationsWithSameCatValue = discretizerRelations.stream().filter((rel) -> rel.getDiscretizedValue() == entry.getKey()).collect(Collectors.toList());
-                    double conditionMin = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMin).min(Double::compareTo).get();
-                    double conditionMax = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMax).max(Double::compareTo).get();
-                    int discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
+                    Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMin).min(Double::compareTo);
+                    Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMax).max(Double::compareTo);
+                    //noinspection ConstantConditions
+                    if (conditionMaxOptional.isPresent() && conditionMinOptional.isPresent()) {
+                        double conditionMin = conditionMinOptional.get();
+                        double conditionMax = conditionMaxOptional.get();
 
-                    DiscretizerRelation combinedRelation = new DiscretizerRelation(discretizedValue, conditionMin, conditionMax);
-                    this.discretizerRelations.removeAll(discretizerRelationsWithSameCatValue);
-                    this.discretizerRelations.add(combinedRelation);
-                    this.discretizerRelations.sort(Comparator.comparingDouble(DiscretizerRelation::getDiscretizedValue));
-                    while (countRelationsWithoutSingleClassRelations() == 1 && this.classCount < numbers.size()) {
-                        this.discretizerRelations.clear();
-                        this.classCount++;
-                        this.fit(values);
-//                        double newMin = numbers.stream().map(Number::doubleValue).filter((number -> Objects.equals(number, combinedRelation.getConditionMin()))).min(Double::compare).get();
-//                        combinedRelation.setConditionMax(combinedRelation.getConditionMin());
-//                        DiscretizerRelation secondRelation = new DiscretizerRelation(combinedRelation);
-//                        secondRelation.setConditionMin(newMin);
-//                        this.discretizerRelations.add(secondRelation);
+                        int discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
+
+                        DiscretizerRelation combinedRelation = new DiscretizerRelation(discretizedValue, conditionMin, conditionMax);
+                        this.discretizerRelations.removeAll(discretizerRelationsWithSameCatValue);
+                        this.discretizerRelations.add(combinedRelation);
+                        this.discretizerRelations.sort(Comparator.comparingDouble(DiscretizerRelation::getDiscretizedValue));
+                        while (countRelationsWithoutSingleClassRelations() == 1 && this.classCount < numbers.size()) {
+                            this.discretizerRelations.clear();
+                            this.classCount++;
+                            this.fit(values);
+                        }
                     }
-
                 }
             }
         }
