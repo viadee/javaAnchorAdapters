@@ -11,7 +11,6 @@ import org.apache.commons.math3.stat.descriptive.rank.Percentile;
  * <p>
  * Creates new groups ranging from 0..percentileCount
  */
-@SuppressWarnings("unused")
 public class NominalPercentileDiscretizer implements Discretizer {
     private static final long serialVersionUID = 6338528106659032376L;
 
@@ -51,7 +50,7 @@ public class NominalPercentileDiscretizer implements Discretizer {
     }
 
     @Override
-    public DiscretizerRelation unFit(int value) {
+    public DiscretizerRelation unApply(int value) {
         // TODO implement
         throw new IllegalStateException("Method not implemented");
     }

@@ -23,13 +23,9 @@ public class MapBasedTransformer implements Transformer {
     }
 
     @Override
-    public Serializable[] apply(Serializable[] objects) {
-        Serializable[] result = new Serializable[objects.length];
-        for (int i = 0; i < result.length; i++) {
-            Serializable transformValue = transformationMap.get(objects[i]);
-            // Only apply transform if it is possible
-            result[i] = (transformValue == null) ? objects[i] : transformValue;
-        }
-        return result;
+    public Serializable apply(Serializable object) {
+        Serializable transformValue = transformationMap.get(object);
+        // Only apply transform if it is possible
+        return (transformValue == null) ? object : transformValue;
     }
 }

@@ -24,7 +24,7 @@ public class UniqueValueDiscretizer implements Discretizer {
     }
 
     @Override
-    public DiscretizerRelation unFit(int value) {
+    public DiscretizerRelation unApply(int value) {
         Map.Entry<Serializable, Integer> disc = valueToIndexDiscretizer.entrySet().stream().filter((entry) -> entry.getValue().equals(value))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("No value for discrete " + value + " found"));
 

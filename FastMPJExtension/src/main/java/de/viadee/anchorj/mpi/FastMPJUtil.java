@@ -5,7 +5,7 @@ import mpi.MPI;
 /**
  * Utility class providing some commonly used MPI procedures
  */
-public final class FastMPJUtil {
+public enum FastMPJUtil {;
 
     /**
      * Sends (non-blocking) a boolean to the root

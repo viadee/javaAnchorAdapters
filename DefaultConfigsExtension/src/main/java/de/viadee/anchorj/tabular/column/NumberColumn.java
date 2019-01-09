@@ -12,8 +12,7 @@ import de.viadee.anchorj.tabular.transformations.Transformer;
  * <p>
  * May e.g. be used when column is read from a CSV file and is represented by number values
  */
-@SuppressWarnings("unused")
-abstract class NumberColumn extends GenericColumn {
+public abstract class NumberColumn extends GenericColumn {
     private static final long serialVersionUID = -7652878190807257422L;
 
     /**
@@ -21,19 +20,20 @@ abstract class NumberColumn extends GenericColumn {
      *
      * @param name the column's name
      */
-    NumberColumn(String name) {
-        this(name, null, null);
+    public NumberColumn(String name) {
+        this(name, null, null, null);
     }
 
     /**
      * Instantiates the column
      *
      * @param name         the column's name
-     * @param transformers the object value to replace null values with. Must be convertable to Integer values
+     * @param dataTransformers the object value to replace null values with. Must be convertible to Integer values
+     * @param anchorTransformers the transformations to apply before discretization for anchor
      * @param discretizer  the discretizer to use
      */
-    NumberColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, transformers, discretizer);
+    public NumberColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
+        super(name, dataTransformers, anchorTransformers, discretizer);
     }
 
     /**
@@ -48,8 +48,7 @@ abstract class NumberColumn extends GenericColumn {
         );
     }
 
-
-    static final class ThrowExceptionOnNull implements ReplaceNullTransformer.SerializableSupplier {
+    private static final class ThrowExceptionOnNull implements ReplaceNullTransformer.SerializableSupplier {
         private static final long serialVersionUID = -1290766005381209256L;
 
         @Override

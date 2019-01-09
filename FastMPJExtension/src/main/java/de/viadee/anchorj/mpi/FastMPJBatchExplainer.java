@@ -28,6 +28,8 @@ import java.util.List;
  * @param <T> Type of the {@link DataInstance}
  */
 public class FastMPJBatchExplainer<T extends DataInstance<?>> extends FastMPJBaseClass implements BatchExplainer<T> {
+    private static final long serialVersionUID = -8317831577640300990L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(FastMPJBatchExplainer.class);
     private static final int READY_TAG = 0;
     private static final int SEND_ELEMENT_TAG = 1;

@@ -1,17 +1,16 @@
 package de.viadee.anchorj;
 
-import de.viadee.anchorj.ClassificationFunction;
-import de.viadee.anchorj.DataInstance;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 // TODO make public & implement
-class KerasImportedClassifier<T extends DataInstance<?>> implements ClassificationFunction<T> {
+public class KerasImportedClassifier<T extends DataInstance<?>> implements ClassificationFunction<T> {
+    private static final long serialVersionUID = -2516330397459812978L;
 
     public KerasImportedClassifier(final InputStream modelInputStream) throws InvalidKerasConfigurationException,
             IOException, UnsupportedKerasConfigurationException {

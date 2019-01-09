@@ -6,6 +6,8 @@ import smile.classification.RandomForest;
  * Implementation of a random forest classifier
  */
 public class RandomForestClassifier extends AbstractTextEnabledNumericClassifier {
+    private static final long serialVersionUID = 5692525222756278360L;
+
     private final int nTrees;
     private RandomForest randomForest;
 

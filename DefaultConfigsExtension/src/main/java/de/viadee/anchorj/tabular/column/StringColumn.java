@@ -17,7 +17,6 @@ import java.util.Map;
  * <p>
  * May e.g. be used when column is read from a CSV file and is represented by integer values
  */
-@SuppressWarnings({ "unused", "WeakerAccess" })
 public class StringColumn extends NumberColumn {
     private static final long serialVersionUID = -7678371903173096032L;
 
@@ -27,7 +26,7 @@ public class StringColumn extends NumberColumn {
      * @param name the column's name
      */
     public StringColumn(String name) {
-        this(name, null, (Discretizer) null);
+        this(name, null, null, null);
     }
 
     /**
@@ -37,7 +36,7 @@ public class StringColumn extends NumberColumn {
      * @param replaceNullValue the value to replace null values with
      */
     public StringColumn(String name, String replaceNullValue) {
-        this(name, Collections.singletonList(new ReplaceNullTransformer(replaceNullValue)), null);
+        this(name, Collections.singletonList(new ReplaceNullTransformer(replaceNullValue)), null, null);
     }
 
     /**
@@ -48,7 +47,7 @@ public class StringColumn extends NumberColumn {
      *                          {@link de.viadee.anchorj.tabular.transformations.MapBasedTransformer}
      */
     public StringColumn(String name, Map<Serializable, Serializable> mapTransformation) {
-        this(name, Collections.singletonList(new MapBasedTransformer(mapTransformation)), null);
+        this(name, Collections.singletonList(new MapBasedTransformer(mapTransformation)), null, null);
     }
 
     /**
@@ -63,6 +62,7 @@ public class StringColumn extends NumberColumn {
         this(name, Arrays.asList(
                 new ReplaceNullTransformer(replaceNullValue),
                 new MapBasedTransformer(mapTransformation)),
+                null,
                 null);
     }
 
@@ -70,20 +70,22 @@ public class StringColumn extends NumberColumn {
      * Instantiates the column
      *
      * @param name        the column's name
-     * @param transformer the transformation to apply
+     * @param dataTransformer the transformation to apply
+     * @param anchorTransformers the transformations to apply before discretization for anchor
      */
-    public StringColumn(String name, Transformer transformer) {
-        this(name, Collections.singletonList(transformer), null);
+    public StringColumn(String name, Transformer dataTransformer, List<Transformer> anchorTransformers) {
+        this(name, Collections.singletonList(dataTransformer), anchorTransformers, null);
     }
 
     /**
      * Instantiates the column
      *
      * @param name         the column's name
-     * @param transformers the transformations to apply
+     * @param dataTransformers the transformations to apply
+     * @param anchorTransformers the transformations to apply before discretization for anchor
      * @param discretizer  the discretizer to use
      */
-    public StringColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
-        super(name, transformers, (discretizer != null) ? discretizer : new UniqueValueDiscretizer());
+    public StringColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
+        super(name, dataTransformers, anchorTransformers, (discretizer != null) ? discretizer : new UniqueValueDiscretizer());
     }
 }

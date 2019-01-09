@@ -13,6 +13,8 @@ import java.util.stream.IntStream;
  * Saves the labels each pixel is assigned to, thus saving superpixels, enabling image perturbation.
  */
 public class ImageInstance implements DataInstance<ImageRepresentation> {
+    private static final long serialVersionUID = -2638247686327272157L;
+
     private final ImageRepresentation originalImage;
     private final int[] labels;
     private final int featureCount;

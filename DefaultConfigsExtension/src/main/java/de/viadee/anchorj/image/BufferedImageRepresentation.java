@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
  * Implements the {@link ImageRepresentation} for using {@link BufferedImage}s.
  */
 public class BufferedImageRepresentation extends BufferedImage implements ImageRepresentation {
+    private static final long serialVersionUID = 8664391189315005041L;
 
     /**
      * Only to be used for serialization purposes

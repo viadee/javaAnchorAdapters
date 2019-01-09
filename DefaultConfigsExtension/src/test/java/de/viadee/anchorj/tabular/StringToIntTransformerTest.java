@@ -1,7 +1,8 @@
 package de.viadee.anchorj.tabular;
 
+import java.io.Serializable;
+
 import org.junit.jupiter.api.Test;
-import de.viadee.anchorj.tabular.transformations.StringToDoubleTransformer;
 import de.viadee.anchorj.tabular.transformations.StringToIntTransformer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,7 @@ class StringToIntTransformerTest {
             valuesAsStrings[i] = expectedValues[i].toString();
         }
 
-        Integer[] transformations = new StringToIntTransformer().apply(valuesAsStrings);
+        Serializable[] transformations = new StringToIntTransformer().apply(valuesAsStrings);
 
         for (int i = 0; i < valuesAsStrings.length; i++) {
             assertEquals(expectedValues[i], transformations[i], "of " + i + "th element");

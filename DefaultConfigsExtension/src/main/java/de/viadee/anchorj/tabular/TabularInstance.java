@@ -11,7 +11,6 @@ import de.viadee.anchorj.tabular.column.GenericColumn;
  * <p>
  * Holds both discretized and non-discretized values
  */
-@SuppressWarnings({ "WeakerAccess", "unused" })
 public class TabularInstance implements DataInstance<Serializable[]> {
     private static final long serialVersionUID = -2986158305227955506L;
 
@@ -85,6 +84,10 @@ public class TabularInstance implements DataInstance<Serializable[]> {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
+        return getTransformedValue(this.getFeatureIndex(featureName));
+    }
+
+    private int getFeatureIndex(String featureName) {
         int featureIndex = -1;
         for (int i = 0; i < features.length; i++) {
             if (features[i].getName().equals(featureName)) {
@@ -92,7 +95,8 @@ public class TabularInstance implements DataInstance<Serializable[]> {
                 break;
             }
         }
-        return getTransformedValue(featureIndex);
+
+        return featureIndex;
     }
 
     /**
@@ -125,14 +129,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
-        int featureIndex = -1;
-        for (int i = 0; i < features.length; i++) {
-            if (features[i].getName().equals(featureName)) {
-                featureIndex = i;
-                break;
-            }
-        }
-        return getValue(featureIndex);
+        return getValue(this.getFeatureIndex(featureName));
     }
 
     public Integer getValue(int index) {

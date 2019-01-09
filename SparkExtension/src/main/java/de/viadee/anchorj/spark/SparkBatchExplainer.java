@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
  * @param <T> Type of the instance
  */
 public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExplainer<T> {
+    private static final long serialVersionUID = 7167566798608926736L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AnchorConstruction.class);
-    private JavaSparkContext sc;
+    private final JavaSparkContext sc;
 
     /**
      * Instantiates the batch explainer
@@ -125,6 +127,5 @@ public class SparkBatchExplainer<T extends DataInstance<?>> implements BatchExpl
                 .toArray((AnchorResult<T>[]) new AnchorResult[0]);
         return anchorResults;
     }
-
 
 }

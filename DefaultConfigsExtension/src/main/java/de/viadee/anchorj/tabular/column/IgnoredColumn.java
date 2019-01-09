@@ -4,6 +4,14 @@ package de.viadee.anchorj.tabular.column;
  * A column to be ignored
  */
 public class IgnoredColumn extends GenericColumn {
+    private static final long serialVersionUID = 83367999246693636L;
+
+    /**
+     * Instantiates the column
+     */
+    public IgnoredColumn() {
+        this(null);
+    }
 
     /**
      * Instantiates the column
@@ -11,14 +19,7 @@ public class IgnoredColumn extends GenericColumn {
      * @param name a name for reasons of clarity and comprehensibility
      */
     public IgnoredColumn(String name) {
-        super(name, null, null);
-    }
-
-    /**
-     * Instantiates the column
-     */
-    public IgnoredColumn() {
-        super(null, null, null);
+        super(name, null, null, null);
     }
 
     @Override

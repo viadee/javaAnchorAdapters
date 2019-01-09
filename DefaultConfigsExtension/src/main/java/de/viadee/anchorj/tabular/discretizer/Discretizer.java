@@ -5,12 +5,19 @@ import java.util.function.Function;
 
 /**
  * Represents functionality every column needs to provide: discretization.
- *
+ * <p>
  * Discretization is used by Anchors tabular to perturb instances and find similar neighbours.
- *
  */
-@SuppressWarnings("unused")
 public interface Discretizer extends Function<Serializable, Integer>, Serializable {
+
+    default Integer[] apply(Serializable[] data) {
+        Integer[] discretizedData = new Integer[data.length];
+        for (int i = 0; i < data.length; i++) {
+            discretizedData[i] = this.apply(data[i]);
+        }
+
+        return discretizedData;
+    }
 
     /**
      * Fits the discretizer and passes all values that it might get asked to discretize
@@ -19,5 +26,5 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      */
     void fit(Serializable[] values);
 
-    DiscretizerRelation unFit(int value);
+    DiscretizerRelation unApply(int value);
 }

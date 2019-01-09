@@ -17,6 +17,8 @@ import java.util.stream.Stream;
  * As proposed by Ribeiro, instead of hiding superpixels, these may be superimposed by other images.
  */
 public class ImagePerturbationFunction implements ReconfigurablePerturbationFunction<ImageInstance> {
+    private static final long serialVersionUID = 5059286092582735341L;
+
     private final ImageInstance imageInstance;
     private final List<ImageRepresentation> backgroundImageInstances;
     private final double superpixelChangeChance;

@@ -6,7 +6,6 @@ import java.util.Objects;
 /**
  *
  */
-@SuppressWarnings({ "WeakerAccess", "unused" })
 public class DiscretizerRelation implements Serializable {
     private static final long serialVersionUID = -9212337107168284022L;
 

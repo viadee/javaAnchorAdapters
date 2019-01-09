@@ -5,31 +5,18 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import de.viadee.anchorj.AnchorCandidate;
 import de.viadee.anchorj.AnchorResult;
 import de.viadee.anchorj.tabular.column.GenericColumn;
+import de.viadee.anchorj.tabular.discretizer.DiscretizerRelation;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
  */
-@SuppressWarnings({ "unused", "WeakerAccess" })
 public class TabularInstanceVisualizer {
-    private final Map<GenericColumn, Map<Serializable, Integer>> featureValueMapping;
-
-    /**
-     * Constructs the instance.
-     *
-     * @param mappings the mappings used for transforming values
-     */
-    public TabularInstanceVisualizer(Map<GenericColumn, Map<Serializable, Integer>> mappings) {
-        this.featureValueMapping = mappings;
-    }
 
     private static AnchorCandidate getCandidateForFeatureNr(AnchorResult<?> result, Integer featureNr) {
         AnchorCandidate current = result;
@@ -52,7 +39,6 @@ public class TabularInstanceVisualizer {
         for (int i = 0; i < instance.getFeatures().length; i++) {
             final GenericColumn column = instance.getFeatures()[i];
             final Serializable transformedValue = instance.getTransformedValue(column);
-            final Integer discretizedValue = instance.getValue(column);
 
             result.add(column.getName() + "='" + transformedValue.toString() + "'");
         }
@@ -64,26 +50,17 @@ public class TabularInstanceVisualizer {
     }
 
     private String describeValue(TabularInstance instance, GenericColumn feature) {
-        final Map<Serializable, Integer> mapping = featureValueMapping.get(feature);
-        final List<Serializable> belongingValues = new ArrayList<>();
-
-        for (final Map.Entry<Serializable, Integer> entry : mapping.entrySet()) {
-            if (entry.getValue().equals(instance.getValue(feature))) {
-                belongingValues.add(entry.getKey());
-            }
+        // TODO test change
+        DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
+        switch (relation.getFeatureType()) {
+            case METRIC:
+                return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
+            case CATEGORICAL:
+                return " = '" + relation.getCategoricalValue() + "'";
+            case UNDEFINED:
+            default:
+                throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
         }
-
-        if (belongingValues.isEmpty())
-            throw new IllegalArgumentException("Should not be empty");
-        if (belongingValues.size() == 1)
-            return "='" + belongingValues.get(0) + "'";
-        if (belongingValues.stream().allMatch(o -> o instanceof Number)) {
-            final List<Number> numberList = belongingValues.stream().map(o -> (Number) o)
-                    .sorted(Comparator.comparingDouble(Number::doubleValue)).collect(Collectors.toList());
-            // TODO test this behavior
-            return " IN RANGE [" + numberList.get(0) + "," + numberList.get(numberList.size() - 1) + "]";
-        }
-        return " IN [" + belongingValues.stream().map(Serializable::toString).collect(Collectors.joining(",")) + "]";
     }
 
     /**

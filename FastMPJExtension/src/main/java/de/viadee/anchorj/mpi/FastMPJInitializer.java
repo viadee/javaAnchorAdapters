@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Used to initialize and finalize the FastMPJ framework.
  */
-public final class FastMPJInitializer {
+public enum FastMPJInitializer {;
     private static final Logger LOGGER = LoggerFactory.getLogger(FastMPJInitializer.class);
 
     /**

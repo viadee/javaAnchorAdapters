@@ -7,11 +7,7 @@ import java.util.stream.Stream;
 /**
  * Provides some basic functions to handle arrays.
  */
-@SuppressWarnings({ "unused", "WeakerAccess" })
-public final class ArrayUtils {
-
-    private ArrayUtils() {
-    }
+public enum ArrayUtils {;
 
     /**
      * Appends a column to an existing table
@@ -39,22 +35,6 @@ public final class ArrayUtils {
      * @return the column extracted
      */
     public static Serializable[] extractColumn(Serializable[][] values, int column) {
-        Serializable[] result = new Serializable[values.length];
-        for (int i = 0; i < values.length; i++) {
-            result[i] = values[i][column];
-        }
-        return result;
-    }
-
-
-    /**
-     * Reads all values from a specific table column
-     *
-     * @param values the table
-     * @param column index of the column to be read
-     * @return the column extracted
-     */
-    public static Serializable[] extractObjectColumn(Serializable[][] values, int column) {
         Serializable[] result = new Serializable[values.length];
         for (int i = 0; i < values.length; i++) {
             result[i] = values[i][column];
@@ -138,19 +118,20 @@ public final class ArrayUtils {
         return result;
     }
 
-    public static Serializable[] transformToIntArray(Serializable[] value) {
-        Serializable[] intRow = new Integer[value.length];
+    public static Integer[] transformToIntArray(Serializable[] value) {
+        Integer[] intRow = new Integer[value.length];
         for (int j = 0; j < value.length; j++) {
             Serializable cell = value[j];
-            if (cell instanceof Integer)
-                intRow[j] = cell;
+            if (cell == null) {
+                intRow[j] = null;
+            } else if (cell instanceof Integer)
+                intRow[j] = (Integer) cell;
             else {
+                //noinspection CaughtExceptionImmediatelyRethrown
                 try {
                     intRow[j] = Integer.valueOf((String) cell);
                 } catch (Exception e) {
-                    // Just store the string
-                    //noinspection ConstantConditions
-                    intRow[j] = cell;
+                    throw e;
                 }
             }
         }
