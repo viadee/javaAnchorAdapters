@@ -1,12 +1,12 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Build Status](https://travis-ci.org/viadee/javaAnchorAdapters.svg?branch=master)](https://travis-ci.org/viadee/javaAnchorAdapters)
-[![Sonarcloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=de.viadee:anchorjExtensions&metric=coverage)](https://de.viadee:anchorjExtensions&metric=coverage) 
+[![Sonarcloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=de.viadee.xai.anchor:anchorjAdapters&metric=coverage)](https://de.viadee.xai.anchor:anchorjAdapters&metric=coverage) 
 
 # JavaAnchorAdapters
 
 > *Adapter* [/əˈdaptə/] noun, a device for connecting pieces of equipment that cannot be connected directly.
 
-This is a collection of tools that serve to make the [Java implementation of the Anchors algorithm](https://github.com/viadee/javaAnchorServer) more easy to use. The algorithm (as introduced Marco Tulio Ribeiro, 2018) is model-agnostic, but the nature of the dataset needs to be considered. 
+This is a collection of tools that serve to make the [Java implementation of the Anchors algorithm](https://github.com/viadee/javaAnchorExplainer) more easy to use. The algorithm (as introduced Marco Tulio Ribeiro, 2018) is model-agnostic, but the nature of the dataset needs to be considered. 
 
 This repository includes *methodological* aspects, i.e. default approaches on how to apply the algorithm to tabular data in typical use cases with tabular data (such as [bpmn.ai](https://github.com/viadee/bpmn.ai)), images or texts as well as *technical* aspects, such as running Anchors explanations on Apache Spark.
 
@@ -34,21 +34,21 @@ Using Apache Maven, the required anchorj dependencies are easily referenced and 
 
     <!-- AnchorJ -->
     <dependency>
-         <groupId>de.viadee</groupId>
-         <artifactId>anchorj</artifactId>
+         <groupId>de.viadee.xai.anchor</groupId>
+         <artifactId>algorithm</artifactId>
          <version>1.0-SNAPSHOT</version>
     </dependency>
     
     <!-- AnchorJ Default Solutions Extension containing AnchorTabular -->
     <dependency>
-        <groupId>de.viadee</groupId>
-        <artifactId>DefaultConfigsExtension</artifactId>
+        <groupId>de.viadee.xai.anchor</groupId>
+        <artifactId>DefaultConfigsAdapter</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     
     <!-- AnchorJ Default Machine Learning Models -->
     <dependency>
-        <groupId>de.viadee</groupId>
+        <groupId>de.viadee.xai.anchor</groupId>
         <artifactId>DefaultMLMethods</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
