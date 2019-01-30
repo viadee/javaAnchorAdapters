@@ -7,14 +7,13 @@
 
 	<!-- Parent Project -->
 	<parent>
-		<groupId>de.viadee</groupId>
-		<artifactId>anchorjExtensions</artifactId>
+		<groupId>de.viadee.xai.anchor</groupId>
+		<artifactId>anchorjAdapters</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
     <artifactId>DefaultMLMethods</artifactId>
     <description>This extension provides default Machine Learning methods support</description>
-    <packaging>jar</packaging>
 
     <properties>
         <dl4j.version>1.0.0-beta2</dl4j.version>
@@ -24,8 +23,8 @@
     <dependencies>
         <!-- DefaultConfigsExtension -->
         <dependency>
-            <groupId>de.viadee</groupId>
-            <artifactId>DefaultConfigsExtension</artifactId>
+            <groupId>de.viadee.xai.anchor</groupId>
+            <artifactId>DefaultConfigsAdapter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

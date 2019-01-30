@@ -7,20 +7,19 @@
 	
 	<!-- Parent Project -->
 	<parent>
-		<groupId>de.viadee</groupId>
-		<artifactId>anchorjExtensions</artifactId>
+		<groupId>de.viadee.xai.anchor</groupId>
+		<artifactId>anchorjAdapters</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-    <artifactId>ModelImportExtension</artifactId>
+    <artifactId>ModelImportAdapter</artifactId>
     <description>This extension provides model import support from various sources</description>
-    <packaging>jar</packaging>
 
     <dependencies>
         <!-- DefaultConfigsExtension -->
         <dependency>
-            <groupId>de.viadee</groupId>
-            <artifactId>DefaultConfigsExtension</artifactId>
+            <groupId>de.viadee.xai.anchor</groupId>
+            <artifactId>DefaultConfigsAdapter</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
