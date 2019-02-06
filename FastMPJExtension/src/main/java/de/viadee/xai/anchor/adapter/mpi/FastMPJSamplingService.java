@@ -31,7 +31,7 @@ import mpi.MPI;
  * fmpjrun -np 1 -cp "&lt;absolute_path&gt;\classpath1859923920.jar"
  * -class de.viadee.anchorj.showcase.experiments.FastMPJExperiment</li>
  * </ol>
- *
+ * <p>
  * TODO publish experiments
  *
  * @param <T> Type of the {@link DataInstance}
@@ -95,7 +95,7 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
             AnchorCandidate candidate = new AnchorCandidate(featuresCollection);
             samplingFunction.evaluate(candidate, sampleCount, label);
 
-            MPI.COMM_WORLD.Send(new int[]{candidate.getSampledSize(), candidate.getPositiveSamples()}, 0, 2, MPI.INT, 0, RESPOND_TAG);
+            MPI.COMM_WORLD.Send(new int[] { candidate.getSampledSize(), candidate.getPositiveSamples() }, 0, 2, MPI.INT, 0, RESPOND_TAG);
 
             LOGGER.debug("Worker {} finished one cycle", me);
         }
@@ -153,7 +153,7 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
                             featuresAndCount[featuresAndCount.length - 1] = sampleCount;
                             totalSampleCount += sampleCount;
 
-                            MPI.COMM_WORLD.Isend(new int[]{featuresAndCount.length, explainedInstanceLabel}, 0, 2, MPI.INT, i, MESSAGE_SIZE_TAG);
+                            MPI.COMM_WORLD.Isend(new int[] { featuresAndCount.length, explainedInstanceLabel }, 0, 2, MPI.INT, i, MESSAGE_SIZE_TAG);
                             MPI.COMM_WORLD.Isend(featuresAndCount, 0, featuresAndCount.length, MPI.INT, i, COMMAND_SEND_TAG);
                             LOGGER.debug("Successfully sent features to sample {} to worker {}", featuresAndCount, i);
                         }
@@ -169,6 +169,12 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
                 }
             }
         };
+    }
+
+    @Override
+    public void endSampling() {
+        // TODO should call finalize environment?
+//        FastMPJInitializer.finalizeEnvironment();
     }
 
     @Override
