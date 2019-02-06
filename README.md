@@ -52,6 +52,48 @@ Using Apache Maven, the required anchorj dependencies are easily referenced and 
         <artifactId>DefaultMLMethods</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+    
+    <!-- Loading data from CSV -->
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>1.6</version>
+    </dependency>
+
+    <!-- Logging --> 
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.8.1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>2.8.1</version>
+    </dependency>
+
+## 1.5 Optional: Logging settings
+
+If you want to see the logging output create a file named 'log4j.xml' in the resources folder
+and add the following lines:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration monitorinterval="30" status="info" strict="true">
+        <Properties>
+            <property name="pattern">%-5p [%d{yyyy-MM-dd HH:mm:ss.SSS}][%t][%c] %m%n</property>
+        </Properties>
+        <Appenders>
+            <Console name="stdout" target="SYSTEM_OUT">
+                <Layout type="PatternLayout" pattern="${pattern}"/>
+            </Console>
+        </Appenders>
+    
+        <Loggers>
+            <Root level="debug">
+                <AppenderRef ref="stdout" level="info"/>
+            </Root>
+        </Loggers>
+    </Configuration>
 
 ## 2. Loading and Describing the Dataset
 
@@ -131,7 +173,9 @@ In order to make the explanation human readable, the <code>TabularInstanceVisual
 The main project contains various algorithms that are able to aggregate multiple single explanations. 
 Thereof, <code>CoveragePick</code> is expected to work best. It can be used as follows:
 
-    List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(defaultBuilder, 10)
+    List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(defaultBuilder, 10,
+                                                                                Executors.newCachedThreadPool(),
+                                                                                null)
                     .run(anchorTabular.shuffleSplitInstances(1, 0)[0], 20);          
 
 Similarly, its results may be visualized
@@ -214,7 +258,7 @@ utilize different forms of parallelization:
 Enabling threading is easily achieved by configuring the 
 <code>AnchorConstructionBuilder</code>:
 
-    defaultBuilder.enableThreading(10 /*ThreadCount*/, true /*Balancing*/);
+    defaultBuilder.enableThreading(10 /*ThreadCount*/, Executors.newFixedThreadPool(10), null);
     
 This leads to single explanations being explained significantly fast (depending on your machine's performance and the 
 model's latency).
