@@ -53,7 +53,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
             singleClassValues = new Number[0];
         }
         discretizerRelations = new ArrayList<>(this.classCount + singleClassValues.length);
-        if (singleClassValues.length == 0) {
+        if (singleClassValues.length == 0 || singleClassValues[0] == null) {
             this.singleClassValues = Collections.emptyList();
             this.singleClassValueRelations = Collections.emptyList();
         } else {
