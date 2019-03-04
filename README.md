@@ -74,7 +74,7 @@ Using Apache Maven, the required anchorj dependencies are easily referenced and 
 
 ## 1.5 Optional: Logging settings
 
-If you want to see the logging output create a file named 'log4j.xml' in the resources folder
+If you want to see the logging output create a file named 'log4j2.xml' in the resources folder
 and add the following lines:
 
     <?xml version="1.0" encoding="UTF-8"?>
