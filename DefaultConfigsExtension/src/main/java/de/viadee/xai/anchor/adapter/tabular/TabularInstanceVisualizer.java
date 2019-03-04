@@ -1,5 +1,10 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
+import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizerRelation;
+import de.viadee.xai.anchor.algorithm.AnchorCandidate;
+import de.viadee.xai.anchor.algorithm.AnchorResult;
+
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -7,11 +12,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizerRelation;
-import de.viadee.xai.anchor.algorithm.AnchorCandidate;
-import de.viadee.xai.anchor.algorithm.AnchorResult;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
@@ -104,6 +104,7 @@ public class TabularInstanceVisualizer {
             current[0] = "===Global Result #" + (i + 1) + "===";
             current[1] = visualizeResult(anchorResults.get(i));
             current[2] = "HAVING EXCLUSIVE COVERAGE OF ";
+            // TODO value missing. What is this about any way?
             result.add(String.join(System.lineSeparator(), current));
         }
         return String.join(System.lineSeparator(), result);
