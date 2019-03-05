@@ -14,6 +14,8 @@ This project is to be considered research-in-progress.
 
 # Main Repository
 
+For more information on Anchors and this implementation, see [main repository](https://github.com/viadee/javaAnchorExplainer).
+
 
 
 # Exemplary Use / Tutorial
