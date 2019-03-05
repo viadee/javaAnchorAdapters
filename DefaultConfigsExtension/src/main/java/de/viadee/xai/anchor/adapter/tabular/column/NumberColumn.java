@@ -43,7 +43,7 @@ public abstract class NumberColumn extends GenericColumn {
      * @param replaceNull the value to replace null with or null to create an exception in case of null
      * @return a matching {@link ReplaceEmptyTransformer}
      */
-    static ReplaceEmptyTransformer createNullTransformer(final Serializable replaceNull) {
+    static ReplaceEmptyTransformer createEmptyTransformator(final Serializable replaceNull) {
         return new ReplaceEmptyTransformer(
                 (replaceNull == null) ? new ThrowExceptionOnNull() : replaceNull
         );

@@ -1,13 +1,14 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
-import java.util.Arrays;
-import java.util.List;
-
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.PercentileMedianDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.StringToIntTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Column used for transforming String inputs into integer values.
@@ -29,10 +30,10 @@ public class IntegerColumn extends NumberColumn {
     /**
      * Instantiates the column
      *
-     * @param name         the column's name
-     * @param dataTransformers the object value to replace null values with. Must be convertible to Integer values
+     * @param name               the column's name
+     * @param dataTransformers   the object value to replace null values with. Must be convertible to Integer values
      * @param anchorTransformers the transformations to apply before discretization for anchor
-     * @param discretizer  the discretizer to use
+     * @param discretizer        the discretizer to use
      */
     public IntegerColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
         super(name, dataTransformers, anchorTransformers, discretizer);
@@ -45,7 +46,7 @@ public class IntegerColumn extends NumberColumn {
      * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name) {
-        return fromStringInput(name, null, null);
+        return fromStringInput(name, null, null, null);
     }
 
     /**
@@ -56,7 +57,7 @@ public class IntegerColumn extends NumberColumn {
      * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Discretizer discretizer) {
-        return fromStringInput(name, null, discretizer);
+        return fromStringInput(name, null, null, discretizer);
     }
 
     /**
@@ -78,9 +79,16 @@ public class IntegerColumn extends NumberColumn {
      * @param discretizer the discretizer to use
      * @return the corresponding column object
      */
-    public static IntegerColumn fromStringInput(String name, Integer replaceNull, Discretizer discretizer) {
-        return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
-                null, (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
+    public static IntegerColumn fromStringInput(String name, Integer replaceNull, List<Transformer> transformers,
+                                                Discretizer discretizer) {
+        final List<Transformer> allTransformers = new ArrayList<>();
+        allTransformers.add(createEmptyTransformator(replaceNull));
+        if (transformers != null)
+            allTransformers.addAll(transformers);
+        allTransformers.add(new StringToIntTransformer());
+
+        return new IntegerColumn(name, allTransformers, null,
+                (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
 
     /**
@@ -92,7 +100,7 @@ public class IntegerColumn extends NumberColumn {
      * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Integer replaceNull, int classCount) {
-        return new IntegerColumn(name, Arrays.asList(createNullTransformer(replaceNull), new StringToIntTransformer()),
+        return new IntegerColumn(name, Arrays.asList(createEmptyTransformator(replaceNull), new StringToIntTransformer()),
                 null,
                 (classCount == 0) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount, replaceNull));
     }
