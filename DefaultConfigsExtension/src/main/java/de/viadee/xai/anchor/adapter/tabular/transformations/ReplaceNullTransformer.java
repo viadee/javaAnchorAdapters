@@ -1,7 +1,8 @@
 package de.viadee.xai.anchor.adapter.tabular.transformations;
 
+import de.viadee.xai.anchor.adapter.tabular.util.SerializableSupplier;
+
 import java.io.Serializable;
-import java.util.function.Supplier;
 
 /**
  * Transformer allowing to easily swap null and empty string values with a defined value
@@ -33,10 +34,4 @@ public class ReplaceNullTransformer implements Transformer {
     public Serializable apply(Serializable object) {
         return (object == null || "".equals(object)) ? valueSupplier.get() : object;
     }
-
-    @FunctionalInterface
-    public interface SerializableSupplier extends Supplier<Serializable>, Serializable {
-
-    }
-
 }
