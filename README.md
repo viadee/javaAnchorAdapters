@@ -12,6 +12,10 @@ This repository includes *methodological* aspects, i.e. default approaches on ho
 
 This project is to be considered research-in-progress.
 
+# Main Repository
+
+
+
 # Exemplary Use / Tutorial
 
 Examples of using the Anchors implementation and its various adapters are provided within the [XAI Examples](https://github.com/viadee/xai_examples) repository. 
@@ -21,5 +25,5 @@ Please refer to this project for tutorials and easy-to-run applications.
 
 The project is operated and further developed by the viadee Consulting AG in Münster, Westphalia. Results from theses at the WWU Münster and the FH Münster have been incorporated.
 * Further theses are planned: Contact person is Dr. Frank Köhne from viadee.
-    Community contributions to the project are welcome: Please open Github-Issues with suggestions (or PR), which we can then edit in the team.
+    Community contributions to the project are welcome: Please open Github-Issues with suggestions (or PR), which we can then edit in the team. For general discussions please refer to the [main repository](https://github.com/viadee/javaAnchorExplainer).
 *   We are looking for further partners who have interesting process data to refine our tooling as well as partners that are simply interested in a discussion about AI in the context of business process automation and explainability.
