@@ -29,4 +29,23 @@ interface NumericClassifier extends Serializable {
      * @return the int
      */
     int predict(double[] data);
+
+    /**
+     * Calculate prediction accuracy.
+     *
+     * @param predictions the predictions
+     * @param actual      the actual
+     * @return the double
+     */
+    static double calculatePredictionAccuracy(int[] predictions, int[] actual) {
+        if (predictions.length != actual.length)
+            throw new IllegalArgumentException("Prediction and data set must be of same length");
+        int correctPredictions = 0;
+        for (int i = 0; i < predictions.length; i++) {
+            if (predictions[i] == actual[i])
+                correctPredictions++;
+        }
+        return ((double) correctPredictions) / predictions.length;
+    }
+
 }

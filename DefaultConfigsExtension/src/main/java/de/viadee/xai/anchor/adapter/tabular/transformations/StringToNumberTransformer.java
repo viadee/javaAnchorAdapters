@@ -26,7 +26,7 @@ public abstract class StringToNumberTransformer {
         try {
             if (value == null)
                 throw new NullPointerException("Value may not be null. " +
-                        "Consider using a ReplaceNullTransformer before discretization.");
+                        "Consider using a ReplaceEmptyTransformer before discretization.");
 
             if (value instanceof Number) {
                 return (Number) value;

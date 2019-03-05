@@ -3,7 +3,7 @@ package de.viadee.xai.anchor.adapter.tabular.column;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.MapBasedTransformer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceNullTransformer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceEmptyTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 import java.io.Serializable;
@@ -36,7 +36,7 @@ public class StringColumn extends NumberColumn {
      * @param replaceNullValue the value to replace null values with
      */
     public StringColumn(String name, String replaceNullValue) {
-        this(name, Collections.singletonList(new ReplaceNullTransformer(replaceNullValue)), null, null);
+        this(name, Collections.singletonList(new ReplaceEmptyTransformer(replaceNullValue)), null, null);
     }
 
     /**
@@ -60,7 +60,7 @@ public class StringColumn extends NumberColumn {
      */
     public StringColumn(String name, String replaceNullValue, Map<Serializable, Serializable> mapTransformation) {
         this(name, Arrays.asList(
-                new ReplaceNullTransformer(replaceNullValue),
+                new ReplaceEmptyTransformer(replaceNullValue),
                 new MapBasedTransformer(mapTransformation)),
                 null,
                 null);

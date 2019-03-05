@@ -5,10 +5,10 @@ import de.viadee.xai.anchor.adapter.tabular.util.SerializableSupplier;
 import java.io.Serializable;
 
 /**
- * Transformer allowing to easily swap null and empty string values with a defined value
+ * Transformer allowing to easily swap non null and non empty string values with a defined value
  */
-public class ReplaceNullTransformer implements Transformer {
-    private static final long serialVersionUID = 6419476632394236169L;
+public class ReplaceNonEmptyTransformer implements Transformer {
+    private static final long serialVersionUID = 4419476632394292139L;
 
     private final SerializableSupplier valueSupplier;
 
@@ -17,7 +17,7 @@ public class ReplaceNullTransformer implements Transformer {
      *
      * @param removeWith the value to replace null values with
      */
-    public ReplaceNullTransformer(Serializable removeWith) {
+    public ReplaceNonEmptyTransformer(Serializable removeWith) {
         this(() -> removeWith);
     }
 
@@ -26,12 +26,13 @@ public class ReplaceNullTransformer implements Transformer {
      *
      * @param valueSupplier the supplier for a value
      */
-    public ReplaceNullTransformer(SerializableSupplier valueSupplier) {
+    public ReplaceNonEmptyTransformer(SerializableSupplier valueSupplier) {
         this.valueSupplier = valueSupplier;
     }
 
     @Override
     public Serializable apply(Serializable object) {
-        return (object == null || "".equals(object)) ? valueSupplier.get() : object;
+        return (object != null && !"".equals(object)) ? valueSupplier.get() : object;
     }
+
 }

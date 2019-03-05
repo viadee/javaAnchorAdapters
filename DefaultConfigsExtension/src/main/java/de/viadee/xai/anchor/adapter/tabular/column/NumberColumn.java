@@ -1,11 +1,12 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceEmptyTransformer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+import de.viadee.xai.anchor.adapter.tabular.util.SerializableSupplier;
+
 import java.io.Serializable;
 import java.util.List;
-
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceNullTransformer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 /**
  * Column used for transforming String inputs into number values.
@@ -40,15 +41,15 @@ public abstract class NumberColumn extends GenericColumn {
      * Create a default null transformer
      *
      * @param replaceNull the value to replace null with or null to create an exception in case of null
-     * @return a matching {@link ReplaceNullTransformer}
+     * @return a matching {@link ReplaceEmptyTransformer}
      */
-    static ReplaceNullTransformer createNullTransformer(final Serializable replaceNull) {
-        return new ReplaceNullTransformer(
+    static ReplaceEmptyTransformer createNullTransformer(final Serializable replaceNull) {
+        return new ReplaceEmptyTransformer(
                 (replaceNull == null) ? new ThrowExceptionOnNull() : replaceNull
         );
     }
 
-    private static final class ThrowExceptionOnNull implements ReplaceNullTransformer.SerializableSupplier {
+    private static final class ThrowExceptionOnNull implements SerializableSupplier {
         private static final long serialVersionUID = -1290766005381209256L;
 
         @Override
