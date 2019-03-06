@@ -1,13 +1,13 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
-import java.util.Arrays;
-import java.util.List;
-
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.PercentileMedianDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.StringToDoubleTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Column used for transforming String inputs into double values.
@@ -81,7 +81,7 @@ public class DoubleColumn extends NumberColumn {
     public static DoubleColumn fromStringInput(String name, Integer replaceNull, Discretizer discretizer) {
         return new DoubleColumn(
                 name,
-                Arrays.asList(createNullTransformer(replaceNull), new StringToDoubleTransformer()),
+                Arrays.asList(createEmptyTransformator(replaceNull), new StringToDoubleTransformer()),
                 null,
                 (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
@@ -95,7 +95,7 @@ public class DoubleColumn extends NumberColumn {
      * @return the corresponding column object
      */
     public static DoubleColumn fromStringInput(String name, Integer replaceNull, int classCount) {
-        return new DoubleColumn(name, Arrays.asList(createNullTransformer(replaceNull),
+        return new DoubleColumn(name, Arrays.asList(createEmptyTransformator(replaceNull),
                 new StringToDoubleTransformer()), null,
                 (classCount < 1) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount, replaceNull));
     }
