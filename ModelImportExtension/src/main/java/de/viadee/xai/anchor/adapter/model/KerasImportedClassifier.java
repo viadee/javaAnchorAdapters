@@ -1,19 +1,19 @@
 package de.viadee.xai.anchor.adapter.model;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import de.viadee.xai.anchor.algorithm.ClassificationFunction;
+import de.viadee.xai.anchor.algorithm.DataInstance;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.UnsupportedKerasConfigurationException;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
-import de.viadee.xai.anchor.algorithm.ClassificationFunction;
-import de.viadee.xai.anchor.algorithm.DataInstance;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * TODO make public and implement
  *
- * @param <T>
+ * @param <T> The type of the data instance
  */
 public class KerasImportedClassifier<T extends DataInstance<?>> implements ClassificationFunction<T> {
     private static final long serialVersionUID = -2516330397459812978L;

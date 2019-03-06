@@ -74,9 +74,10 @@ public class IntegerColumn extends NumberColumn {
     /**
      * Instantiates the column
      *
-     * @param name        the column's name
-     * @param replaceNull the object value to replace null values with. Must be convertible to Integer values
-     * @param discretizer the discretizer to use
+     * @param name         the column's name
+     * @param replaceNull  the object value to replace null values with. Must be convertible to Integer values
+     * @param discretizer  the discretizer to use
+     * @param transformers the transformers to apply
      * @return the corresponding column object
      */
     public static IntegerColumn fromStringInput(String name, Integer replaceNull, List<Transformer> transformers,

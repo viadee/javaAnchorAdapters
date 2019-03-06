@@ -43,6 +43,7 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
      *
      * @param instance         the {@link TabularInstance} to perturb.
      * @param perturbationData an array of data to generate perturbations from
+     * @param seed the seed to use
      */
     public TabularPerturbationFunction(TabularInstance instance, TabularInstance[] perturbationData, Long seed) {
         if (perturbationData == null || perturbationData.length < 1)

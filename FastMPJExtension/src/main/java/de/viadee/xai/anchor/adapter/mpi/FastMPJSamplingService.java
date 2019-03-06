@@ -171,9 +171,11 @@ public class FastMPJSamplingService<T extends DataInstance<?>> extends FastMPJBa
         };
     }
 
-    @Override
+
+    /**
+     * TODO should call finalize environment
+     */
     public void endSampling() {
-        // TODO should call finalize environment?
 //        FastMPJInitializer.finalizeEnvironment();
     }
 
