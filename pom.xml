@@ -19,8 +19,6 @@
         <revision>1.0.0</revision>
     </properties>
 
-    <url>https://github.com/viadee/javaAnchorAdapters</url>
-
     <licenses>
         <license>
             <name>BSD-3 Clause</name>
