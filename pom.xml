@@ -9,6 +9,7 @@
     <artifactId>anchorjAdapters</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+    <url>https://github.com/viadee/javaAnchorAdapters</url>
 
     <description>
         This project contains multiple modules providing extensions to anchorj

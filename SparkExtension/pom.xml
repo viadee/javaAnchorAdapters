@@ -14,6 +14,7 @@
 
     <artifactId>SparkAdapter</artifactId>
     <description>This extension provides spark support</description>
+    <url>https://github.com/viadee/javaAnchorAdapters</url>
 
     <dependencies>
         <dependency>
