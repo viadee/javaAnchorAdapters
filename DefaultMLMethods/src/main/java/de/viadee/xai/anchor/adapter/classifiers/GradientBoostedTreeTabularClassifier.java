@@ -1,12 +1,13 @@
 package de.viadee.xai.anchor.adapter.classifiers;
 
+import smile.classification.GradientTreeBoost;
 import smile.classification.RandomForest;
 import smile.classification.SoftClassifier;
 
 /**
  * May be used to quickly train a model based on tabular data
  */
-public class TabularRandomForestClassifier extends AbstractTabularSmileClassifier {
+public class GradientBoostedTreeTabularClassifier extends AbstractTabularSmileClassifier {
     private final int nTrees;
 
     /**
@@ -14,12 +15,12 @@ public class TabularRandomForestClassifier extends AbstractTabularSmileClassifie
      *
      * @param nTrees the number of trees to use
      */
-    public TabularRandomForestClassifier(int nTrees) {
+    public GradientBoostedTreeTabularClassifier(int nTrees) {
         this.nTrees = nTrees;
     }
 
     @Override
     protected SoftClassifier<double[]> fit(double[][] trainingSet, int[] labels) {
-        return new RandomForest(trainingSet, labels, nTrees);
+        return new GradientTreeBoost(trainingSet, labels, nTrees);
     }
 }
