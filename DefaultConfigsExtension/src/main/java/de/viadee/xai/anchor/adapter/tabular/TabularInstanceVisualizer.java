@@ -87,8 +87,8 @@ public class TabularInstanceVisualizer {
         return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
                 "THEN PREDICT " + labelText +
-                System.lineSeparator();
-        // TODO do something + "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
+                System.lineSeparator() +
+                "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
     }
 
     /**
