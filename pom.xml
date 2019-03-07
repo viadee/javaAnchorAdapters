@@ -11,6 +11,7 @@
     <packaging>pom</packaging>
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
+    <name>AnchorJ-Adapters</name>
     <description>
         This project contains multiple modules providing extensions to anchorj
     </description>
