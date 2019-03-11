@@ -7,7 +7,9 @@
 
     <groupId>de.viadee.xai.anchor</groupId>
     <artifactId>anchorjAdapters</artifactId>
-    <version>${revision}</version>
+    <!-- NOTE: when changing version, all anchor properties in child poms need to be considerd, too-->
+    <!-- -->
+    <version>1.0.1</version>
     <packaging>pom</packaging>
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
@@ -15,10 +17,6 @@
     <description>
         This project contains multiple modules providing extensions to anchorj
     </description>
-
-    <properties>
-        <revision>1.0.0</revision>
-    </properties>
 
     <licenses>
         <license>
@@ -194,7 +192,7 @@
         <dependency>
             <groupId>de.viadee.xai.anchor</groupId>
             <artifactId>algorithm</artifactId>
-            <version>${revision}</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Commons-io for loading files -->

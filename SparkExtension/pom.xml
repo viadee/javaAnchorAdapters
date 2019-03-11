@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>de.viadee.xai.anchor</groupId>
 		<artifactId>anchorjAdapters</artifactId>
-        <version>${revision}</version>
+        <version>1.0.1</version>
 	</parent>
 
     <artifactId>SparkAdapter</artifactId>
