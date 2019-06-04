@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.viadee.xai</groupId>
+    <artifactId>anchorsOptimizer</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- maven-compiler-plugin -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- AnchorJ -->
+        <dependency>
+            <groupId>de.viadee.xai.anchor</groupId>
+            <artifactId>algorithm</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- AnchorJ Default Solutions Extension containing AnchorTabular -->
+        <dependency>
+            <groupId>de.viadee.xai.anchor</groupId>
+            <artifactId>DefaultConfigsAdapter</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- AnchorJ Default Machine Learning Models -->
+        <dependency>
+            <groupId>de.viadee.xai.anchor</groupId>
+            <artifactId>DefaultMLMethods</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/ai.h2o/h2o-genmodel -->
+        <dependency>
+            <groupId>ai.h2o</groupId>
+            <artifactId>h2o-genmodel</artifactId>
+            <version>3.22.1.4</version>
+        </dependency>
+
+        <!-- Arbiter - used for hyperparameter optimization (grid/random search) -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>arbiter-deeplearning4j</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>arbiter-ui_2.11</artifactId>
+            <version>1.0.0-beta4</version>
+        </dependency>
+
+        <!-- jmetal -->
+        <dependency>
+            <groupId>org.uma.jmetal</groupId>
+            <artifactId>jmetal-core</artifactId>
+            <version>5.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.moeaframework</groupId>
+            <artifactId>moeaframework</artifactId>
+            <version>2.12</version>
+        </dependency>
+
+        <!-- Loading data from CSV -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13-beta-2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13-beta-2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
