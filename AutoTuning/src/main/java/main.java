@@ -34,13 +34,8 @@ public class main {
                 .createDefaultBuilder(randomForestModel, explainedInstance);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch(1);
+        RandomSearch rs = new RandomSearch((long)60);
         rs.execute(randomForestModel, anchorBuilder, anchorTabular);
-
-        SMACExecutor smacExecutor = new SMACExecutor();
-
-        smacExecutor.main(null);
-
 
         System.out.println("-- COMPLETE --");
     }

@@ -14,18 +14,28 @@ import java.util.function.Function;
 
 public class RandomSearch {
 
-    private long terminationConditionInMin;
+    private long terminationConditionInSec;
+    private int terminationConditionNrEx;
     private HyperparameterSpace currentHyperparameterSpace;
     private HyperparameterSpace bestHyperparameterSpace;
 
     /**
-     * @param terminationConditionInMin
+     * @param terminationConditionInSec
      */
-    public RandomSearch(long terminationConditionInMin) {
+    private RandomSearch(long terminationConditionInSec, int terminationConditionNrEx) {
         this.currentHyperparameterSpace = new HyperparameterSpace();
         this.currentHyperparameterSpace.setRandomHyperparameterSpace();
-        this.terminationConditionInMin = terminationConditionInMin;
+        this.terminationConditionInSec = terminationConditionInSec;
+        this.terminationConditionNrEx = terminationConditionNrEx;
         this.bestHyperparameterSpace = new HyperparameterSpace();
+    }
+
+    public RandomSearch(long terminationConditionInSec) {
+        this(terminationConditionInSec, 0);
+    }
+
+    public RandomSearch(int terminationConditionNrEx) {
+        this(0, terminationConditionNrEx);
     }
 
     /**
@@ -48,8 +58,9 @@ public class RandomSearch {
     public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular) {
 
         long startTime = System.currentTimeMillis();
+        int nrExecutions = 0;
 
-        while ((System.currentTimeMillis() - startTime) < (this.terminationConditionInMin * 60000)) {
+        while ((System.currentTimeMillis() - startTime) < (this.terminationConditionInSec * 1000) || nrExecutions < this.terminationConditionNrEx) {
 
             // randomize all hyperparameters
             this.currentHyperparameterSpace.setRandomHyperparameterSpace();
@@ -82,6 +93,8 @@ public class RandomSearch {
 
             // check if performance of current space is the best, if yes set current space as best space
             checkParameterSpace(calcPerformance(prediction, classificationFunction, anchorTabular.getTabularInstances()));
+
+            nrExecutions++;
         }
 
         visualizeBestHyperparameterSpace();

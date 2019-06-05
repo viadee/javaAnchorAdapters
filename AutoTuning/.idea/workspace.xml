@@ -2,14 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1d5e9ee-7bbe-455f-9544-0bce533582e2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/smac.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/RandomSearch/RandomSearchTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main.java" afterDir="false" />
     </list>
@@ -29,13 +21,18 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="1000">
+              <caret line="62" selection-start-line="62" selection-end-line="62" />
               <folding>
-                <element signature="e#6019#6020#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1182#1183#0" expanded="true" />
+                <element signature="e#1256#1257#0" expanded="true" />
+                <element signature="e#1289#1290#0" expanded="true" />
+                <element signature="e#1361#1362#0" expanded="true" />
+                <element signature="e#6479#6480#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -89,8 +86,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-85">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="136">
+              <caret line="17" column="63" lean-forward="true" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -123,11 +120,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/state/StateFactoryOptions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="727">
-              <caret line="197" column="34" selection-start-line="197" selection-start-column="15" selection-end-line="197" selection-end-column="34" />
+            <state relative-caret-position="132">
+              <caret line="159" column="71" lean-forward="true" selection-start-line="159" selection-start-column="71" selection-end-line="159" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -283,14 +280,6 @@
               <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
               <item name="smac" type="70bed36:NamedLibraryElementNode" />
-              <item name="aeatk.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="aeatk" type="462c0819:PsiDirectoryNode" />
-              <item name="execscript" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="smac" type="70bed36:NamedLibraryElementNode" />
               <item name="smac.jar" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -433,7 +422,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.SMACExecutor">
+  <component name="RunManager" selected="Application.main">
     <configuration name="SMACExecutor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ca.ubc.cs.beta.smac.executors.SMACExecutor" />
       <shortenClasspath name="MANIFEST" />
@@ -527,8 +516,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.SMACExecutor" />
         <item itemvalue="Application.main" />
+        <item itemvalue="Application.SMACExecutor" />
         <item itemvalue="JUnit.RandomSearchTest.checkParameterSpace" />
         <item itemvalue="JUnit.ContinuousParameterTest.searchRandom" />
         <item itemvalue="JUnit.IntegerParameterTest.searchRandom" />
@@ -549,7 +538,7 @@
       <workItem from="1558515957246" duration="12302000" />
       <workItem from="1558686089672" duration="10210000" />
       <workItem from="1559116436080" duration="34795000" />
-      <workItem from="1559635246412" duration="22469000" />
+      <workItem from="1559635246412" duration="24606000" />
     </task>
     <servers />
   </component>
@@ -586,7 +575,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="117768000" />
+    <option name="totallyTimeSpent" value="119905000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -601,15 +590,15 @@
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49571428" visible="true" weight="0.1444563" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49571428" visible="true" weight="0.1444563" />
       <window_info id="Structure" order="1" sideWeight="0.5042857" side_tool="true" weight="0.14285715" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32981783" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32885906" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.35378715" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32885906" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.35378715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32981783" />
@@ -669,7 +658,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java</url>
-          <line>109</line>
+          <line>122</line>
           <properties />
           <option name="timeStamp" value="28" />
         </line-breakpoint>
@@ -980,41 +969,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
-          <folding>
-            <element signature="e#564#565#0" expanded="true" />
-            <element signature="e#595#596#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="53" selection-start-line="53" selection-end-line="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#775#776#0" expanded="true" />
-            <element signature="e#810#811#0" expanded="true" />
-            <element signature="e#866#867#0" expanded="true" />
-            <element signature="e#914#915#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#6019#6020#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/ValidatorExecutor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="884">
@@ -1029,34 +983,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
-          <folding>
-            <element signature="e#118#119#0" expanded="true" />
-            <element signature="e#150#151#0" expanded="true" />
-            <element signature="e#208#209#0" expanded="true" />
-            <element signature="e#248#249#0" expanded="true" />
-            <element signature="e#280#281#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/smac/SMACOptions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1203">
           <caret line="53" column="13" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-85">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1121,8 +1051,72 @@
     </entry>
     <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/state/StateFactoryOptions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="727">
-          <caret line="197" column="34" selection-start-line="197" selection-start-column="15" selection-end-line="197" selection-end-column="34" />
+        <state relative-caret-position="132">
+          <caret line="159" column="71" lean-forward="true" selection-start-line="159" selection-start-column="71" selection-end-line="159" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="765">
+          <caret line="53" selection-start-line="53" selection-end-line="53" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#775#776#0" expanded="true" />
+            <element signature="e#810#811#0" expanded="true" />
+            <element signature="e#866#867#0" expanded="true" />
+            <element signature="e#914#915#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="63" selection-start-line="63" selection-end-line="63" />
+          <folding>
+            <element signature="e#564#565#0" expanded="true" />
+            <element signature="e#595#596#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+          <folding>
+            <element signature="e#118#119#0" expanded="true" />
+            <element signature="e#150#151#0" expanded="true" />
+            <element signature="e#208#209#0" expanded="true" />
+            <element signature="e#248#249#0" expanded="true" />
+            <element signature="e#280#281#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="17" column="63" lean-forward="true" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1000">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1182#1183#0" expanded="true" />
+            <element signature="e#1256#1257#0" expanded="true" />
+            <element signature="e#1289#1290#0" expanded="true" />
+            <element signature="e#1361#1362#0" expanded="true" />
+            <element signature="e#6479#6480#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
