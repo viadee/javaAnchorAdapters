@@ -1,6 +1,6 @@
 package LossFunctions.Accuracy;
 
-public class Feature {
+public abstract class Feature {
 
     private String name;
 

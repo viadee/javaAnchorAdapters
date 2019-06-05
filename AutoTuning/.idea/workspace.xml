@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f1d5e9ee-7bbe-455f-9544-0bce533582e2" name="Default Changelist" comment="" />
+    <list default="true" id="f1d5e9ee-7bbe-455f-9544-0bce533582e2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/smac.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/RandomSearch/RandomSearchTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,33 +29,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+            <state relative-caret-position="85">
+              <caret line="8" selection-start-line="8" selection-end-line="8" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1308#1309#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="29" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
-              <folding>
-                <element signature="e#542#543#0" expanded="true" />
-                <element signature="e#573#574#0" expanded="true" />
-                <element signature="e#629#630#0" expanded="true" />
-                <element signature="e#655#656#0" expanded="true" />
-                <element signature="e#668#669#0" expanded="true" />
-                <element signature="e#702#703#0" expanded="true" />
-                <element signature="e#756#757#0" expanded="true" />
-                <element signature="e#802#803#0" expanded="true" />
+                <element signature="e#6019#6020#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -53,15 +44,14 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="21" lean-forward="true" selection-start-column="21" selection-end-column="21" />
+            <state relative-caret-position="170">
+              <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
               <folding>
-                <element signature="e#109#110#0" expanded="true" />
-                <element signature="e#141#142#0" expanded="true" />
-                <element signature="e#172#173#0" expanded="true" />
-                <element signature="e#199#200#0" expanded="true" />
-                <element signature="e#239#240#0" expanded="true" />
-                <element signature="e#271#272#0" expanded="true" />
+                <element signature="e#118#119#0" expanded="true" />
+                <element signature="e#150#151#0" expanded="true" />
+                <element signature="e#208#209#0" expanded="true" />
+                <element signature="e#248#249#0" expanded="true" />
+                <element signature="e#280#281#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -70,18 +60,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="353">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
+            <state relative-caret-position="765">
+              <caret line="53" selection-start-line="53" selection-end-line="53" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#310#311#0" expanded="true" />
-                <element signature="e#341#342#0" expanded="true" />
-                <element signature="e#389#390#0" expanded="true" />
-                <element signature="e#429#430#0" expanded="true" />
-                <element signature="e#464#465#0" expanded="true" />
-                <element signature="e#495#496#0" expanded="true" />
-                <element signature="e#543#544#0" expanded="true" />
-                <element signature="e#583#584#0" expanded="true" />
                 <element signature="e#775#776#0" expanded="true" />
                 <element signature="e#810#811#0" expanded="true" />
                 <element signature="e#866#867#0" expanded="true" />
@@ -92,23 +74,13 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="46" column="5" lean-forward="true" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
+            <state relative-caret-position="867">
+              <caret line="63" selection-start-line="63" selection-end-line="63" />
               <folding>
-                <element signature="e#138#139#0" expanded="true" />
-                <element signature="e#169#170#0" expanded="true" />
-                <element signature="e#214#215#0" expanded="true" />
-                <element signature="e#254#255#0" expanded="true" />
-                <element signature="e#286#287#0" expanded="true" />
-                <element signature="e#317#318#0" expanded="true" />
-                <element signature="e#362#363#0" expanded="true" />
-                <element signature="e#402#403#0" expanded="true" />
-                <element signature="e#679#680#0" expanded="true" />
-                <element signature="e#714#715#0" expanded="true" />
-                <element signature="e#767#768#0" expanded="true" />
-                <element signature="e#815#816#0" expanded="true" />
+                <element signature="e#564#565#0" expanded="true" />
+                <element signature="e#595#596#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -117,8 +89,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-119">
-              <caret line="32" column="24" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
+            <state relative-caret-position="-85">
+              <caret line="16" selection-start-line="16" selection-end-line="16" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -127,19 +99,35 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java">
+        <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/builder/SMACBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="20" column="41" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
+            <state relative-caret-position="442">
+              <caret line="97" column="38" selection-start-line="97" selection-start-column="38" selection-end-line="97" selection-end-column="38" />
+              <folding>
+                <element signature="e#4201#4202#0" expanded="true" />
+                <element signature="e#4246#4247#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/TitanicDataset.java">
+        <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/SMACExecutor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="20" column="27" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="27" />
+            <state relative-caret-position="431">
+              <caret line="615" column="50" selection-start-line="615" selection-start-column="50" selection-end-line="615" selection-end-column="50" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/state/StateFactoryOptions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="727">
+              <caret line="197" column="34" selection-start-line="197" selection-start-column="15" selection-end-line="197" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -150,8 +138,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Arquillian JUnit Test Class" />
-        <option value="JUnit4 Test Class" />
         <option value="Class" />
+        <option value="JUnit4 Test Class" />
       </list>
     </option>
   </component>
@@ -160,10 +148,17 @@
       <find>outputTestsetAccuracy</find>
       <find>TitanicDataset</find>
       <find>anchor</find>
+      <find>anchorTabular</find>
+      <find>explainedInstance</find>
+      <find>run</find>
+      <find>classificationFunction</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\java</dir>
     </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -176,7 +171,6 @@
         <option value="$PROJECT_DIR$/src/test/java/LossFunctions/VolumeMetricTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/VolumeMetric.java" />
         <option value="$PROJECT_DIR$/src/test/java/LossFunctions/PredictionModelTest.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Rule.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/PredictionModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Volume/VolumeMetric.java" />
@@ -186,16 +180,19 @@
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Imitation/MetricFeature.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Imitation/Rule.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Imitation/PredictionModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/PredictionModel.java" />
         <option value="$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java" />
         <option value="$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" />
         <option value="$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/TitanicDataset.java" />
-        <option value="$PROJECT_DIR$/src/main/java/main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/test/java/RandomSearch/RandomSearchTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" />
+        <option value="$PROJECT_DIR$/src/main/java/main.java" />
       </list>
     </option>
   </component>
@@ -205,145 +202,196 @@
     <option name="width" value="1936" />
     <option name="height" value="1176" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
+      <pane id="PackagesPane">
         <subPane>
           <expand>
             <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="LossFunctions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="LossFunctions" type="462c0819:PsiDirectoryNode" />
-              <item name="Accuracy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="RandomSearch" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="Titanic" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="anchorsOptimizer" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="RandomSearch" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: de.viadee.xai.anchor:DefaultMLMethods:1.0.1" type="70bed36:NamedLibraryElementNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: de.viadee.xai.anchor:DefaultMLMethods:1.0.1" type="70bed36:NamedLibraryElementNode" />
-              <item name="DefaultMLMethods-1.0.1.jar" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: de.viadee.xai.anchor:DefaultMLMethods:1.0.1" type="70bed36:NamedLibraryElementNode" />
-              <item name="DefaultMLMethods-1.0.1.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="adapter" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="anchorsOptimizer" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Maven: de.viadee.xai.anchor:DefaultMLMethods:1.0.1" type="70bed36:NamedLibraryElementNode" />
-              <item name="DefaultMLMethods-1.0.1.jar" type="462c0819:PsiDirectoryNode" />
-              <item name="adapter" type="462c0819:PsiDirectoryNode" />
-              <item name="classifiers" type="462c0819:PsiDirectoryNode" />
+              <item name="AutoTuning" type="58d84e3e:PackageViewProjectNode" />
+              <item name="anchorsOptimizer" type="616d4139:PackageViewModuleNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="RandomSearch" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="aeatk.jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="aeatk.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="aeatk" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="aeatk.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="aeatk" type="462c0819:PsiDirectoryNode" />
+              <item name="execscript" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="smac.jar" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="smac.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="smac" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="smac.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="smac" type="462c0819:PsiDirectoryNode" />
+              <item name="builder" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="smac" type="70bed36:NamedLibraryElementNode" />
+              <item name="smac.jar" type="462c0819:PsiDirectoryNode" />
+              <item name="smac" type="462c0819:PsiDirectoryNode" />
+              <item name="executors" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Scope 'Tests'; set:Tests; class com.intellij.psi.search.scope.TestsScope">
+          <expand>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="test" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="test" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="java" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="main" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="anchorsOptimizer" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="main" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="java" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.Arquillian JUnit4" value="" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/smac-v2.10.03-master-778/smac" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
@@ -351,20 +399,21 @@
       <recent name="RandomSearch" />
       <recent name="LossFunctions" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\resources\Titanic" />
-      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\java\LossFunctions" />
-    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="" />
       <recent name="RandomSearch" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\B96\IdeaProjects\javaAnchorAdapters\AutoTuning\src\main\resources" />
+      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\resources" />
+      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\java" />
+    </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\resources" />
-      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\java" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\resources\Titanic" />
+      <recent name="C:\Users\B96\IdeaProjects\anchorsOptimizer\src\main\java\LossFunctions" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -384,14 +433,13 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.main">
-    <configuration name="VolumeMetric" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="LossFunctions.Volume.VolumeMetric" />
-      <module name="anchorsOptimizer" />
+  <component name="RunManager" selected="Application.SMACExecutor">
+    <configuration name="SMACExecutor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ca.ubc.cs.beta.smac.executors.SMACExecutor" />
       <shortenClasspath name="MANIFEST" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="LossFunctions.Accuracy.*" />
+          <option name="PATTERN" value="ca.ubc.cs.beta.smac.executors.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -449,19 +497,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="VolumeMetricTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="RandomSearchTest.checkParameterSpace" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="anchorsOptimizer" />
       <shortenClasspath name="MANIFEST" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="LossFunctions.Accuracy.*" />
+          <option name="PATTERN" value="RandomSearch.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="LossFunctions" />
-      <option name="MAIN_CLASS_NAME" value="LossFunctions.VolumeMetricTest" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PACKAGE_NAME" value="RandomSearch" />
+      <option name="MAIN_CLASS_NAME" value="RandomSearch.RandomSearchTest" />
+      <option name="METHOD_NAME" value="checkParameterSpace" />
+      <option name="TEST_OBJECT" value="method" />
       <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -479,11 +527,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.SMACExecutor" />
         <item itemvalue="Application.main" />
+        <item itemvalue="JUnit.RandomSearchTest.checkParameterSpace" />
         <item itemvalue="JUnit.ContinuousParameterTest.searchRandom" />
         <item itemvalue="JUnit.IntegerParameterTest.searchRandom" />
-        <item itemvalue="Application.VolumeMetric" />
-        <item itemvalue="JUnit.VolumeMetricTest" />
       </list>
     </recent_temporary>
   </component>
@@ -501,16 +549,11 @@
       <workItem from="1558515957246" duration="12302000" />
       <workItem from="1558686089672" duration="10210000" />
       <workItem from="1559116436080" duration="34795000" />
+      <workItem from="1559635246412" duration="22469000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="IntegerParameterTest_searchRandom - 2019.05.29 at 13h 52m 12s.xml">
-      <configuration name="IntegerParameterTest.searchRandom" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="IntegerParameterTest_searchRandom - 2019.05.29 at 13h 52m 33s.xml">
-      <configuration name="IntegerParameterTest.searchRandom" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="IntegerParameterTest_searchRandom - 2019.05.29 at 13h 52m 41s.xml">
       <configuration name="IntegerParameterTest.searchRandom" configurationId="JUnit" />
     </history-entry>
@@ -535,34 +578,48 @@
     <history-entry file="ContinuousParameterTest_searchRandom - 2019.05.29 at 14h 01m 25s.xml">
       <configuration name="ContinuousParameterTest.searchRandom" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="RandomSearchTest_checkParameterSpace - 2019.06.04 at 11h 04m 32s.xml">
+      <configuration name="RandomSearchTest.checkParameterSpace" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="RandomSearchTest_checkParameterSpace - 2019.06.05 at 10h 54m 32s.xml">
+      <configuration name="RandomSearchTest.checkParameterSpace" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95299000" />
+    <option name="totallyTimeSpent" value="117768000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49571428" visible="true" weight="0.14285715" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49571428" visible="true" weight="0.1444563" />
       <window_info id="Structure" order="1" sideWeight="0.5042857" side_tool="true" weight="0.14285715" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32981783" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32885906" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.35378715" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32981783" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Spring" order="9" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32981783" />
+      <window_info anchor="bottom" id="Spring" order="9" weight="0.32981783" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.32827735" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.3279003" />
       <window_info anchor="bottom" id="Terminal" order="13" weight="0.32981783" />
-      <window_info anchor="right" id="Coverage" side_tool="true" weight="0.32995737" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -571,6 +628,7 @@
       <window_info anchor="right" id="Maven" order="5" />
       <window_info anchor="right" id="Bean Validation" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Coverage" order="8" side_tool="true" weight="0.32995737" />
     </layout>
     <layout-to-restore>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49571428" weight="0.14285715" />
@@ -610,16 +668,10 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/main.java</url>
-          <line>65</line>
+          <url>file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java</url>
+          <line>109</line>
           <properties />
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java</url>
-          <line>50</line>
-          <properties />
-          <option name="timeStamp" value="23" />
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -633,166 +685,6 @@
     <SUITE FILE_PATH="coverage/anchorsOptimizer$main.ic" NAME="main Coverage Results" MODIFIED="1559120575285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/qualityindicator/impl/hypervolume/util/WfgHypervolumeVersion.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/solution/DoubleSolution.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="17" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/solution/util/RepairDoubleSolution.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="17" selection-start-line="9" selection-start-column="17" selection-end-line="9" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/solution/impl/DefaultDoubleSolution.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="19" column="54" selection-start-line="19" selection-start-column="33" selection-end-line="19" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/qualityindicator/impl/hypervolume/WFGHypervolume.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="66" column="57" selection-start-line="66" selection-start-column="45" selection-end-line="66" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7.jar!/org/uma/jmetal/solution/Solution.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="5" column="28" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/problem/BoundedProblem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/solution/impl/DefaultDoubleSolution.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="19" column="38" selection-start-line="19" selection-start-column="38" selection-end-line="19" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/solution/Solution.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/problem/DoubleProblem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="47" selection-start-line="9" selection-start-column="39" selection-end-line="9" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/qualityindicator/impl/hypervolume/util/WfgHypervolumeVersion.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/uma/jmetal/jmetal-core/5.7/jmetal-core-5.7-sources.jar!/org/uma/jmetal/qualityindicator/impl/hypervolume/WFGHypervolume.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="84" column="16" selection-start-line="84" selection-start-column="16" selection-end-line="84" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/util/Objects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="371" column="29" selection-start-line="371" selection-start-column="29" selection-end-line="371" selection-end-column="29" />
-          <folding>
-            <element signature="e#13877#13878#0" expanded="true" />
-            <element signature="e#13945#13946#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/moeaframework/moeaframework/2.12/moeaframework-2.12.jar!/org/moeaframework/core/indicator/Hypervolume.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="25" column="62" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/util/ArrayList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="995" column="12" selection-start-line="995" selection-start-column="12" selection-end-line="995" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/DominantPoint.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/H2OModelWrapper.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/TitanicExplanation.java" />
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/DataInstance.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/DefaultConfigsAdapter/1.0.1/DefaultConfigsAdapter-1.0.1.jar!/de/viadee/xai/anchor/adapter/tabular/column/GenericColumn.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="731">
-          <caret line="58" column="68" lean-forward="true" selection-start-line="58" selection-start-column="68" selection-end-line="58" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/DefaultConfigsAdapter/1.0.1/DefaultConfigsAdapter-1.0.1.jar!/de/viadee/xai/anchor/adapter/tabular/discretizer/DiscretizerRelation.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="53" column="24" selection-start-line="53" selection-start-column="24" selection-end-line="53" selection-end-column="24" />
-          <folding>
-            <element signature="e#1866#1867#0" expanded="true" />
-            <element signature="e#1910#1911#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/ImitationMetric.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/AnchorResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/MetricFeature.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -827,16 +719,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-119">
           <caret line="217" column="18" selection-start-line="217" selection-start-column="18" selection-end-line="217" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Volume/VolumeMetric.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="67" column="33" selection-start-line="67" selection-end-line="68" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -934,35 +816,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
-          <folding>
-            <element signature="e#205#206#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
           <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="21" lean-forward="true" selection-start-column="21" selection-end-column="21" />
-          <folding>
-            <element signature="e#109#110#0" expanded="true" />
-            <element signature="e#141#142#0" expanded="true" />
-            <element signature="e#172#173#0" expanded="true" />
-            <element signature="e#199#200#0" expanded="true" />
-            <element signature="e#239#240#0" expanded="true" />
-            <element signature="e#271#272#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -978,19 +835,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/TitanicDataset.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="20" column="27" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/lang/Runnable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="55" column="17" selection-start-line="55" selection-start-column="17" selection-end-line="55" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="46" column="5" lean-forward="true" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
+        <state relative-caret-position="516">
+          <caret line="46" column="5" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
           <folding>
-            <element signature="e#138#139#0" expanded="true" />
-            <element signature="e#169#170#0" expanded="true" />
-            <element signature="e#214#215#0" expanded="true" />
-            <element signature="e#254#255#0" expanded="true" />
-            <element signature="e#286#287#0" expanded="true" />
-            <element signature="e#317#318#0" expanded="true" />
-            <element signature="e#362#363#0" expanded="true" />
-            <element signature="e#402#403#0" expanded="true" />
             <element signature="e#679#680#0" expanded="true" />
             <element signature="e#714#715#0" expanded="true" />
             <element signature="e#767#768#0" expanded="true" />
@@ -999,39 +862,114 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/util/concurrent/Executors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="216" column="34" selection-start-line="216" selection-start-column="34" selection-end-line="216" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/global/GlobalExplainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="25" column="15" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Volume/VolumeMetric.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="67" column="33" selection-start-line="67" selection-end-line="68" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/global/CoveragePick.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="41" column="11" selection-start-line="41" selection-start-column="11" selection-end-line="41" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/global/ThreadedBatchExplainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="115" column="99" lean-forward="true" selection-start-line="115" selection-start-column="99" selection-end-line="115" selection-end-column="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/util/concurrent/AbstractExecutorService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="241" column="16" selection-start-line="241" selection-start-column="16" selection-end-line="241" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk-12/lib/src.zip!/java.base/java/util/concurrent/ThreadPoolExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="2054" selection-start-line="2054" selection-end-line="2054" />
+          <folding>
+            <element signature="e#32047#32048#0" expanded="true" />
+            <element signature="e#32103#32104#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/de/viadee/xai/anchor/algorithm/1.0.0/algorithm-1.0.0-sources.jar!/de/viadee/xai/anchor/algorithm/global/AbstractGlobalExplainer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="85" column="63" selection-start-line="85" selection-start-column="63" selection-end-line="85" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/PredictionModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="741">
+        <state relative-caret-position="1751">
           <caret line="105" column="4" selection-start-line="105" selection-start-column="4" selection-end-line="105" selection-end-column="4" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#604#605#0" expanded="true" />
-            <element signature="e#650#651#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
+    <entry file="jar://$PROJECT_DIR$/src/main/resources/smac-src.jar!/ca/ubc/cs/beta/smac/builder/SMACBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="29" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
+        <state relative-caret-position="-850">
+          <caret line="13" column="7" selection-start-line="13" selection-start-column="7" selection-end-line="13" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/src/main/resources/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/example/evaluator/TAEEvaluator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="42" column="13" selection-start-line="42" selection-start-column="13" selection-end-line="42" selection-end-column="13" />
           <folding>
-            <element signature="e#542#543#0" expanded="true" />
-            <element signature="e#573#574#0" expanded="true" />
-            <element signature="e#629#630#0" expanded="true" />
-            <element signature="e#655#656#0" expanded="true" />
-            <element signature="e#668#669#0" expanded="true" />
-            <element signature="e#702#703#0" expanded="true" />
-            <element signature="e#756#757#0" expanded="true" />
-            <element signature="e#802#803#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TitanicDataset.java">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="20" column="27" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="27" />
+        <state relative-caret-position="442">
+          <caret line="26" column="21" selection-start-line="26" selection-start-column="21" selection-end-line="26" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/RandomSearchTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="7" column="31" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -1042,20 +980,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="867">
+          <caret line="63" selection-start-line="63" selection-end-line="63" />
+          <folding>
+            <element signature="e#564#565#0" expanded="true" />
+            <element signature="e#595#596#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="353">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="765">
+          <caret line="53" selection-start-line="53" selection-end-line="53" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#310#311#0" expanded="true" />
-            <element signature="e#341#342#0" expanded="true" />
-            <element signature="e#389#390#0" expanded="true" />
-            <element signature="e#429#430#0" expanded="true" />
-            <element signature="e#464#465#0" expanded="true" />
-            <element signature="e#495#496#0" expanded="true" />
-            <element signature="e#543#544#0" expanded="true" />
-            <element signature="e#583#584#0" expanded="true" />
             <element signature="e#775#776#0" expanded="true" />
             <element signature="e#810#811#0" expanded="true" />
             <element signature="e#866#867#0" expanded="true" />
@@ -1064,26 +1005,200 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-119">
-          <caret line="32" column="24" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="42" selection-end-line="15" selection-end-column="42" />
+        <state relative-caret-position="85">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1308#1309#0" expanded="true" />
+            <element signature="e#6019#6020#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/ValidatorExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="91" column="13" lean-forward="true" selection-start-line="91" selection-start-column="13" selection-end-line="91" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/misc/version/SMACVersionInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="29" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+          <folding>
+            <element signature="e#118#119#0" expanded="true" />
+            <element signature="e#150#151#0" expanded="true" />
+            <element signature="e#208#209#0" expanded="true" />
+            <element signature="e#248#249#0" expanded="true" />
+            <element signature="e#280#281#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/smac/SMACOptions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1203">
+          <caret line="53" column="13" selection-start-line="53" selection-start-column="13" selection-end-line="53" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-85">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/builder/SMACBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="97" column="38" selection-start-line="97" selection-start-column="38" selection-end-line="97" selection-end-column="38" />
+          <folding>
+            <element signature="e#4201#4202#0" expanded="true" />
+            <element signature="e#4246#4247#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/beust/jcommander/1.27/jcommander-1.27.jar!/com/beust/jcommander/ParameterDescription.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="31" column="22" selection-start-line="31" selection-start-column="12" selection-end-line="31" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/beust/jcommander/1.27/jcommander-1.27.jar!/com/beust/jcommander/JCommander.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1717">
+          <caret line="44" column="13" lean-forward="true" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/SMACExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="615" column="50" selection-start-line="615" selection-start-column="50" selection-end-line="615" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/smac-v2.10.03-master-778/example_scenarios/branin/branin.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/ant/execscript/Launcher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="35" column="32" selection-start-line="35" selection-start-column="23" selection-end-line="35" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/smac-v2.10.03-master-778/smac">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="115" selection-start-line="22" selection-start-column="115" selection-end-line="22" selection-end-column="115" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/ant/execscript/ExecScriptCreator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1921">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/state/StateFactoryOptions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="727">
+          <caret line="197" column="34" selection-start-line="197" selection-start-column="15" selection-end-line="197" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Spring</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>anchorsOptimizer</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>smac</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>

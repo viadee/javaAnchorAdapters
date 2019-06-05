@@ -1,6 +1,6 @@
 package RandomSearch;
 
-public class Parameter {
+public abstract class Parameter {
 
     private String name;
 

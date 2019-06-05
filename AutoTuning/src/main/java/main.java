@@ -1,5 +1,5 @@
-import LossFunctions.Accuracy.PredictionModel;
 import RandomSearch.RandomSearch;
+import ca.ubc.cs.beta.smac.executors.SMACExecutor;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
+
 
 public class main {
 
@@ -29,39 +30,17 @@ public class main {
         // Next pick specific instance (countess or patrick dooley)
         final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[600];
 
+        final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
+                .createDefaultBuilder(randomForestModel, explainedInstance);
 
-        // RANDOM SEARCH
-        RandomSearch rs = new RandomSearch();
-        rs.execute(randomForestModel, anchorTabular, explainedInstance);
+        // RANDOM SEARCH with time condintion
+        RandomSearch rs = new RandomSearch(1);
+        rs.execute(randomForestModel, anchorBuilder, anchorTabular);
 
+        SMACExecutor smacExecutor = new SMACExecutor();
 
-//        // Create builder that can be used to create an AnchorConstruction instance
-//        // RandomForest default builder
-//        final AnchorConstructionBuilder<TabularInstance> randomForestBuilder = anchorTabular
-//                .createDefaultBuilder(randomForestModel, explainedInstance).setTau(rs.getCurrentHyperparameterSpace().getTau().getCurrentValue()).setBeamSize(rs.getCurrentHyperparameterSpace().getBeamSize().getCurrentValue());
-//
-//        // Create local explanations
-//        System.out.println("====Random Forest Local Explanation====");
-//        printLocalExplanationResult(explainedInstance, anchorTabular, randomForestBuilder);
-//
-//        // Create global explanations
-//        System.out.println("====Random Forest Global Explanation====");
-////        printGlobalExplanationResult(anchorTabular, randomForestBuilder);
-//        // Use the CoveragePick algorithm to create global explanations
-//        final List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(randomForestBuilder, 10,
-//                Executors.newCachedThreadPool(), null)
-//                .run(anchorTabular.getTabularInstances(), 20);
-//
-//        System.out.println(anchorTabular.getVisualizer().visualizeGlobalResults(globalExplanations));
-//
-//        System.out.println("=========== TEST ===============");
-//        PredictionModel model = new PredictionModel(globalExplanations);
-//
-//        List<Integer> test = model.predict(anchorTabular.getTabularInstances());
-//
-//        rs.checkParameterSpace(calcAccuracyAndCoverage(test, randomForestModel));
-//
-//        rs.getCurrentHyperparameterSpace().setRandomHyperparameterSpace();
+        smacExecutor.main(null);
+
 
         System.out.println("-- COMPLETE --");
     }

@@ -11,19 +11,26 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+
 public class RandomSearch {
 
-    private long terminationConditionInMin = 0;
+    private long terminationConditionInMin;
     private HyperparameterSpace currentHyperparameterSpace;
     private HyperparameterSpace bestHyperparameterSpace;
 
-    public RandomSearch() {
+    /**
+     * @param terminationConditionInMin
+     */
+    public RandomSearch(long terminationConditionInMin) {
         this.currentHyperparameterSpace = new HyperparameterSpace();
         this.currentHyperparameterSpace.setRandomHyperparameterSpace();
-
+        this.terminationConditionInMin = terminationConditionInMin;
         this.bestHyperparameterSpace = new HyperparameterSpace();
     }
 
+    /**
+     * @param performance
+     */
     public void checkParameterSpace(double performance) {
 
         if (performance > bestHyperparameterSpace.getPerformance()) {
@@ -32,29 +39,40 @@ public class RandomSearch {
         }
     }
 
-    public HyperparameterSpace getCurrentHyperparameterSpace() {
-        return currentHyperparameterSpace;
-    }
 
-    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorTabular anchorTabular, TabularInstance explainedInstance) {
+    /**
+     * @param classificationFunction
+     * @param anchorBuilder
+     * @param anchorTabular
+     */
+    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular) {
 
         long startTime = System.currentTimeMillis();
 
-        while (false||(System.currentTimeMillis()-startTime)<10000) {
+        while ((System.currentTimeMillis() - startTime) < (this.terminationConditionInMin * 60000)) {
 
             // randomize all hyperparameters
-            getCurrentHyperparameterSpace().setRandomHyperparameterSpace();
+            this.currentHyperparameterSpace.setRandomHyperparameterSpace();
 
-            // init the AnchorConstructionBuilder with all hyperparameters
-            final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
-                    .createDefaultBuilder(classificationFunction, explainedInstance)
+            // to calculate the runtime of each Anchors run
+            long runtimeStart = System.currentTimeMillis();
+
+            // set all hyperparameters
+            anchorBuilder
                     .setTau(this.currentHyperparameterSpace.getTau().getCurrentValue())
-                    .setBeamSize(this.currentHyperparameterSpace.getBeamSize().getCurrentValue());
+                    .setBeamSize(this.currentHyperparameterSpace.getBeamSize().getCurrentValue())
+                    .setDelta(this.currentHyperparameterSpace.getDelta().getCurrentValue())
+                    .setEpsilon(this.currentHyperparameterSpace.getEpsilon().getCurrentValue())
+                    .setTauDiscrepancy(this.currentHyperparameterSpace.getTauDiscrepancy().getCurrentValue())
+                    .setInitSampleCount(this.currentHyperparameterSpace.getInitSampleCount().getCurrentValue());
 
             // execute Coverage Pick of Anchors and get result
             final List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(anchorBuilder, 10,
                     Executors.newCachedThreadPool(), null)
                     .run(anchorTabular.getTabularInstances(), 20);
+
+            // set runtime of current Anchors run
+            this.currentHyperparameterSpace.setRuntime(System.currentTimeMillis() - runtimeStart);
 
             // init prediction model of created global rules
             PredictionModel model = new PredictionModel(globalExplanations);
@@ -63,13 +81,19 @@ public class RandomSearch {
             List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
 
             // check if performance of current space is the best, if yes set current space as best space
-            checkParameterSpace(calcAccuracyAndCoverage(prediction, classificationFunction, anchorTabular.getTabularInstances()));
+            checkParameterSpace(calcPerformance(prediction, classificationFunction, anchorTabular.getTabularInstances()));
         }
 
-        visiualizeBestHyperparameterSpace();
+        visualizeBestHyperparameterSpace();
     }
 
-    private static double calcAccuracyAndCoverage(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] trainData) {
+    /**
+     * @param predictedValues
+     * @param predictFunction
+     * @param trainData
+     * @return
+     */
+    private static double calcPerformance(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] trainData) {
         int predInstances = 0;
         int matches = 0;
         for (int i = 0; i < trainData.length; i++) {
@@ -91,10 +115,21 @@ public class RandomSearch {
         return accuracy * coverage;
     }
 
-    private void visiualizeBestHyperparameterSpace() {
+    private void visualizeBestHyperparameterSpace() {
 
-        System.out.println("==== Imitation accuracy of the global explanations is ====" + System.lineSeparator() +
-                this.bestHyperparameterSpace.getPerformance());
+        System.out.println("==== The best Hyperparameter Space is ====" + System.lineSeparator() +
+                "Tau: " + this.bestHyperparameterSpace.getTau().getCurrentValue() + System.lineSeparator() +
+                "BeamSize: " + this.bestHyperparameterSpace.getBeamSize().getCurrentValue() + System.lineSeparator() +
+                "Delta: " + this.bestHyperparameterSpace.getDelta().getCurrentValue() + System.lineSeparator() +
+                "Epsilon: " + this.bestHyperparameterSpace.getEpsilon().getCurrentValue() + System.lineSeparator() +
+                "TauDiscrepancy: " + this.bestHyperparameterSpace.getTauDiscrepancy().getCurrentValue() + System.lineSeparator() +
+                "InitSampleCount: " + this.bestHyperparameterSpace.getInitSampleCount().getCurrentValue() + System.lineSeparator() +
+                "Performance: " + this.bestHyperparameterSpace.getPerformance() + System.lineSeparator() +
+                "Runtime: " + this.bestHyperparameterSpace.getRuntime() + "ms");
+    }
+
+    public HyperparameterSpace getCurrentHyperparameterSpace() {
+        return currentHyperparameterSpace;
     }
 
 }
