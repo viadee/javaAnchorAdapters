@@ -4,14 +4,24 @@ import java.util.Random;
 
 public class IntegerParameter extends Parameter {
 
+    private int defaultValue;
     private int minValue;
     private int maxValue;
     private int currentValue;
 
-    public IntegerParameter(String name, int minValue, int maxValue) {
+    public IntegerParameter(String name, int defaultValue, int minValue, int maxValue) {
         super(name);
+        this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+    }
+
+    public int getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(int defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     public int getMinValue() {

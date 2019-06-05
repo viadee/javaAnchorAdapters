@@ -13,7 +13,7 @@ public class ContinuousParameterTest {
         // Given
         double minValue = 0.5;
         double maxValue = 0.95;
-        ContinuousParameter p = new ContinuousParameter("test",minValue, maxValue);
+        ContinuousParameter p = new ContinuousParameter("test", 0, minValue, maxValue);
 
         // When
         p.searchRandom();

@@ -1,5 +1,4 @@
 import RandomSearch.RandomSearch;
-import ca.ubc.cs.beta.smac.executors.SMACExecutor;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
@@ -34,7 +33,8 @@ public class main {
                 .createDefaultBuilder(randomForestModel, explainedInstance);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch((long)60);
+//        RandomSearch rs = new RandomSearch((long)60);
+        RandomSearch rs = new RandomSearch(3);
         rs.execute(randomForestModel, anchorBuilder, anchorTabular);
 
         System.out.println("-- COMPLETE --");
@@ -62,31 +62,6 @@ public class main {
 
         System.out.println(tabular.getVisualizer().visualizeGlobalResults(globalExplanations));
     }
-
-
-//    private static double calcAccuracyAndCoverage(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction) {
-//        final TabularInstance[] trainData = TitanicDataset.createTabularTrainingDefinition().getTabularInstances();
-//        int predInstances = 0;
-//        int matches = 0;
-//        for (int i = 0; i < trainData.length; i++) {
-//            if (!predictedValues.get(i).equals(-1)) {
-//                predInstances++;
-//                if (predictFunction.apply(trainData[i]).equals(predictedValues.get(i)))
-//                    matches++;
-//            }
-//        }
-//
-//        double accuracy = (double) matches / (double) predInstances;
-//        double coverage = (double) predInstances / (double) predictedValues.size();
-//
-//        System.out.println("==== Imitation accuracy of the global explanations is ====" + System.lineSeparator() +
-//                accuracy);
-//        System.out.println("==== Total Coverage of the global explanations is ====" + System.lineSeparator() +
-//                coverage);
-//
-//        return accuracy * coverage;
-//    }
-
 
     private static void outputTestsetAccuracy(String name, Function<TabularInstance, Integer> predictFunction) {
         final TabularInstance[] testData = TitanicDataset.createTabularTestDefinition().getTabularInstances();

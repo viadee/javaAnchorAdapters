@@ -6,14 +6,24 @@ import java.util.Random;
 
 public class ContinuousParameter extends Parameter {
 
+    private double defaultValue;
     private double minValue;
     private double maxValue;
     private double currentValue;
 
-    public ContinuousParameter(String name, double minValue, double maxValue) {
+    public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue) {
         super(name);
+        this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+    }
+
+    public double getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(double defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     public double getMinValue() {

@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1d5e9ee-7bbe-455f-9544-0bce533582e2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -24,15 +29,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1000">
-              <caret line="62" selection-start-line="62" selection-end-line="62" />
+            <state relative-caret-position="323">
+              <caret line="79" column="46" selection-start-line="79" selection-start-column="46" selection-end-line="79" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1182#1183#0" expanded="true" />
-                <element signature="e#1256#1257#0" expanded="true" />
-                <element signature="e#1289#1290#0" expanded="true" />
-                <element signature="e#1361#1362#0" expanded="true" />
-                <element signature="e#6479#6480#0" expanded="true" />
+                <element signature="e#1738#1739#0" expanded="true" />
+                <element signature="e#1806#1807#0" expanded="true" />
+                <element signature="e#1863#1864#0" expanded="true" />
+                <element signature="e#1930#1931#0" expanded="true" />
+                <element signature="e#7437#7438#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -55,27 +60,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="53" selection-start-line="53" selection-end-line="53" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#775#776#0" expanded="true" />
-                <element signature="e#810#811#0" expanded="true" />
-                <element signature="e#866#867#0" expanded="true" />
-                <element signature="e#914#915#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="867">
-              <caret line="63" selection-start-line="63" selection-end-line="63" />
+            <state relative-caret-position="176">
+              <caret line="48" column="29" lean-forward="true" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
               <folding>
+                <element signature="imports" expanded="true" />
                 <element signature="e#564#565#0" expanded="true" />
                 <element signature="e#595#596#0" expanded="true" />
               </folding>
@@ -86,8 +76,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="17" column="63" lean-forward="true" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
+            <state relative-caret-position="357">
+              <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -178,26 +168,26 @@
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Imitation/Rule.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Imitation/PredictionModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/PredictionModel.java" />
-        <option value="$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java" />
-        <option value="$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/TitanicDataset.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" />
         <option value="$PROJECT_DIR$/src/main/java/RandomSearch/Parameter.java" />
         <option value="$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/Feature.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/RandomSearch/RandomSearchTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java" />
+        <option value="$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java" />
         <option value="$PROJECT_DIR$/src/main/java/main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1176" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-149" />
+    <option name="y" value="20" />
+    <option name="width" value="1934" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -253,6 +243,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
+              <item name="AutoTuning" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="RandomSearch" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="AutoTuning" type="b2602c69:ProjectViewProjectNode" />
@@ -538,7 +536,7 @@
       <workItem from="1558515957246" duration="12302000" />
       <workItem from="1558686089672" duration="10210000" />
       <workItem from="1559116436080" duration="34795000" />
-      <workItem from="1559635246412" duration="24606000" />
+      <workItem from="1559635246412" duration="29560000" />
     </task>
     <servers />
   </component>
@@ -575,7 +573,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="119905000" />
+    <option name="totallyTimeSpent" value="124859000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -658,9 +656,9 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java</url>
-          <line>122</line>
+          <line>106</line>
           <properties />
-          <option name="timeStamp" value="28" />
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -805,13 +803,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/LossFunctions/Accuracy/CategoricalFeature.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -835,19 +826,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="544">
           <caret line="55" column="17" selection-start-line="55" selection-start-column="17" selection-end-line="55" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="516">
-          <caret line="46" column="5" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
-          <folding>
-            <element signature="e#679#680#0" expanded="true" />
-            <element signature="e#714#715#0" expanded="true" />
-            <element signature="e#767#768#0" expanded="true" />
-            <element signature="e#815#816#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -962,13 +940,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="20" column="41" selection-start-line="20" selection-start-column="41" selection-end-line="20" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/ValidatorExecutor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="884">
@@ -990,17 +961,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/builder/SMACBuilder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="97" column="38" selection-start-line="97" selection-start-column="38" selection-end-line="97" selection-end-column="38" />
-          <folding>
-            <element signature="e#4201#4202#0" expanded="true" />
-            <element signature="e#4246#4247#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/beust/jcommander/1.27/jcommander-1.27.jar!/com/beust/jcommander/ParameterDescription.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -1012,16 +972,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1717">
           <caret line="44" column="13" lean-forward="true" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/SMACExecutor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="615" column="50" selection-start-line="615" selection-start-column="50" selection-end-line="615" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1049,6 +999,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/executors/SMACExecutor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="615" column="50" selection-start-line="615" selection-start-column="50" selection-end-line="615" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/aeatk-src.jar!/ca/ubc/cs/beta/aeatk/state/StateFactoryOptions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
@@ -1056,27 +1016,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/IntegerParameter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="53" selection-start-line="53" selection-end-line="53" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#775#776#0" expanded="true" />
-            <element signature="e#810#811#0" expanded="true" />
-            <element signature="e#866#867#0" expanded="true" />
-            <element signature="e#914#915#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="306">
+          <caret line="18" column="32" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/ContinuousParameter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
+        <state relative-caret-position="340">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
           <folding>
-            <element signature="e#564#565#0" expanded="true" />
-            <element signature="e#595#596#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1095,10 +1047,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/IntegerParameterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="16" column="60" selection-start-line="16" selection-start-column="60" selection-end-line="16" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/RandomSearch/ContinuousParameterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/HyperparameterSpace.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="48" column="29" lean-forward="true" selection-start-line="48" selection-start-column="29" selection-end-line="48" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#564#565#0" expanded="true" />
+            <element signature="e#595#596#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Downloads/smac-v2.10.03-master-778/lib/smac-src.jar!/ca/ubc/cs/beta/smac/builder/SMACBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="97" column="38" selection-start-line="97" selection-start-column="38" selection-end-line="97" selection-end-column="38" />
+          <folding>
+            <element signature="e#4201#4202#0" expanded="true" />
+            <element signature="e#4246#4247#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="17" column="63" lean-forward="true" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
+        <state relative-caret-position="357">
+          <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1107,15 +1096,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/RandomSearch/RandomSearch.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1000">
-          <caret line="62" selection-start-line="62" selection-end-line="62" />
+        <state relative-caret-position="323">
+          <caret line="79" column="46" selection-start-line="79" selection-start-column="46" selection-end-line="79" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1182#1183#0" expanded="true" />
-            <element signature="e#1256#1257#0" expanded="true" />
-            <element signature="e#1289#1290#0" expanded="true" />
-            <element signature="e#1361#1362#0" expanded="true" />
-            <element signature="e#6479#6480#0" expanded="true" />
+            <element signature="e#1738#1739#0" expanded="true" />
+            <element signature="e#1806#1807#0" expanded="true" />
+            <element signature="e#1863#1864#0" expanded="true" />
+            <element signature="e#1930#1931#0" expanded="true" />
+            <element signature="e#7437#7438#0" expanded="true" />
           </folding>
         </state>
       </provider>

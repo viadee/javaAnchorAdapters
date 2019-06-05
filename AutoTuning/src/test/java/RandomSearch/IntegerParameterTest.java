@@ -14,7 +14,7 @@ public class IntegerParameterTest {
         // Given
         int minValue = 0;
         int maxValue = 30;
-        IntegerParameter p = new IntegerParameter("name",minValue, maxValue);
+        IntegerParameter p = new IntegerParameter("name", 0, minValue, maxValue);
 
         // When
         p.searchRandom();
