@@ -1,18 +1,17 @@
 package RandomSearch;
 
-public abstract class Parameter {
+public interface Parameter {
 
-    private String name;
+    String getName();
 
-    public Parameter(String name) {
-        this.name = name;
-    }
+    Number getMinValue();
 
-    public String getName() {
-        return name;
-    }
+    Number getMaxValue();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    Number getDefaultValue();
+
+    Number getCurrentValue();
+
+    void searchRandom();
+
 }

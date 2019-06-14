@@ -71,21 +71,21 @@ public class RandomSearch {
             // for starting with the default values
             if (this.startWithDefault){
                 anchorBuilder
-                        .setTau(this.currentHyperparameterSpace.getTau().getDefaultValue())
-                        .setBeamSize(this.currentHyperparameterSpace.getBeamSize().getDefaultValue())
-                        .setDelta(this.currentHyperparameterSpace.getDelta().getDefaultValue())
-                        .setEpsilon(this.currentHyperparameterSpace.getEpsilon().getDefaultValue())
-                        .setTauDiscrepancy(this.currentHyperparameterSpace.getTauDiscrepancy().getDefaultValue())
-                        .setInitSampleCount(this.currentHyperparameterSpace.getInitSampleCount().getDefaultValue());
+                        .setTau(this.currentHyperparameterSpace.getParameterByName("tau").getDefaultValue().doubleValue())
+                        .setBeamSize(this.currentHyperparameterSpace.getParameterByName("beamsize").getDefaultValue().intValue())
+                        .setDelta(this.currentHyperparameterSpace.getParameterByName("delta").getDefaultValue().doubleValue())
+                        .setEpsilon(this.currentHyperparameterSpace.getParameterByName("epsilon").getDefaultValue().doubleValue())
+                        .setTauDiscrepancy(this.currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getDefaultValue().doubleValue())
+                        .setInitSampleCount(this.currentHyperparameterSpace.getParameterByName("initSampleCount").getDefaultValue().intValue());
                 this.startWithDefault = false;
             } else {
                 anchorBuilder
-                        .setTau(this.currentHyperparameterSpace.getTau().getCurrentValue())
-                        .setBeamSize(this.currentHyperparameterSpace.getBeamSize().getCurrentValue())
-                        .setDelta(this.currentHyperparameterSpace.getDelta().getCurrentValue())
-                        .setEpsilon(this.currentHyperparameterSpace.getEpsilon().getCurrentValue())
-                        .setTauDiscrepancy(this.currentHyperparameterSpace.getTauDiscrepancy().getCurrentValue())
-                        .setInitSampleCount(this.currentHyperparameterSpace.getInitSampleCount().getCurrentValue());
+                        .setTau(this.currentHyperparameterSpace.getParameterByName("tau").getCurrentValue().doubleValue())
+                        .setBeamSize(this.currentHyperparameterSpace.getParameterByName("beamsize").getCurrentValue().intValue())
+                        .setDelta(this.currentHyperparameterSpace.getParameterByName("delta").getCurrentValue().doubleValue())
+                        .setEpsilon(this.currentHyperparameterSpace.getParameterByName("epsilon").getCurrentValue().doubleValue())
+                        .setTauDiscrepancy(this.currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue().doubleValue())
+                        .setInitSampleCount(this.currentHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue().intValue());
             }
 
             // execute Coverage Pick of Anchors and get result
@@ -133,12 +133,12 @@ public class RandomSearch {
     private void visualizeBestHyperparameterSpace() {
 
         System.out.println("==== The best Hyperparameter Space is ====" + System.lineSeparator() +
-                "Tau: " + this.bestHyperparameterSpace.getTau().getCurrentValue() + System.lineSeparator() +
-                "BeamSize: " + this.bestHyperparameterSpace.getBeamSize().getCurrentValue() + System.lineSeparator() +
-                "Delta: " + this.bestHyperparameterSpace.getDelta().getCurrentValue() + System.lineSeparator() +
-                "Epsilon: " + this.bestHyperparameterSpace.getEpsilon().getCurrentValue() + System.lineSeparator() +
-                "TauDiscrepancy: " + this.bestHyperparameterSpace.getTauDiscrepancy().getCurrentValue() + System.lineSeparator() +
-                "InitSampleCount: " + this.bestHyperparameterSpace.getInitSampleCount().getCurrentValue() + System.lineSeparator() +
+                "Tau: " + this.bestHyperparameterSpace.getParameterByName("tau").getCurrentValue() + System.lineSeparator() +
+                "BeamSize: " + this.bestHyperparameterSpace.getParameterByName("beamsize").getCurrentValue() + System.lineSeparator() +
+                "Delta: " + this.bestHyperparameterSpace.getParameterByName("delta").getCurrentValue() + System.lineSeparator() +
+                "Epsilon: " + this.bestHyperparameterSpace.getParameterByName("epsilon").getCurrentValue() + System.lineSeparator() +
+                "TauDiscrepancy: " + this.bestHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue() + System.lineSeparator() +
+                "InitSampleCount: " + this.bestHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue() + System.lineSeparator() +
                 "Precision: " + this.bestHyperparameterSpace.getPrecision() + System.lineSeparator() +
                 "Coverage: " + this.bestHyperparameterSpace.getCoverage() + System.lineSeparator() +
                 "Performance: " + this.bestHyperparameterSpace.getPrecision() * this.bestHyperparameterSpace.getCoverage() + System.lineSeparator() +

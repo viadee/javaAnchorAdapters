@@ -2,50 +2,39 @@ package RandomSearch;
 
 import java.util.Random;
 
-public class IntegerParameter extends Parameter {
+public class IntegerParameter implements IntegerParameterInterface {
 
+    private String name;
     private int defaultValue;
     private int minValue;
     private int maxValue;
     private int currentValue;
 
     public IntegerParameter(String name, int defaultValue, int minValue, int maxValue) {
-        super(name);
+        this.name = name;
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
 
-    public int getDefaultValue() {
+    public String getName() {
+        return name;
+    }
+
+    public Integer getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(int defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-    public int getMinValue() {
+    public Integer getMinValue() {
         return minValue;
     }
 
-    public void setMinValue(int minValue) {
-        this.minValue = minValue;
-    }
-
-    public int getMaxValue() {
+    public Integer getMaxValue() {
         return maxValue;
     }
 
-    public void setMaxValue(int maxValue) {
-        this.maxValue = maxValue;
-    }
-
-    public int getCurrentValue() {
+    public Integer getCurrentValue() {
         return currentValue;
-    }
-
-    public void setCurrentValue(int currentValue) {
-        this.currentValue = currentValue;
     }
 
     public void searchRandom() {

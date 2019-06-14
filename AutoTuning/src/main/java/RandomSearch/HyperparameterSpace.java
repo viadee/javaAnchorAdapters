@@ -1,7 +1,9 @@
 package RandomSearch;
 
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
+import scala.reflect.internal.Trees;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -12,37 +14,24 @@ public class HyperparameterSpace {
     private double coverage = 0;
     private long runtime = 0;
 
-    private IntegerParameter beamSize;
-    private ContinuousParameter tau;
-    private ContinuousParameter delta;
-    private ContinuousParameter epsilon;
-    private ContinuousParameter tauDiscrepancy;
-    private IntegerParameter initSampleCount;
-    // more to come
+    private List<Parameter> hyperpParameters = new ArrayList<Parameter>();
 
 
     public HyperparameterSpace() {
-        this.beamSize = new IntegerParameter("beamsize", 2, 1, 30);
-        this.tau = new ContinuousParameter("tau", 1, 0.1, 1.0);
-        this.delta = new ContinuousParameter("delta", 0.1, 0.1, 0.5);
-        this.epsilon = new ContinuousParameter("epsilon", 0.1, 0.1, 0.5);
-        this.tauDiscrepancy = new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1);
-        this.initSampleCount = new IntegerParameter("initSampleCount", 1, 1, 10);
+        this.hyperpParameters.add(new IntegerParameter("beamsize", 2, 1, 30));
+        this.hyperpParameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
+        this.hyperpParameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
+        this.hyperpParameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
+        this.hyperpParameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
+        this.hyperpParameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
     }
 
     public void setRandomHyperparameterSpace() {
 
-        this.beamSize.searchRandom();
-        this.tau.searchRandom();
-        this.delta.searchRandom();
-        this.epsilon.searchRandom();
-        this.tauDiscrepancy.searchRandom();
-        this.initSampleCount.searchRandom();
+        for (Parameter p : hyperpParameters) {
+            p.searchRandom();
+        }
 
-    }
-
-    public IntegerParameter getBeamSize() {
-        return beamSize;
     }
 
     /**
@@ -75,24 +64,17 @@ public class HyperparameterSpace {
 
     }
 
-    public ContinuousParameter getTau() {
-        return tau;
+    public Parameter getParameterByName(String name){
+        for (Parameter p : hyperpParameters) {
+            if (p.getName() == name) {
+                return p;
+            }
+        }
+        throw new RuntimeException("No parameter found by the name of " + name);
     }
 
-    public ContinuousParameter getDelta() {
-        return delta;
-    }
-
-    public ContinuousParameter getEpsilon() {
-        return epsilon;
-    }
-
-    public ContinuousParameter getTauDiscrepancy() {
-        return tauDiscrepancy;
-    }
-
-    public IntegerParameter getInitSampleCount() {
-        return initSampleCount;
+    public List<Parameter> getHyperpParameters() {
+        return hyperpParameters;
     }
 
     public long getRuntime() {
