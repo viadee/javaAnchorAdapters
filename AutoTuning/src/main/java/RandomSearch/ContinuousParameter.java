@@ -19,6 +19,10 @@ public class ContinuousParameter implements ContinuousParameterInterface {
         this.maxValue = maxValue;
     }
 
+    public String getType() {
+        return type;
+    }
+
     public String getName() {
         return name;
     }

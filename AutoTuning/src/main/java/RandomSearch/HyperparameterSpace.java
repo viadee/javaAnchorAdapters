@@ -14,21 +14,21 @@ public class HyperparameterSpace {
     private double coverage = 0;
     private long runtime = 0;
 
-    private List<Parameter> hyperpParameters = new ArrayList<Parameter>();
+    private List<Parameter> hyperParameters = new ArrayList<Parameter>();
 
 
     public HyperparameterSpace() {
-        this.hyperpParameters.add(new IntegerParameter("beamsize", 2, 1, 30));
-        this.hyperpParameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
-        this.hyperpParameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
-        this.hyperpParameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
-        this.hyperpParameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
-        this.hyperpParameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+        this.hyperParameters.add(new IntegerParameter("beamsize", 2, 1, 30));
+        this.hyperParameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
+        this.hyperParameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
+        this.hyperParameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
+        this.hyperParameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
+        this.hyperParameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
     }
 
     public void setRandomHyperparameterSpace() {
 
-        for (Parameter p : hyperpParameters) {
+        for (Parameter p : hyperParameters) {
             p.searchRandom();
         }
 
@@ -65,7 +65,7 @@ public class HyperparameterSpace {
     }
 
     public Parameter getParameterByName(String name){
-        for (Parameter p : hyperpParameters) {
+        for (Parameter p : hyperParameters) {
             if (p.getName() == name) {
                 return p;
             }
@@ -73,8 +73,8 @@ public class HyperparameterSpace {
         throw new RuntimeException("No parameter found by the name of " + name);
     }
 
-    public List<Parameter> getHyperpParameters() {
-        return hyperpParameters;
+    public List<Parameter> getHyperParameters() {
+        return hyperParameters;
     }
 
     public long getRuntime() {

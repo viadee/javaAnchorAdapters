@@ -17,6 +17,8 @@ public class IntegerParameter implements IntegerParameterInterface {
         this.maxValue = maxValue;
     }
 
+    public String getType() { return type; }
+
     public String getName() {
         return name;
     }
