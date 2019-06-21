@@ -13,11 +13,21 @@ public class ContinuousParameter implements ContinuousParameterInterface {
     private double currentValue;
 
     public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue) {
+        this(name, defaultValue, minValue, maxValue, 0);
+    }
+
+    public ContinuousParameter(String name, double currentValue) {
+        this(name, -1, -1, -1 , currentValue);
+    }
+
+    public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue, double currentValue) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.currentValue = currentValue;
     }
+
 
     public String getType() {
         return type;

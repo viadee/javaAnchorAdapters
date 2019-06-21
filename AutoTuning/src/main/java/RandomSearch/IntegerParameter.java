@@ -10,14 +10,26 @@ public class IntegerParameter implements IntegerParameterInterface {
     private int maxValue;
     private int currentValue;
 
+
     public IntegerParameter(String name, int defaultValue, int minValue, int maxValue) {
+        this(name, defaultValue, minValue, maxValue, -1);
+    }
+
+    public IntegerParameter(String name, int currentValue) {
+        this(name, -1, -1, -1, currentValue);
+    }
+
+    public IntegerParameter(String name, int defaultValue, int minValue, int maxValue, int currentValue) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.currentValue = currentValue;
     }
 
-    public String getType() { return type; }
+    public String getType() {
+        return type;
+    }
 
     public String getName() {
         return name;

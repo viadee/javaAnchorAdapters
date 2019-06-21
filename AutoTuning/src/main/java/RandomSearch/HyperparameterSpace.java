@@ -1,7 +1,6 @@
 package RandomSearch;
 
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
-import scala.reflect.internal.Trees;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +13,34 @@ public class HyperparameterSpace {
     private double coverage = 0;
     private long runtime = 0;
 
-    private List<Parameter> hyperParameters = new ArrayList<Parameter>();
+    private List<Parameter> hyperParameters;
 
 
     public HyperparameterSpace() {
-        this.hyperParameters.add(new IntegerParameter("beamsize", 2, 1, 30));
-        this.hyperParameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
-        this.hyperParameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
-        this.hyperParameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
-        this.hyperParameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
-        this.hyperParameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+        this(null);
+    }
+
+    public HyperparameterSpace(List<Parameter> hyperParameters) {
+
+        if (hyperParameters != null) {
+            this.hyperParameters = hyperParameters;
+        } else {
+            this.hyperParameters = fillWithDefaults();
+        }
+    }
+
+    private List<Parameter> fillWithDefaults() {
+
+        List<Parameter> parameters = new ArrayList<Parameter>();
+
+        parameters.add(new IntegerParameter("beamsize", 2, 1, 30));
+        parameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
+        parameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
+        parameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
+        parameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
+        parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+
+        return parameters;
     }
 
     public void setRandomHyperparameterSpace() {

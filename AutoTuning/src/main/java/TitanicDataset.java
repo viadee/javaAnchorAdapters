@@ -1,3 +1,5 @@
+package data;
+
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
@@ -23,7 +25,7 @@ public class TitanicDataset {
     /**
      * @return the {@link AnchorTabular} object that contains the training data and its definitions
      */
-    static AnchorTabular createTabularTrainingDefinition() {
+    public static AnchorTabular createTabularTrainingDefinition() {
         InputStream trainingDataStream = ClassLoader.getSystemResourceAsStream("Titanic/train.csv");
         if (trainingDataStream == null)
             throw new RuntimeException("Could not load data");
@@ -56,7 +58,7 @@ public class TitanicDataset {
     /**
      * @return the {@link AnchorTabular} object that contains the test data and its definitions
      */
-    static AnchorTabular createTabularTestDefinition() {
+    public static AnchorTabular createTabularTestDefinition() {
         // The following implementation is very much similar to the above method.
         // It is contained in an own block to increase the tutorial's readability
         // Main difference: no target label is included in test set data
@@ -103,7 +105,7 @@ public class TitanicDataset {
     /**
      * @return the labels of the test set as specified in gender_submission.
      */
-    static int[] readTestLabels() {
+    public static int[] readTestLabels() {
         InputStream trainingDataStream = ClassLoader.getSystemResourceAsStream("Titanic/gender_submission.csv");
         if (trainingDataStream == null)
             throw new RuntimeException("Could not load data");
