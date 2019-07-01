@@ -1,6 +1,7 @@
 package RandomSearch;
 
 import LossFunctions.Accuracy.PredictionModel;
+import LossFunctions.PerfomanceMeasures;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
@@ -54,7 +55,7 @@ public class RandomSearch {
      * @param anchorBuilder
      * @param anchorTabular
      */
-    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular) {
+    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, PerfomanceMeasures.Measure measure) {
 
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
@@ -69,7 +70,7 @@ public class RandomSearch {
 
             // set all hyperparameters
             // for starting with the default values
-            if (this.startWithDefault){
+            if (this.startWithDefault) {
                 anchorBuilder
                         .setTau(this.currentHyperparameterSpace.getParameterByName("tau").getDefaultValue().doubleValue())
                         .setBeamSize(this.currentHyperparameterSpace.getParameterByName("beamsize").getDefaultValue().intValue())
@@ -102,9 +103,13 @@ public class RandomSearch {
             // predict data set labels
             List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
 
+            // init performance measure
+            PerfomanceMeasures perfomanceMeasures = new PerfomanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
+            this.currentHyperparameterSpace.setPerformance(perfomanceMeasures.calcMeasure(measure));
+            this.currentHyperparameterSpace.setCoverage(perfomanceMeasures.getCoverage());
+
             // check if performance of current space is the best, if yes set current space as best space
-            this.currentHyperparameterSpace.calcPerformance(prediction, classificationFunction, anchorTabular.getTabularInstances());
-            if (checkIfBetter(this.currentHyperparameterSpace.getPrecision() * this.currentHyperparameterSpace.getCoverage())) {
+            if (checkIfBetter(this.currentHyperparameterSpace.getPerformance() * this.currentHyperparameterSpace.getCoverage())) {
                 this.bestHyperparameterSpace = this.currentHyperparameterSpace;
                 this.bestGlobalExplanations = globalExplanations;
             }
@@ -123,7 +128,7 @@ public class RandomSearch {
      */
     private boolean checkIfBetter(double performance) {
 
-        if (performance > this.bestHyperparameterSpace.getPrecision() * this.bestHyperparameterSpace.getCoverage()) {
+        if (performance > this.bestHyperparameterSpace.getPerformance() * this.bestHyperparameterSpace.getCoverage()) {
             return true;
         }
         return false;
@@ -139,9 +144,8 @@ public class RandomSearch {
                 "Epsilon: " + this.bestHyperparameterSpace.getParameterByName("epsilon").getCurrentValue() + System.lineSeparator() +
                 "TauDiscrepancy: " + this.bestHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue() + System.lineSeparator() +
                 "InitSampleCount: " + this.bestHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue() + System.lineSeparator() +
-                "Precision: " + this.bestHyperparameterSpace.getPrecision() + System.lineSeparator() +
                 "Coverage: " + this.bestHyperparameterSpace.getCoverage() + System.lineSeparator() +
-                "Performance: " + this.bestHyperparameterSpace.getPrecision() * this.bestHyperparameterSpace.getCoverage() + System.lineSeparator() +
+                "Performance: " + this.bestHyperparameterSpace.getPerformance() + System.lineSeparator() +
                 "Runtime: " + this.bestHyperparameterSpace.getRuntime() + "ms");
     }
 

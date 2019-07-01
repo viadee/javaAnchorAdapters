@@ -1,5 +1,3 @@
-package data;
-
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
@@ -9,9 +7,7 @@ import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceNonEmptyTrans
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.CSVReader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,7 +22,9 @@ public class TitanicDataset {
      * @return the {@link AnchorTabular} object that contains the training data and its definitions
      */
     public static AnchorTabular createTabularTrainingDefinition() {
+
         InputStream trainingDataStream = ClassLoader.getSystemResourceAsStream("Titanic/train.csv");
+
         if (trainingDataStream == null)
             throw new RuntimeException("Could not load data");
 
@@ -51,6 +49,7 @@ public class TitanicDataset {
                     .addColumn(new StringColumn("Embarked"))
                     .build(trainingDataStream, true, false);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Could not read data");
         }
     }

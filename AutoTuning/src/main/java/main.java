@@ -1,4 +1,7 @@
+import LossFunctions.PerfomanceMeasures;
+import RandomSearch.HyperparameterSpace;
 import RandomSearch.RandomSearch;
+import SMAC.SMACHelper;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
@@ -35,7 +38,12 @@ public class main {
         // RANDOM SEARCH with time condintion
 //        RandomSearch rs = new RandomSearch((long)60);
         RandomSearch rs = new RandomSearch(3);
-        rs.execute(randomForestModel, anchorBuilder, anchorTabular);
+        rs.execute(randomForestModel, anchorBuilder, anchorTabular, PerfomanceMeasures.Measure.ACCURACY);
+
+        // SMAC with condition
+//        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();
+//        SMACHelper smacHelper = new SMACHelper("Titanic", hyperparameterSpace, "anchorsOptimizer.jar", "C:\\Users\\B96\\IdeaProjects\\javaAnchorAdapters\\AutoTuning\\out\\artifacts\\anchorsOptimizer_jar", 3);
+//        smacHelper.run();
 
         System.out.println("-- COMPLETE --");
     }

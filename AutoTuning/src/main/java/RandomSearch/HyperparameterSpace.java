@@ -9,7 +9,7 @@ import java.util.function.Function;
 public class HyperparameterSpace {
 
     // performance indicators
-    private double precision = 0;
+    private double performance = 0;
     private double coverage = 0;
     private long runtime = 0;
 
@@ -51,39 +51,9 @@ public class HyperparameterSpace {
 
     }
 
-    /**
-     * @param predictedValues
-     * @param predictFunction
-     * @param trainData
-     * @return
-     */
-    public void calcPerformance(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] trainData) {
-        int predInstances = 0;
-        int matches = 0;
-        for (int i = 0; i < trainData.length; i++) {
-            if (!predictedValues.get(i).equals(-1)) {
-                predInstances++;
-                if (predictFunction.apply(trainData[i]).equals(predictedValues.get(i)))
-                    matches++;
-            }
-        }
-
-        double precision = (double) matches / (double) predInstances;
-        double coverage = (double) predInstances / (double) predictedValues.size();
-
-        this.precision = precision;
-        this.coverage = coverage;
-
-        System.out.println("==== Imitation accuracy of the global explanations is ====" + System.lineSeparator() +
-                precision);
-        System.out.println("==== Total Coverage of the global explanations is ====" + System.lineSeparator() +
-                coverage);
-
-    }
-
     public Parameter getParameterByName(String name){
         for (Parameter p : hyperParameters) {
-            if (p.getName() == name) {
+            if (p.getName().equals(name)) {
                 return p;
             }
         }
@@ -102,12 +72,12 @@ public class HyperparameterSpace {
         this.runtime = runtime;
     }
 
-    public double getPrecision() {
-        return precision;
+    public double getPerformance() {
+        return performance;
     }
 
-    public void setPrecision(double precision) {
-        this.precision = precision;
+    public void setPerformance(double precision) {
+        this.performance = precision;
     }
 
     public double getCoverage() {
