@@ -5,7 +5,7 @@ import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import java.util.List;
 import java.util.function.Function;
 
-public class PerfomanceMeasures {
+public class PerformanceMeasures {
 
     double coverage;
     int truePositives;
@@ -16,10 +16,12 @@ public class PerfomanceMeasures {
     public enum Measure {
         ACCURACY,
         PRECISION,
-        RECALL
+        RECALL,
+        SPECIFICITY,
+        F1
     }
 
-    public PerfomanceMeasures(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] data) {
+    public PerformanceMeasures(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] data) {
         calcPerformance(predictedValues, predictFunction, data);
     }
 
@@ -36,6 +38,12 @@ public class PerfomanceMeasures {
             case RECALL:
                 result = calcRecall();
                 break;
+            case SPECIFICITY:
+                result = calcSpecificity();
+                break;
+            case F1:
+                result = calcF1();
+                break;
         }
 
         System.out.println("Performance: " + result + " and Coverage: " + this.coverage);
@@ -43,20 +51,42 @@ public class PerfomanceMeasures {
     }
 
     private double calcAccuracy() {
-        double accuracy = ((double) this.truePositives + (double) this.trueNegatives) / ((double) truePositives + (double) trueNegatives + (double) falsePositives + (double) falseNegatives);
+
+        double accuracy = ((double) truePositives + (double) trueNegatives) / ((double) truePositives + (double) trueNegatives + (double) falsePositives + (double) falseNegatives);
         return accuracy;
+
     }
 
     private double calcPrecision() {
-        double precision = (double) this.truePositives / ((double) truePositives + (double) falsePositives);
+
+        double precision = (double) truePositives / ((double) truePositives + (double) falsePositives);
         return precision;
+
     }
 
     private double calcRecall() {
-        double recall = (double) this.truePositives / ((double) truePositives + (double) falseNegatives);
+
+        double recall = (double) truePositives / ((double) truePositives + (double) falseNegatives);
         return recall;
+
     }
 
+    private double calcSpecificity() {
+
+        double specificity = (double) trueNegatives / ((double) falsePositives + (double) trueNegatives);
+        return specificity;
+
+    }
+
+    private double calcF1() {
+
+        double precision = calcPrecision();
+        double recall = calcRecall();
+
+        double f1 = 2 * ((precision * recall) / (precision + recall));
+        return f1;
+
+    }
 
     /**
      * @param predictedValues

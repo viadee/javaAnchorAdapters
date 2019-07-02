@@ -14,6 +14,11 @@ import java.util.Iterator;
 public class TabularInitializer {
 
     static AnchorTabular createTabularDefinition(String path, int indexTarget, boolean ignoreFirst) {
+        return createTabularDefinition(path, null, indexTarget, ignoreFirst);
+    }
+
+
+    static AnchorTabular createTabularDefinition(String path, String[] colnames, int indexTarget, boolean ignoreFirst) {
         InputStream dataStream = ClassLoader.getSystemResourceAsStream(path);
         if (dataStream == null)
             throw new RuntimeException("Could not load data");
@@ -30,7 +35,7 @@ public class TabularInitializer {
         anchorTabular.setDoBalance(false);
 
         Iterator<String[]> iterator = dataframe.iterator();
-        String[] firstRow = iterator.next();
+        String[] firstRow = colnames.equals(null) ? iterator.next() : colnames;
         if (ignoreFirst) {
             dataframe.remove(firstRow);
         }

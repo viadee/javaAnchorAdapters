@@ -1,7 +1,7 @@
 package RandomSearch;
 
 import LossFunctions.Accuracy.PredictionModel;
-import LossFunctions.PerfomanceMeasures;
+import LossFunctions.PerformanceMeasures;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
@@ -55,7 +55,7 @@ public class RandomSearch {
      * @param anchorBuilder
      * @param anchorTabular
      */
-    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, PerfomanceMeasures.Measure measure) {
+    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, PerformanceMeasures.Measure measure) {
 
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
@@ -104,9 +104,9 @@ public class RandomSearch {
             List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
 
             // init performance measure
-            PerfomanceMeasures perfomanceMeasures = new PerfomanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
-            this.currentHyperparameterSpace.setPerformance(perfomanceMeasures.calcMeasure(measure));
-            this.currentHyperparameterSpace.setCoverage(perfomanceMeasures.getCoverage());
+            PerformanceMeasures performanceMeasures = new PerformanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
+            this.currentHyperparameterSpace.setPerformance(performanceMeasures.calcMeasure(measure));
+            this.currentHyperparameterSpace.setCoverage(performanceMeasures.getCoverage());
 
             // check if performance of current space is the best, if yes set current space as best space
             if (checkIfBetter(this.currentHyperparameterSpace.getPerformance() * this.currentHyperparameterSpace.getCoverage())) {
