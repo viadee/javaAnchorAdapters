@@ -12,7 +12,7 @@ public class IntegerParameter implements IntegerParameterInterface {
 
 
     public IntegerParameter(String name, int defaultValue, int minValue, int maxValue) {
-        this(name, defaultValue, minValue, maxValue, -1);
+        this(name, defaultValue, minValue, maxValue, defaultValue);
     }
 
     public IntegerParameter(String name, int currentValue) {
@@ -57,5 +57,9 @@ public class IntegerParameter implements IntegerParameterInterface {
         int newParameter = random.nextInt(this.maxValue - this.minValue) + 1 + this.minValue;
 
         this.currentValue = newParameter;
+    }
+
+    public IntegerParameter copy() {
+       return new IntegerParameter(name, defaultValue, minValue, maxValue, currentValue);
     }
 }

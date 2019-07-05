@@ -1,35 +1,21 @@
 package RandomSearch;
 
-import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
+import org.bytedeco.javacpp.opencv_core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
-public class HyperparameterSpace {
+public final class HyperparameterSpace {
 
     // performance indicators
     private double performance = 0;
     private double coverage = 0;
     private long runtime = 0;
 
-    private List<Parameter> hyperParameters;
-
+    private final List<Parameter> hyperParameters;
 
     public HyperparameterSpace() {
-        this(null);
-    }
-
-    public HyperparameterSpace(List<Parameter> hyperParameters) {
-
-        if (hyperParameters != null) {
-            this.hyperParameters = hyperParameters;
-        } else {
-            this.hyperParameters = fillWithDefaults();
-        }
-    }
-
-    private List<Parameter> fillWithDefaults() {
 
         List<Parameter> parameters = new ArrayList<Parameter>();
 
@@ -40,18 +26,20 @@ public class HyperparameterSpace {
         parameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
         parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
 
-        return parameters;
+        this.hyperParameters = parameters;
     }
 
-    public void setRandomHyperparameterSpace() {
-
-        for (Parameter p : hyperParameters) {
-            p.searchRandom();
-        }
-
+    public HyperparameterSpace(HyperparameterSpace copyFrom) {
+        this.coverage = copyFrom.getCoverage();
+        this.performance = copyFrom.getPerformance();
+        this.hyperParameters = clone(copyFrom.getHyperParameters());
     }
 
-    public Parameter getParameterByName(String name){
+    public HyperparameterSpace(List<Parameter> hyperParameters) {
+        this.hyperParameters = hyperParameters;
+    }
+
+    public Parameter getParameterByName(String name) {
         for (Parameter p : hyperParameters) {
             if (p.getName().equals(name)) {
                 return p;
@@ -86,5 +74,13 @@ public class HyperparameterSpace {
 
     public void setCoverage(double coverage) {
         this.coverage = coverage;
+    }
+
+    public static List<Parameter> clone(List<Parameter> original) {
+        List<Parameter> result = new ArrayList<>();
+        for (Parameter p : original) {
+            result.add(p.copy());
+        }
+        return result;
     }
 }

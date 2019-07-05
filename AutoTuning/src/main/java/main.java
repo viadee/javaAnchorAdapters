@@ -1,7 +1,5 @@
-import LossFunctions.PerfomanceMeasures;
-import RandomSearch.HyperparameterSpace;
+import LossFunctions.PerformanceMeasures;
 import RandomSearch.RandomSearch;
-import SMAC.SMACHelper;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
@@ -25,20 +23,21 @@ public class main {
         final TabularRandomForestClassifier randomForestModel = new TabularRandomForestClassifier(100);
         randomForestModel.fit(anchorTabular.getTabularInstances());
 
+//        final H2OHellaWrapper h2oModel = new H2OHellaWrapper();
+
         // Print the model's test data accuracy
         outputTestsetAccuracy("RandomForest", randomForestModel);
 
         // Pick instance to be explained
         // Next pick specific instance (countess or patrick dooley)
-        final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[600];
+        final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[1];
 
         final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
                 .createDefaultBuilder(randomForestModel, explainedInstance);
 
         // RANDOM SEARCH with time condintion
-//        RandomSearch rs = new RandomSearch((long)60);
-        RandomSearch rs = new RandomSearch(3);
-        rs.execute(randomForestModel, anchorBuilder, anchorTabular, PerfomanceMeasures.Measure.ACCURACY);
+        RandomSearch rs = new RandomSearch("Titanic", 1, true);
+        rs.execute(randomForestModel, anchorBuilder, anchorTabular, PerformanceMeasures.Measure.ACCURACY);
 
         // SMAC with condition
 //        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();

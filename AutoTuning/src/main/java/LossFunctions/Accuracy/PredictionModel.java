@@ -100,7 +100,7 @@ public class PredictionModel {
             }
         }
 
-        LOGGER.error("No rule found to predict the instance.");
+        LOGGER.debug("No rule found to predict the instance.");
         return -1;
     }
     

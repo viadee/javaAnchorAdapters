@@ -13,7 +13,7 @@ public class ContinuousParameter implements ContinuousParameterInterface {
     private double currentValue;
 
     public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue) {
-        this(name, defaultValue, minValue, maxValue, 0);
+        this(name, defaultValue, minValue, maxValue, defaultValue);
     }
 
     public ContinuousParameter(String name, double currentValue) {
@@ -62,5 +62,9 @@ public class ContinuousParameter implements ContinuousParameterInterface {
         double newParameter = bd.doubleValue();
 
         this.currentValue = newParameter;
+    }
+
+    public ContinuousParameter copy() {
+        return new ContinuousParameter(name, defaultValue, minValue, maxValue, currentValue);
     }
 }
