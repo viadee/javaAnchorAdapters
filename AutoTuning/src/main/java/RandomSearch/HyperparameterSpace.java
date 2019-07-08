@@ -1,9 +1,6 @@
 package RandomSearch;
 
-import org.bytedeco.javacpp.opencv_core;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public final class HyperparameterSpace {
@@ -30,6 +27,7 @@ public final class HyperparameterSpace {
     }
 
     public HyperparameterSpace(HyperparameterSpace copyFrom) {
+        this.runtime = copyFrom.getRuntime();
         this.coverage = copyFrom.getCoverage();
         this.performance = copyFrom.getPerformance();
         this.hyperParameters = clone(copyFrom.getHyperParameters());

@@ -28,13 +28,15 @@ public class RandomSearch {
      */
     private RandomSearch(String scenario, long terminationConditionInSec, int terminationConditionNrEx, boolean startWithDefault) {
         this.scenario = scenario;
+        this.bestHyperparameterSpace = new HyperparameterSpace();
         this.currentHyperparameterSpace = new HyperparameterSpace();
         if (!startWithDefault) {
-            this.currentHyperparameterSpace = new HyperparameterSpace();
+            this.currentHyperparameterSpace = randomizeHyperparameters(currentHyperparameterSpace);
         }
         this.terminationConditionInSec = terminationConditionInSec;
         this.terminationConditionNrEx = terminationConditionNrEx;
-        this.bestHyperparameterSpace = new HyperparameterSpace();
+
+
     }
 
     public RandomSearch(String scenario, long terminationConditionInSec, boolean startWithDefault) {
@@ -63,7 +65,10 @@ public class RandomSearch {
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
 
-        while ((System.currentTimeMillis() - startTime) < (this.terminationConditionInSec * 1000) || nrExecutions < this.terminationConditionNrEx) {
+        // init logging the configurations
+        RandomSearchLogger randomSearchLogger = new RandomSearchLogger(scenario, bestHyperparameterSpace);
+
+        while ((System.currentTimeMillis() - startTime) < (terminationConditionInSec * 1000) || nrExecutions < this.terminationConditionNrEx) {
 
             // to calculate the runtime of each Anchors run
             long runtimeStart = System.currentTimeMillis();
@@ -71,12 +76,12 @@ public class RandomSearch {
             // set all hyperparameters
 
             anchorBuilder
-                    .setTau(this.currentHyperparameterSpace.getParameterByName("tau").getCurrentValue().doubleValue())
-                    .setBeamSize(this.currentHyperparameterSpace.getParameterByName("beamsize").getCurrentValue().intValue())
-                    .setDelta(this.currentHyperparameterSpace.getParameterByName("delta").getCurrentValue().doubleValue())
-                    .setEpsilon(this.currentHyperparameterSpace.getParameterByName("epsilon").getCurrentValue().doubleValue())
-                    .setTauDiscrepancy(this.currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue().doubleValue())
-                    .setInitSampleCount(this.currentHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue().intValue());
+                    .setTau(currentHyperparameterSpace.getParameterByName("tau").getCurrentValue().doubleValue())
+                    .setBeamSize(currentHyperparameterSpace.getParameterByName("beamsize").getCurrentValue().intValue())
+                    .setDelta(currentHyperparameterSpace.getParameterByName("delta").getCurrentValue().doubleValue())
+                    .setEpsilon(currentHyperparameterSpace.getParameterByName("epsilon").getCurrentValue().doubleValue())
+                    .setTauDiscrepancy(currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue().doubleValue())
+                    .setInitSampleCount(currentHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue().intValue());
 
 
             // execute Coverage Pick of Anchors and get result
@@ -84,33 +89,32 @@ public class RandomSearch {
                     Executors.newCachedThreadPool(), null)
                     .run(anchorTabular.getTabularInstances(), 20);
 
-//            // set runtime of current Anchors run
-            this.currentHyperparameterSpace.setRuntime(System.currentTimeMillis() - runtimeStart);
-//
-//            // init prediction model of created global rules
+            // set runtime of current Anchors run
+            currentHyperparameterSpace.setRuntime(System.currentTimeMillis() - runtimeStart);
+
+            // predict labels of instances based on generated global rules
             PredictionModel model = new PredictionModel(globalExplanations);
-//
-//            // predict data set labels
             List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
-//
-//            // init performance measure
+
+            // init performance measure
             PerformanceMeasures performanceMeasures = new PerformanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
-            this.currentHyperparameterSpace.setPerformance(performanceMeasures.calcMeasure(measure));
-            this.currentHyperparameterSpace.setCoverage(performanceMeasures.getCoverage());
-//
-//            // check if performance of current space is the best, if yes set current space as best space
-            if (checkIfBetter(this.currentHyperparameterSpace.getPerformance() * this.currentHyperparameterSpace.getCoverage())) {
-                this.bestHyperparameterSpace = new HyperparameterSpace(this.currentHyperparameterSpace);
-                this.bestGlobalExplanations = globalExplanations;
+            currentHyperparameterSpace.setPerformance(performanceMeasures.calcMeasure(measure));
+            currentHyperparameterSpace.setCoverage(performanceMeasures.getCoverage());
+            randomSearchLogger.addValuesToLogging(currentHyperparameterSpace);
+
+            // check if performance of current space is the best, if yes set current space as best space
+            if (checkIfBetter(currentHyperparameterSpace.getPerformance() * currentHyperparameterSpace.getCoverage())) {
+                bestHyperparameterSpace = new HyperparameterSpace(currentHyperparameterSpace);
+                bestGlobalExplanations = globalExplanations;
             }
 //
 //            // randomize all hyperparameters
-            this.currentHyperparameterSpace = randomizeHyperparameters(this.currentHyperparameterSpace);
+            currentHyperparameterSpace = randomizeHyperparameters(currentHyperparameterSpace);
 
             nrExecutions++;
         }
 
-//        RandomSearchLogger randomSearchLogger = new RandomSearchLogger(this.scenario, this.bestHyperparameterSpace);
+        randomSearchLogger.endLogging();
 
         // visualize best hyperparameters and the best global explanations
         visualizeBestHyperparameterSpace();

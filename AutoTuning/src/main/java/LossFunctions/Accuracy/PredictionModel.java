@@ -19,7 +19,6 @@ public class PredictionModel {
      * - if one rule applies predict the label according to rule
      * - if two rules apply predict according to more precise rule
      * - if both rules are equally precise predict randomly
-     * - what about instances not covered by any rules??
      */
 
     private List<Rule> rules;

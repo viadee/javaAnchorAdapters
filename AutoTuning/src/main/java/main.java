@@ -17,27 +17,30 @@ public class main {
 
     public static void main(String[] args) throws IOException {
         // Load dataset and its description
-        final AnchorTabular anchorTabular = TitanicDataset.createTabularTrainingDefinition();
+        final AnchorTabular anchorTabular = HellaDataset.createTabularTrainingDefinition();
+        final AnchorTabular anchorTabularTest = HellaDataset.createTabularTestDefinition();
 
         // Obtain a second suitable model (RandomForest). Train it ourselves this time.
         final TabularRandomForestClassifier randomForestModel = new TabularRandomForestClassifier(100);
         randomForestModel.fit(anchorTabular.getTabularInstances());
 
-//        final H2OHellaWrapper h2oModel = new H2OHellaWrapper();
+        final H2OHellaWrapper h2oModel = new H2OHellaWrapper();
 
         // Print the model's test data accuracy
-        outputTestsetAccuracy("RandomForest", randomForestModel);
+        //outputTestsetAccuracy("RandomForest", randomForestModel);
 
         // Pick instance to be explained
         // Next pick specific instance (countess or patrick dooley)
-        final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[1];
+        final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[1704];
 
-        final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
-                .createDefaultBuilder(randomForestModel, explainedInstance);
+        final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabularTest
+                .createDefaultBuilder(h2oModel::predict, explainedInstance);
+
+//        anchorBuilder.setTau(0.77).setBeamSize(11).setDelta(0.11).setEpsilon(0.41).setTauDiscrepancy(0.09).setInitSampleCount(3);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch("Titanic", 1, true);
-        rs.execute(randomForestModel, anchorBuilder, anchorTabular, PerformanceMeasures.Measure.ACCURACY);
+        RandomSearch rs = new RandomSearch("Hella_ASN_90", (long)18000, true);
+        rs.execute(h2oModel::predict, anchorBuilder, anchorTabularTest, PerformanceMeasures.Measure.ACCURACY);
 
         // SMAC with condition
 //        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();
