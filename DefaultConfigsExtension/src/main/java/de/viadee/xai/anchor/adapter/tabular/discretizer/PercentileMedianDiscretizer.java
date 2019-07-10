@@ -77,6 +77,9 @@ public class PercentileMedianDiscretizer implements Discretizer {
 
     @Override
     public void fit(Serializable[] values) {
+        if (values.length==0){
+            throw new RuntimeException("No values to discretize");
+        }
         List<Number> numbers = Stream.of(values).map(i -> (Number) i)
                 .filter(number -> !singleClassValues.contains(number))
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
