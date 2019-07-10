@@ -99,22 +99,18 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 backlog--;
             }
             List<Number> sublist = numbers.subList(startIndex, endIndex);
-            final int medianValue = (int) medianIndexValue(sublist);
+            final int medianValue = (int) (medianIndexValue(sublist) * 100.00);
             discretizerRelations.add(new DiscretizerRelation(medianValue,
                     sublist.get(0).doubleValue(),
                     sublist.get(sublist.size() - 1).doubleValue()));
 
         }
-
-        if (this.automaticFitting) {
-            removeDuplicateDiscretizedValues(values, numbers);
-        }
-
+        removeDuplicateDiscretizedValues(values, numbers);
         distinctMinAndMaxValues(numbers);
     }
 
     private void distinctMinAndMaxValues(List<Number> numbers) {
-        boolean relationsWhereMinIsMaxOfOther = false;
+//        boolean relationsWhereMinIsMaxOfOther = false;
         for (DiscretizerRelation relation : this.discretizerRelations) {
             Optional<DiscretizerRelation> relationWhereMinIsMaxOfOther = this.discretizerRelations.stream()
                     .filter(oRelation -> Objects.equals(relation.getConditionMax(), oRelation.getConditionMin()))
@@ -122,7 +118,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     .findFirst();
 
             if (relationWhereMinIsMaxOfOther.isPresent()) {
-                relationsWhereMinIsMaxOfOther = true;
+//                relationsWhereMinIsMaxOfOther = true;
                 final DiscretizerRelation oRelation = relationWhereMinIsMaxOfOther.get();
                 Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
                         .filter((number -> number > oRelation.getConditionMin())).min(Double::compareTo);
@@ -133,9 +129,9 @@ public class PercentileMedianDiscretizer implements Discretizer {
             }
         }
 
-        if (relationsWhereMinIsMaxOfOther) {
-            distinctMinAndMaxValues(numbers);
-        }
+//        if (relationsWhereMinIsMaxOfOther) {
+//            distinctMinAndMaxValues(numbers);
+//        }
     }
 
     private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers) {
