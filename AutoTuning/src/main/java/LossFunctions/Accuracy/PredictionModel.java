@@ -68,38 +68,38 @@ public class PredictionModel {
         int ruleNumber = 0;
 
         for (Rule r : this.rules) {
-
             int numberMatches = 0;
 
             ruleNumber++;
-//            System.out.printl("Check rule " + i + " with precision " + r.getPrecision() + " and label " + r.getLabel());
+            System.out.println("Check rule " + ruleNumber + " with precision " + r.getPrecision() + " and label " + r.getLabel());
 
             for (Feature f : r.getFeature()) {
 
                 if (f.getClass().equals(CategoricalFeature.class)) {
 
-//                    System.out.println("Feature: " + f.getName() + " - Instance value: " + " " + instance.getValue(f.getName()) + " ---- Rule value: " + ((CategoricalFeature) f).getValue());
+                    System.out.println("Feature: " + f.getName() + " - Instance value: " + " " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((CategoricalFeature) f).getValue());
 
-                    if (instance.getValue(f.getName()) == ((CategoricalFeature) f).getValue()) {
+                    if (instance.getTransformedValue(f.getName()) == ((CategoricalFeature) f).getValue()) {
                         numberMatches++;
                     }
                 } else if (f.getClass().equals(MetricFeature.class)) {
-//                    System.out.println("Feature: " + f.getName() +" - Instance value: " + instance.getValue(f.getName()) + " ---- Rule value: " + ((MetricFeature) f).getLowerBound() + " " + ((MetricFeature) f).getUpperBound());
+                    System.out.println("Feature: " + f.getName() +" - Instance value: " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((MetricFeature) f).getLowerBound() + " " + ((MetricFeature) f).getUpperBound());
+                    double instanceValue = ((Number)instance.getTransformedValue(f.getName())).doubleValue();
 
-                    if (instance.getValue(f.getName()) >= ((MetricFeature) f).getLowerBound() && instance.getValue(f.getName()) >= ((MetricFeature) f).getUpperBound()) {
+                    if (instanceValue >= ((MetricFeature) f).getLowerBound() && instanceValue <= ((MetricFeature) f).getUpperBound()) {
                         numberMatches++;
                     }
                 }
             }
 
             if (numberMatches == (r.getFeature().size())) {
-
-                LOGGER.debug("Predict " + r.getLabel() + " for the instance based on rule " + ruleNumber + ".");
+                LOGGER.info("Predict " + r.getLabel() + " for the instance based on rule " + ruleNumber + ".");
+//                System.out.println("Predict " + r.getLabel() + " for the instance based on rule " + ruleNumber + ".");
                 return r.getLabel();
             }
         }
 
-        LOGGER.debug("No rule found to predict the instance.");
+        LOGGER.info("No rule found to predict the instance.");
         return -1;
     }
     
