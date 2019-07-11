@@ -20,7 +20,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
     private static final long serialVersionUID = -5389805012441004957L;
 
     private int classCount;
-    private final boolean automaticFitting;
     private final List<DiscretizerRelation> discretizerRelations;
     private final List<Number> singleClassValues;
     private final List<DiscretizerRelation> singleClassValueRelations;
@@ -47,7 +46,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
      */
     public PercentileMedianDiscretizer(int classCount, boolean automaticFitting, Number... singleClassValues) {
         this.classCount = classCount;
-        this.automaticFitting = automaticFitting;
 
         if (singleClassValues == null) {
             singleClassValues = new Number[0];
@@ -77,9 +75,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
 
     @Override
     public void fit(Serializable[] values) {
-        if (values.length==0){
-            throw new RuntimeException("No values to discretize");
-        }
         List<Number> numbers = Stream.of(values).map(i -> (Number) i)
                 .filter(number -> !singleClassValues.contains(number))
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
@@ -113,7 +108,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     private void distinctMinAndMaxValues(List<Number> numbers) {
-//        boolean relationsWhereMinIsMaxOfOther = false;
         for (DiscretizerRelation relation : this.discretizerRelations) {
             Optional<DiscretizerRelation> relationWhereMinIsMaxOfOther = this.discretizerRelations.stream()
                     .filter(oRelation -> Objects.equals(relation.getConditionMax(), oRelation.getConditionMin()))
@@ -121,7 +115,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     .findFirst();
 
             if (relationWhereMinIsMaxOfOther.isPresent()) {
-//                relationsWhereMinIsMaxOfOther = true;
                 final DiscretizerRelation oRelation = relationWhereMinIsMaxOfOther.get();
                 Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
                         .filter((number -> number > oRelation.getConditionMin())).min(Double::compareTo);
@@ -131,10 +124,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 }
             }
         }
-
-//        if (relationsWhereMinIsMaxOfOther) {
-//            distinctMinAndMaxValues(numbers);
-//        }
     }
 
     private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers) {
@@ -193,5 +182,9 @@ public class PercentileMedianDiscretizer implements Discretizer {
         }
 
         throw new IllegalArgumentException("Value " + o + " not in discretizer bounds");
+    }
+
+    public List<DiscretizerRelation> getDiscretizerRelations() {
+        return discretizerRelations;
     }
 }
