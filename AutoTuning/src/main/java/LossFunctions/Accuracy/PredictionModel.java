@@ -69,21 +69,19 @@ public class PredictionModel {
 
         for (Rule r : this.rules) {
             int numberMatches = 0;
-
             ruleNumber++;
-            System.out.println("Check rule " + ruleNumber + " with precision " + r.getPrecision() + " and label " + r.getLabel());
+//            System.out.println("Check rule " + ruleNumber + " with precision " + r.getPrecision() + " and label " + r.getLabel());
 
             for (Feature f : r.getFeature()) {
 
                 if (f.getClass().equals(CategoricalFeature.class)) {
 
-                    System.out.println("Feature: " + f.getName() + " - Instance value: " + " " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((CategoricalFeature) f).getValue());
-
+//                    System.out.println("Feature: " + f.getName() + " - Instance value: " + " " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((CategoricalFeature) f).getValue());
                     if (instance.getTransformedValue(f.getName()) == ((CategoricalFeature) f).getValue()) {
                         numberMatches++;
                     }
                 } else if (f.getClass().equals(MetricFeature.class)) {
-                    System.out.println("Feature: " + f.getName() +" - Instance value: " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((MetricFeature) f).getLowerBound() + " " + ((MetricFeature) f).getUpperBound());
+//                    System.out.println("Feature: " + f.getName() +" - Instance value: " + instance.getTransformedValue(f.getName()) + " ---- Rule value: " + ((MetricFeature) f).getLowerBound() + " " + ((MetricFeature) f).getUpperBound());
                     double instanceValue = ((Number)instance.getTransformedValue(f.getName())).doubleValue();
 
                     if (instanceValue >= ((MetricFeature) f).getLowerBound() && instanceValue <= ((MetricFeature) f).getUpperBound()) {
