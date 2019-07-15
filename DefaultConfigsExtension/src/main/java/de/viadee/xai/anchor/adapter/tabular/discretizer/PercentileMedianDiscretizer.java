@@ -66,8 +66,8 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
 
-        if (values.length > 0 && numbers.size() <= 0) {
-            // all values are single class values
+        if (numbers.size() == 0) {
+            // all values are single class values or empty Array
             return;
         }
 
