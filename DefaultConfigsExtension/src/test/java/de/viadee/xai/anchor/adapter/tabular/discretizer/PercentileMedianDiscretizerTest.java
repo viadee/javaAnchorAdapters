@@ -14,10 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the PercentileMedianDiscretizer Class with Metaanalysis using Field. Because Attributes of Discretizer are
  * private without getters
  */
+@SuppressWarnings("unchecked")
 class PercentileMedianDiscretizerTest {
 
     @Test
-    public void testPercentileMedianDiscretizerConstructorSCV() {
+    void testPercentileMedianDiscretizerConstructorSCV() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
 
         try {
@@ -34,27 +35,27 @@ class PercentileMedianDiscretizerTest {
                     scvrList.get(0), "tests if scvr is set to scv"
             );
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
 
     @Test
-    public void testPercentileMedianDiscretizerConstructorNOSCV() {
-        PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, null);
+    void testPercentileMedianDiscretizerConstructorNOSCV() {
+        PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5);
 
         try {
             Field singleClassValuesField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValues");
             singleClassValuesField.setAccessible(true);
             List<Number> scvList = (List<Number>) singleClassValuesField.get(disc);
-            assertEquals(true, scvList.isEmpty(), "tests if singleClassValues are set to emptyList if scv == null");
+            assertTrue(scvList.isEmpty(), "tests if singleClassValues are set to emptyList if scv == null");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testMedianIndexValueOddAndEven() {
+    void testMedianIndexValueOddAndEven() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(2, -1);
         Number[] numbers = {0, 1, 1, 2, 2, 3};
         disc.fit(numbers);
@@ -64,11 +65,11 @@ class PercentileMedianDiscretizerTest {
             discretizerRelationsField.setAccessible(true);
             ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
             assertEquals(
-                    new DiscretizerRelation(1 * 100, 0.0, 1.0),
+                    new DiscretizerRelation(100, 0.0, 1.0),
                     scvrList.get(0), "tests if Methods gets correct median with odd Arraylength"
             );
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
         Number[] numbersOdd = {0, 1, 1, 1, 2, 2, 2, 3};
@@ -80,16 +81,16 @@ class PercentileMedianDiscretizerTest {
             ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
             assertEquals(
-                    new DiscretizerRelation(2 * 100, 2.0, 3.0),
+                    new DiscretizerRelation(200, 2.0, 3.0),
                     scvrList.get(1), "tests if Methods gets correct median with even Arraylength"
             );
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testRemoveDuplicateDiscretizedValues() {
+    void testRemoveDuplicateDiscretizedValues() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbersNotDistinct = {0, 0, 0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         disc.fit(numbersNotDistinct);
@@ -101,7 +102,7 @@ class PercentileMedianDiscretizerTest {
 
             assertEquals(4, scvrList.size(), "tests if Relations are Merged if DiscValue is identical");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
 
         Number[] numbersDistinct = {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
@@ -114,12 +115,12 @@ class PercentileMedianDiscretizerTest {
 
             assertEquals(5, scvrList.size(), "tests if Relations are unmerged if DiscValue are Distinct");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testDistinctMinAndMaxValues() {
+    void testDistinctMinAndMaxValues() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbersNotDistinct = {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         disc.fit(numbersNotDistinct);
@@ -130,16 +131,16 @@ class PercentileMedianDiscretizerTest {
             ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
             assertEquals(
-                    new DiscretizerRelation(1 * 100, 1.0, 2.0)
+                    new DiscretizerRelation(100, 1.0, 2.0)
                     , scvrList.get(1), "tests if new min is set if Min is Max of other Relation"
             );
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testApply() {
+    void testApply() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbers = {0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         disc.fit(numbers);
@@ -147,13 +148,13 @@ class PercentileMedianDiscretizerTest {
         int discValue = disc.apply(3);
         assertEquals(2 * 100, discValue, "tests if number is applied to Relation");
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            disc.apply(13);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+            disc.apply(13)
+        );
     }
 
     @Test
-    public void testUnApply() {
+    void testUnApply() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbers = {0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
         disc.fit(numbers);
@@ -164,23 +165,23 @@ class PercentileMedianDiscretizerTest {
                 discretizerRelation, "tests if unApply returns correct Relation"
         );
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            disc.unApply(13);
-        });
+        assertThrows(IllegalArgumentException.class, () ->
+            disc.unApply(13)
+        );
     }
 
     @Test
-    public void testFitNonNumeric() {
+    void testFitNonNumeric() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(2, -1);
         String[] noNumbers = {"0", "0", "0", "1", "2", "3"};
 
-        assertThrows(ClassCastException.class, () -> {
-            disc.fit(noNumbers);
-        });
+        assertThrows(ClassCastException.class, () ->
+            disc.fit(noNumbers)
+        );
     }
 
     @Test
-    public void testFitSmallNrOfValues() {
+    void testFitSmallNrOfValues() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(10, -1);
         Number[] numbers = {0, 1, 2, 3};
         disc.fit(numbers);
@@ -191,12 +192,12 @@ class PercentileMedianDiscretizerTest {
 
             assertEquals(4, scvrList.size(), "tests if number of Relations is set correctly if Values > classCount");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testFitWithBackloggedNumbers() {
+    void testFitWithBackloggedNumbers() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {1, 2, 3, 4, 5, 6, 7};
         disc.fit(numbers);
@@ -210,12 +211,12 @@ class PercentileMedianDiscretizerTest {
                     scvrList.get(0), "tests if backlog is accounted for"
             );
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testFitWithEmptyNumberArray() {
+    void testFitWithEmptyNumberArray() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {};
 
@@ -227,12 +228,12 @@ class PercentileMedianDiscretizerTest {
 
             assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 
     @Test
-    public void testFitWithSingleClass() {
+    void testFitWithSingleClass() {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {-1, -1, -1};
         disc.fit(numbers);
@@ -243,7 +244,7 @@ class PercentileMedianDiscretizerTest {
 
             assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }
