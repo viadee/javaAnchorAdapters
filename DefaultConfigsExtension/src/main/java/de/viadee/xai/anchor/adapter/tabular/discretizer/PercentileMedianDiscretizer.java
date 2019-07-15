@@ -20,34 +20,18 @@ public class PercentileMedianDiscretizer implements Discretizer {
     private static final long serialVersionUID = -5389805012441004957L;
 
     private int classCount;
-    private final boolean automaticFitting;
     private final List<DiscretizerRelation> discretizerRelations;
     private final List<Number> singleClassValues;
     private final List<DiscretizerRelation> singleClassValueRelations;
 
     /**
-     * Creates the discretizer with automatic fitting true.
+     * Creates the discretizer.
      *
      * @param classCount        the amount of classes to use
      * @param singleClassValues values which each of them should be a class like null values
      */
     public PercentileMedianDiscretizer(int classCount, Number... singleClassValues) {
-        this(classCount, true, singleClassValues);
-    }
-
-    /**
-     * Creates the discretizer.
-     *
-     * @param classCount        the amount of classes to use
-     * @param automaticFitting  if it happens that multiple relations have the same discretized values these relations
-     *                          will be combined. If then this combined relation is the last remaining (except for single
-     *                          class values) the class count will be increased as long as this condition is true or
-     *                          class count is higher than the number of values
-     * @param singleClassValues values which each of them should be a class like null values
-     */
-    public PercentileMedianDiscretizer(int classCount, boolean automaticFitting, Number... singleClassValues) {
         this.classCount = classCount;
-        this.automaticFitting = automaticFitting;
 
         if (singleClassValues == null) {
             singleClassValues = new Number[0];
@@ -99,22 +83,18 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 backlog--;
             }
             List<Number> sublist = numbers.subList(startIndex, endIndex);
-            final int medianValue = (int) medianIndexValue(sublist);
+            final int medianValue = (int) (medianIndexValue(sublist) * 100.00);
             discretizerRelations.add(new DiscretizerRelation(medianValue,
                     sublist.get(0).doubleValue(),
                     sublist.get(sublist.size() - 1).doubleValue()));
 
         }
 
-        if (this.automaticFitting) {
-            removeDuplicateDiscretizedValues(values, numbers);
-        }
-
+        removeDuplicateDiscretizedValues(values, numbers);
         distinctMinAndMaxValues(numbers);
     }
 
     private void distinctMinAndMaxValues(List<Number> numbers) {
-        boolean relationsWhereMinIsMaxOfOther = false;
         for (DiscretizerRelation relation : this.discretizerRelations) {
             Optional<DiscretizerRelation> relationWhereMinIsMaxOfOther = this.discretizerRelations.stream()
                     .filter(oRelation -> Objects.equals(relation.getConditionMax(), oRelation.getConditionMin()))
@@ -122,7 +102,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     .findFirst();
 
             if (relationWhereMinIsMaxOfOther.isPresent()) {
-                relationsWhereMinIsMaxOfOther = true;
                 final DiscretizerRelation oRelation = relationWhereMinIsMaxOfOther.get();
                 Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
                         .filter((number -> number > oRelation.getConditionMin())).min(Double::compareTo);
@@ -131,10 +110,6 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     oRelation.setConditionMin(newMin.get());
                 }
             }
-        }
-
-        if (relationsWhereMinIsMaxOfOther) {
-            distinctMinAndMaxValues(numbers);
         }
     }
 
