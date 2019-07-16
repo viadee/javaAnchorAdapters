@@ -20,17 +20,22 @@ public class PercentileMedianDiscretizer implements Discretizer {
     private static final long serialVersionUID = -5389805012441004957L;
 
     private int classCount;
+    private boolean relationMerge;
     private final List<DiscretizerRelation> discretizerRelations;
     private final List<Number> singleClassValues;
     private final List<DiscretizerRelation> singleClassValueRelations;
 
+    public PercentileMedianDiscretizer(int classCount, Number... singleClassValues) {
+        this(classCount, true, singleClassValues);
+    }
     /**
      * Creates the discretizer.
      *
      * @param classCount        the amount of classes to use
      * @param singleClassValues values which each of them should be a class like null values
      */
-    public PercentileMedianDiscretizer(int classCount, Number... singleClassValues) {
+    public PercentileMedianDiscretizer(int classCount, boolean relationMerge, Number... singleClassValues) {
+        this.relationMerge = relationMerge;
         this.classCount = classCount;
 
         if (singleClassValues == null) {
@@ -114,6 +119,7 @@ public class PercentileMedianDiscretizer implements Discretizer {
     }
 
     private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers) {
+
         List<Integer> discretizedValues = this.discretizerRelations.stream()
                 .map(DiscretizerRelation::getDiscretizedValue)
                 .collect(Collectors.toList());
@@ -129,6 +135,10 @@ public class PercentileMedianDiscretizer implements Discretizer {
                     Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMax).max(Double::compareTo);
                     //noinspection ConstantConditions
                     if (conditionMaxOptional.isPresent() && conditionMinOptional.isPresent()) {
+
+                        if(!relationMerge){
+                            throw new IllegalArgumentException("Classcount: " + classCount + " too high, duplicate discretizedValues occur, reduce classCount or allow Merging");
+                        }
                         double conditionMin = conditionMinOptional.get();
                         double conditionMax = conditionMaxOptional.get();
 

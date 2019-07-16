@@ -149,7 +149,7 @@ class PercentileMedianDiscretizerTest {
         assertEquals(2 * 100, discValue, "tests if number is applied to Relation");
 
         assertThrows(IllegalArgumentException.class, () ->
-            disc.apply(13)
+                disc.apply(13)
         );
     }
 
@@ -166,7 +166,7 @@ class PercentileMedianDiscretizerTest {
         );
 
         assertThrows(IllegalArgumentException.class, () ->
-            disc.unApply(13)
+                disc.unApply(13)
         );
     }
 
@@ -176,7 +176,7 @@ class PercentileMedianDiscretizerTest {
         String[] noNumbers = {"0", "0", "0", "1", "2", "3"};
 
         assertThrows(ClassCastException.class, () ->
-            disc.fit(noNumbers)
+                disc.fit(noNumbers)
         );
     }
 
@@ -246,5 +246,33 @@ class PercentileMedianDiscretizerTest {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Test
+    void testIfRelationMergeFalseErrorIsThrown() {
+        PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, false, -1);
+        Number[] numbers = {0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4};
+
+        assertThrows(IllegalArgumentException.class, () ->
+                disc.fit(numbers)
+        );
+    }
+
+    @Test
+    void testIfRelationMergeFalseErrorIsNotThrown() {
+        PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, false, -1);
+        Number[] workingNumbers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+
+        disc.fit(workingNumbers);
+        try {
+            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+            discretizerRelationsField.setAccessible(true);
+            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+            assertEquals(3, scvrList.size(), "tests if Exception is not thrown");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 }

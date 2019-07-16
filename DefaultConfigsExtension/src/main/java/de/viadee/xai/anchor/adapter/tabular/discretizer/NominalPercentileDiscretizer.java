@@ -10,7 +10,12 @@ import org.apache.commons.math3.stat.descriptive.rank.Percentile;
  * Discretizes data by using percentiles.
  * <p>
  * Creates new groups ranging from 0..percentileCount
+ *
+ * Deprecated as of 16/07. Please use {@link PercentileMedianDiscretizer}.
+ * Still in use?
+ * Remove or fix {@link #unApply}
  */
+@Deprecated
 public class NominalPercentileDiscretizer implements Discretizer {
     private static final long serialVersionUID = 6338528106659032376L;
 
