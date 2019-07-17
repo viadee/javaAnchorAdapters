@@ -101,13 +101,7 @@ abstract class AbstractTabularBuilder<T extends AbstractTabularBuilder<T>> {
                     "Please add one column description for each column that exists in the loaded file");
         }
 
-        AnchorTabular tabular = AnchorTabular.createAnchorTabular(
-                columnDescriptions,
-                targetColumn,
-                dataCollection);
-        tabular.setTabularInstances(AnchorTabular.preprocessData(tabular, dataCollection, this.doBalance));
-
-        return tabular;
+        return TabularPreprocessor.createAnchorTabular(columnDescriptions, targetColumn, dataCollection, this.doBalance);
     }
 
     /**
