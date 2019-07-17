@@ -149,7 +149,7 @@ abstract class AbstractTabularBuilder {
      * that each label has the same amount of instances
      *
      * @param doBalance true, if to balance dataset
-     * @return the current {@link AnchorTabular.Builder}'s instance
+     * @return the current {@link AbstractTabularBuilder}'s instance
      */
     public AbstractTabularBuilder setDoBalance(boolean doBalance) {
         this.doBalance = doBalance;

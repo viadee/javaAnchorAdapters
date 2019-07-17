@@ -1,31 +1,26 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.column.IgnoredColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.ArrayUtils;
 import de.viadee.xai.anchor.adapter.tabular.util.Balancer;
-import de.viadee.xai.anchor.adapter.tabular.util.CSVReader;
 import de.viadee.xai.anchor.adapter.tabular.util.ShuffleSplit;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Provides default means to use the Anchors algorithm on tabular data
  * <p>
- * To make use of this, use the {@link Builder} to create an instance of this class.
- *
+ * To make use of this, use the AbstractTabularBuilder and its
+ * various implementations to create an instance of this class.
+ * <p>
  * TODO clean this up. Mostly unmaintainable code. Move static methods out. Make immutable
  */
 public class AnchorTabular {
@@ -158,8 +153,8 @@ public class AnchorTabular {
     }
 
     public static AnchorTabular createAnchorTabular(final Collection<GenericColumn> columns,
-                                                     final GenericColumn targetColumn,
-                                                     Collection<String[]> data) {
+                                                    final GenericColumn targetColumn,
+                                                    Collection<String[]> data) {
 
         GenericColumn[] columnsArray = columns.toArray(new GenericColumn[0]);
         // Create the result explainer
@@ -172,7 +167,6 @@ public class AnchorTabular {
                 tabularInstanceVisualizer
         );
     }
-
 
 
     /**
