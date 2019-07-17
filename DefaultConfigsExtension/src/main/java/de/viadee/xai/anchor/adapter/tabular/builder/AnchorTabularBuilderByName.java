@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  * <p>
  * For each column that is not included, an {@link IgnoredColumn} is added
  */
-public class AnchorTabularBuilderByName extends AbstractTabularBuilder {
+public class AnchorTabularBuilderByName extends AbstractTabularBuilder<AnchorTabularBuilderByName> {
     private final Map<String, GenericColumn> columnDescriptions = new LinkedHashMap<>();
 
     private String[] headers;

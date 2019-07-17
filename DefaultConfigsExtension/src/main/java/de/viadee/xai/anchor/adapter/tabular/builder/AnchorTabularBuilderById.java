@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
  * <p>
  * For each column that is not included, an {@link IgnoredColumn} is added
  */
-public class AnchorTabularBuilderById extends AbstractTabularBuilder {
+public class AnchorTabularBuilderById extends AbstractTabularBuilder<AnchorTabularBuilderById> {
     private final SortedMap<Integer, GenericColumn> columnDescriptions = new TreeMap<>();
 
     /**

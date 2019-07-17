@@ -18,7 +18,7 @@ import java.util.UUID;
  * <p>
  * The first addColumn / addIgnoredColumn will be assigned to column 0, the second to column 1 and so forth
  */
-public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
+public class AnchorTabularBuilderSequential extends AbstractTabularBuilder<AnchorTabularBuilderSequential> {
     private final List<GenericColumn> columnDescriptions = new ArrayList<>();
 
     /**

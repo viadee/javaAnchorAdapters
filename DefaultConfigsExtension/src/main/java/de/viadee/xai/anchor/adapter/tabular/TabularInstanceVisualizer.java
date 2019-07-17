@@ -82,7 +82,7 @@ public class TabularInstanceVisualizer {
                     + " {" + df.format(candidate.getAddedPrecision()) + ","
                     + df.format(candidate.getAddedCoverage()) + "}");
         }
-        String labelText = instance.getDiscretizedLabel().toString();
+        String labelText = instance.getTransformedLabel() + " (" + instance.getDiscretizedLabel().toString() + ")";
 
         return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +

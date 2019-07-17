@@ -14,7 +14,7 @@ import java.util.Iterator;
  * <p>
  * Assigns a {@link GenericColumn} to every column that exists in the dataset.
  */
-abstract class AbstractTabularBuilder {
+abstract class AbstractTabularBuilder<T extends AbstractTabularBuilder<T>> {
     private GenericColumn targetColumn;
 
     private boolean doBalance = false;
@@ -151,8 +151,9 @@ abstract class AbstractTabularBuilder {
      * @param doBalance true, if to balance dataset
      * @return the current {@link AbstractTabularBuilder}'s instance
      */
-    public AbstractTabularBuilder setDoBalance(boolean doBalance) {
+    @SuppressWarnings("unchecked")
+    public T setDoBalance(boolean doBalance) {
         this.doBalance = doBalance;
-        return this;
+        return (T) this;
     }
 }
