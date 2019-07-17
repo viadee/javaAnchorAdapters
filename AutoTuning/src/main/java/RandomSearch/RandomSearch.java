@@ -9,6 +9,7 @@ import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.global.CoveragePick;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
@@ -17,17 +18,18 @@ import java.util.function.Function;
 public class RandomSearch {
 
     private final String scenario;
+    private final AnchorConstructionBuilder<TabularInstance> anchorBuilder;
+    private final AnchorTabular anchorTabular;
     private final long terminationConditionInSec;
-    private int terminationConditionNrEx;
+    private final int terminationConditionNrEx;
     private HyperparameterSpace currentHyperparameterSpace;
     private HyperparameterSpace bestHyperparameterSpace;
-    private List<AnchorResult<TabularInstance>> bestGlobalExplanations;
+    private List<AnchorResult<TabularInstance>> bestExplanations;
 
-    /**
-     * @param terminationConditionInSec
-     */
-    private RandomSearch(String scenario, long terminationConditionInSec, int terminationConditionNrEx, boolean startWithDefault) {
+    private RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, int terminationConditionNrEx, boolean startWithDefault) {
         this.scenario = scenario;
+        this.anchorBuilder = anchorBuilder;
+        this.anchorTabular = anchorTabular;
         this.bestHyperparameterSpace = new HyperparameterSpace();
         this.currentHyperparameterSpace = new HyperparameterSpace();
         if (!startWithDefault) {
@@ -35,32 +37,25 @@ public class RandomSearch {
         }
         this.terminationConditionInSec = terminationConditionInSec;
         this.terminationConditionNrEx = terminationConditionNrEx;
-
-
     }
 
-    public RandomSearch(String scenario, long terminationConditionInSec, boolean startWithDefault) {
-        this(scenario, terminationConditionInSec, 0, startWithDefault);
+    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, boolean startWithDefault) {
+        this(scenario, anchorBuilder, anchorTabular, terminationConditionInSec, 0, startWithDefault);
     }
 
-    public RandomSearch(String scenario, int terminationConditionNrEx, boolean startWithDefault) {
-        this(scenario, 0, terminationConditionNrEx, startWithDefault);
+    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, int terminationConditionNrEx, boolean startWithDefault) {
+        this(scenario, anchorBuilder, anchorTabular, 0, terminationConditionNrEx, startWithDefault);
     }
 
-    public RandomSearch(String scenario, long terminationConditionInSec) {
-        this(scenario, terminationConditionInSec, 0, true);
+    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec) {
+        this(scenario, anchorBuilder, anchorTabular, terminationConditionInSec, 0, true);
     }
 
-    public RandomSearch(String scenario, int terminationConditionNrEx) {
-        this(scenario, 0, terminationConditionNrEx, true);
+    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, int terminationConditionNrEx) {
+        this(scenario, anchorBuilder, anchorTabular, 0, terminationConditionNrEx, true);
     }
 
-    /**
-     * @param classificationFunction
-     * @param anchorBuilder
-     * @param anchorTabular
-     */
-    public void execute(Function<TabularInstance, Integer> classificationFunction, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, PerformanceMeasures.Measure measure) {
+    public void optimizeExplanations(Function<TabularInstance, Integer> classificationFunction, AnchorTabular anchorTabular, PerformanceMeasures.Measure measure, boolean global) {
 
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
@@ -74,29 +69,16 @@ public class RandomSearch {
             long runtimeStart = System.currentTimeMillis();
 
             // set all hyperparameters
+            setNewParameters();
 
-            anchorBuilder
-                    .setTau(currentHyperparameterSpace.getParameterByName("tau").getCurrentValue().doubleValue())
-                    .setBeamSize(currentHyperparameterSpace.getParameterByName("beamsize").getCurrentValue().intValue())
-                    .setDelta(currentHyperparameterSpace.getParameterByName("delta").getCurrentValue().doubleValue())
-                    .setEpsilon(currentHyperparameterSpace.getParameterByName("epsilon").getCurrentValue().doubleValue())
-                    .setTauDiscrepancy(currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue().doubleValue())
-                    .setInitSampleCount(currentHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue().intValue());
-
-
-            // execute Coverage Pick of Anchors and get result
-            final List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(anchorBuilder, 10,
-                    Executors.newCachedThreadPool(), null)
-                    .run(anchorTabular.getTabularInstances(), 20);
+            List<AnchorResult<TabularInstance>> rules = global ? optimizeGlobal() : optimizeLocal();
 
             // set runtime of current Anchors run
             currentHyperparameterSpace.setRuntime(System.currentTimeMillis() - runtimeStart);
 
             // predict labels of instances based on generated global rules
-            PredictionModel model = new PredictionModel(globalExplanations);
+            PredictionModel model = new PredictionModel(rules);
             List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
-
-            // init performance measure
             PerformanceMeasures performanceMeasures = new PerformanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
             currentHyperparameterSpace.setPerformance(performanceMeasures.calcMeasure(measure));
             currentHyperparameterSpace.setCoverage(performanceMeasures.getCoverage());
@@ -105,10 +87,10 @@ public class RandomSearch {
             // check if performance of current space is the best, if yes set current space as best space
             if (checkIfBetter(currentHyperparameterSpace.getPerformance() * currentHyperparameterSpace.getCoverage())) {
                 bestHyperparameterSpace = new HyperparameterSpace(currentHyperparameterSpace);
-                bestGlobalExplanations = globalExplanations;
+                bestExplanations = rules;
             }
-//
-//            // randomize all hyperparameters
+
+            // randomize all hyperparameters
             currentHyperparameterSpace = randomizeHyperparameters(currentHyperparameterSpace);
 
             nrExecutions++;
@@ -117,9 +99,31 @@ public class RandomSearch {
         randomSearchLogger.endLogging();
 
         // visualize best hyperparameters and the best global explanations
-        visualizeBestHyperparameterSpace();
-        System.out.println(anchorTabular.getVisualizer().visualizeGlobalResults(this.bestGlobalExplanations));
+        visualizeBestHyperparameterSpace(measure);
+        System.out.println(anchorTabular.getVisualizer().visualizeGlobalResults(bestExplanations));
+    }
 
+    private List<AnchorResult<TabularInstance>> optimizeGlobal() {
+        // execute Coverage Pick of Anchors and get result
+        return new CoveragePick<>(anchorBuilder, 10,
+                Executors.newCachedThreadPool(), null)
+                .run(anchorTabular.getTabularInstances(), 20);
+    }
+
+    private List<AnchorResult<TabularInstance>> optimizeLocal() {
+        final AnchorResult<TabularInstance> localExplanation = anchorBuilder.build().constructAnchor();
+
+        return Arrays.asList(localExplanation);
+    }
+
+    private void setNewParameters() {
+        anchorBuilder
+                .setTau(currentHyperparameterSpace.getParameterByName("tau").getCurrentValue().doubleValue())
+                .setBeamSize(currentHyperparameterSpace.getParameterByName("beamsize").getCurrentValue().intValue())
+                .setDelta(currentHyperparameterSpace.getParameterByName("delta").getCurrentValue().doubleValue())
+                .setEpsilon(currentHyperparameterSpace.getParameterByName("epsilon").getCurrentValue().doubleValue())
+                .setTauDiscrepancy(currentHyperparameterSpace.getParameterByName("tauDiscrepancy").getCurrentValue().doubleValue())
+                .setInitSampleCount(currentHyperparameterSpace.getParameterByName("initSampleCount").getCurrentValue().intValue());
     }
 
 
@@ -139,25 +143,21 @@ public class RandomSearch {
      * @param performance
      */
     private boolean checkIfBetter(double performance) {
-
-        if (performance > this.bestHyperparameterSpace.getPerformance() * this.bestHyperparameterSpace.getCoverage()) {
-            return true;
-        }
-        return false;
+        return performance > this.bestHyperparameterSpace.getPerformance() * this.bestHyperparameterSpace.getCoverage() ? true : false;
     }
 
 
-    private void visualizeBestHyperparameterSpace() {
+    private void visualizeBestHyperparameterSpace(PerformanceMeasures.Measure measure) {
 
         StringBuilder sb = new StringBuilder();
-        for (Parameter p : this.bestHyperparameterSpace.getHyperParameters()){
+        for (Parameter p : this.bestHyperparameterSpace.getHyperParameters()) {
             sb.append(p.getName() + ": " + p.getCurrentValue() + System.lineSeparator());
         }
 
         System.out.println("==== The best Hyperparameter Space is ====" + System.lineSeparator() +
                 sb.toString() +
                 "coverage: " + this.bestHyperparameterSpace.getCoverage() + System.lineSeparator() +
-                "performance: " + this.bestHyperparameterSpace.getPerformance() + System.lineSeparator() +
+                measure.toString().toLowerCase() + ": " + this.bestHyperparameterSpace.getPerformance() + System.lineSeparator() +
                 "runtime: " + this.bestHyperparameterSpace.getRuntime() + "ms");
     }
 

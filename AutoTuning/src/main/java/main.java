@@ -39,8 +39,8 @@ public class main {
 //        anchorBuilder.setTau(0.77).setBeamSize(11).setDelta(0.11).setEpsilon(0.41).setTauDiscrepancy(0.09).setInitSampleCount(3);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch("Hella_ASN_90", (long)18000, true);
-        rs.execute(h2oModel::predict, anchorBuilder, anchorTabularTest, PerformanceMeasures.Measure.ACCURACY);
+        RandomSearch rs = new RandomSearch("Hella_ASN_90", anchorBuilder, anchorTabular, 200, true);
+        rs.optimizeExplanations(h2oModel::predict, anchorTabularTest, PerformanceMeasures.Measure.PRECISION, false);
 
         // SMAC with condition
 //        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();
