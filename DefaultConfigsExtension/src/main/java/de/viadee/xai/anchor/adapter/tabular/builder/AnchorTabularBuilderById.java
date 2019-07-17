@@ -39,7 +39,7 @@ public class AnchorTabularBuilderById extends AbstractTabularBuilder {
      * Marks a column to be ignored
      *
      * @param index the index the column in located in the file
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderById}
      */
     public AnchorTabularBuilderById addIgnoredColumn(int index) {
         return addIgnoredColumn(index, "ignored" + index);
@@ -50,7 +50,7 @@ public class AnchorTabularBuilderById extends AbstractTabularBuilder {
      *
      * @param index the index the column in located in the file
      * @param name  a name for reasons of clarity and comprehensibility
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderById}
      */
     public AnchorTabularBuilderById addIgnoredColumn(int index, String name) {
         this.columnDescriptions.put(index, new IgnoredColumn(name));
@@ -62,7 +62,7 @@ public class AnchorTabularBuilderById extends AbstractTabularBuilder {
      *
      * @param index  the index the column in located in the file
      * @param column a column for reasons of clarity and comprehensibility
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderById}
      */
     public AnchorTabularBuilderById addIgnoredColumn(int index, GenericColumn column) {
         this.columnDescriptions.put(index, new IgnoredColumn(column.getName()));
@@ -74,7 +74,7 @@ public class AnchorTabularBuilderById extends AbstractTabularBuilder {
      *
      * @param index  the index the column in located in the file
      * @param column the target column to be set
-     * @return the {@link AnchorTabular} instance
+     * @return the {@link AnchorTabularBuilderById} instance
      */
     public AnchorTabularBuilderById addTargetColumn(int index, GenericColumn column) {
         addInternalTargetColumn(column);

@@ -2,14 +2,12 @@ package de.viadee.xai.anchor.adapter.tabular.builder;
 
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.column.IgnoredColumn;
 import de.viadee.xai.anchor.adapter.tabular.util.CSVReader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Used to construct an {@link AnchorTabular} instance.
@@ -76,12 +74,19 @@ abstract class AbstractTabularBuilder {
      * @return the {@link AnchorTabular} instance
      */
     public AnchorTabular build(Collection<String[]> dataCollection, boolean excludeFirst) {
-        if (dataCollection.size() <= 0) {
+        if ((!excludeFirst && dataCollection.size() <= 0) || (excludeFirst && dataCollection.size() <= 1)) {
             throw new IllegalArgumentException("No data passed");
         }
 
         if (dataCollection.stream().mapToInt(s -> s.length).distinct().count() != 1) {
             throw new IllegalArgumentException("Not all rows have the same number of columns");
+        }
+
+        if (excludeFirst) {
+            final Iterator<String[]> iterator = dataCollection.iterator();
+            String[] removedRow = iterator.next();
+            iterator.remove();
+            registerRemovedRow(removedRow);
         }
 
         final int columnSize = dataCollection.iterator().next().length;
@@ -96,12 +101,6 @@ abstract class AbstractTabularBuilder {
                     "Please add one column description for each column that exists in the loaded file");
         }
 
-        if (excludeFirst) {
-            final Iterator<String[]> iterator = dataCollection.iterator();
-            iterator.next();
-            iterator.remove();
-        }
-
         AnchorTabular tabular = AnchorTabular.createAnchorTabular(
                 columnDescriptions,
                 targetColumn,
@@ -109,6 +108,16 @@ abstract class AbstractTabularBuilder {
         tabular.setTabularInstances(AnchorTabular.preprocessData(tabular, dataCollection, this.doBalance));
 
         return tabular;
+    }
+
+    /**
+     * Gets called when a row is removed by using excludeFirst.
+     * <p>
+     * Implementations may chose to use this information
+     *
+     * @param removedRow the removed row usually containing meta information, i.e., variable names
+     */
+    void registerRemovedRow(String[] removedRow) {
     }
 
     /**

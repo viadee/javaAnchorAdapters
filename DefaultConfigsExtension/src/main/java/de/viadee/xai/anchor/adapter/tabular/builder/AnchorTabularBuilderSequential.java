@@ -31,7 +31,7 @@ public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
      * Registers a column
      *
      * @param column the column to be added
-     * @return the {@link AnchorTabular} instance
+     * @return the {@link AnchorTabularBuilderSequential} instance
      */
     public AnchorTabularBuilderSequential addColumn(GenericColumn column) {
         this.columnDescriptions.add(column);
@@ -41,7 +41,7 @@ public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
     /**
      * Marks a column to be ignored
      *
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderSequential}
      */
     public AnchorTabularBuilderSequential addIgnoredColumn() {
         return addIgnoredColumn("ignored" + UUID.randomUUID());
@@ -51,7 +51,7 @@ public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
      * Marks a column to be ignored
      *
      * @param name a name for reasons of clarity and comprehensibility
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderSequential}
      */
     public AnchorTabularBuilderSequential addIgnoredColumn(String name) {
         this.columnDescriptions.add(new IgnoredColumn(name));
@@ -62,7 +62,7 @@ public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
      * Marks a column to be ignored
      *
      * @param column a column for reasons of clarity and comprehensibility
-     * @return the {@link AnchorTabular.Builder}
+     * @return the {@link AnchorTabularBuilderSequential}
      */
     public AnchorTabularBuilderSequential addIgnoredColumn(GenericColumn column) {
         this.columnDescriptions.add(new IgnoredColumn(column.getName()));
@@ -73,7 +73,7 @@ public class AnchorTabularBuilderSequential extends AbstractTabularBuilder {
      * Registers a target column
      *
      * @param column the target column to be set
-     * @return the {@link AnchorTabular} instance
+     * @return the {@link AnchorTabularBuilderSequential} instance
      */
     public AnchorTabularBuilderSequential addTargetColumn(GenericColumn column) {
         addInternalTargetColumn(column);
