@@ -25,9 +25,10 @@ import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
  * Provides default means to use the Anchors algorithm on tabular data
  * <p>
  * To make use of this, use the {@link Builder} to create an instance of this class.
+ *
+ * TODO clean this up. Mostly unmaintainable code. Move static methods out. Make immutable
  */
 public class AnchorTabular {
-
     private final GenericColumn targetColumn;
     private GenericColumn[] finalColumns;
     private final GenericColumn[] originalColumns;
@@ -98,7 +99,10 @@ public class AnchorTabular {
         }
     }
 
-    private static TabularInstance[] convertToTabularInstances(AnchorTabular tabular, DataFrame dataFrame, Serializable[] transformedLabels, Integer[] discretizedLabels, Integer[][] discretizedData) {
+    private static TabularInstance[] convertToTabularInstances(AnchorTabular tabular, DataFrame dataFrame,
+                                                               Serializable[] transformedLabels,
+                                                               Integer[] discretizedLabels,
+                                                               Integer[][] discretizedData) {
         TabularInstance[] instances = new TabularInstance[dataFrame.getNRows()];
         final GenericColumn[] columns = dataFrame.getColumns().toArray(new GenericColumn[0]);
         tabular.finalColumns = columns;
@@ -149,11 +153,11 @@ public class AnchorTabular {
         return tabularInstances;
     }
 
-    protected void setTabularInstances(TabularInstance[] tabularInstances) {
+    public void setTabularInstances(TabularInstance[] tabularInstances) {
         this.tabularInstances = tabularInstances;
     }
 
-    private static AnchorTabular createAnchorTabular(final List<GenericColumn> columns,
+    public static AnchorTabular createAnchorTabular(final Collection<GenericColumn> columns,
                                                      final GenericColumn targetColumn,
                                                      Collection<String[]> data) {
 
@@ -168,6 +172,8 @@ public class AnchorTabular {
                 tabularInstanceVisualizer
         );
     }
+
+
 
     /**
      * Splits the dataset into three subsets, i.e. training, validation and test set
@@ -213,158 +219,4 @@ public class AnchorTabular {
     public GenericColumn getTargetColumn() {
         return targetColumn;
     }
-
-    /**
-     * Used to construct an {@link AnchorTabular} instance.
-     * <p>
-     * The addColumn operations must be called as many times as there are columns in the submitted dataset.
-     */
-    public static class Builder {
-        private final List<GenericColumn> columnDescriptions = new ArrayList<>();
-        private GenericColumn targetColumn;
-        private boolean doBalance = false;
-
-        /**
-         * Constructs the builder
-         */
-        public Builder() {
-        }
-
-        /**
-         * Builds the configured instance using a CSV file
-         *
-         * @param csvInputStream the inputStream
-         * @return the {@link AnchorTabular} instance
-         * @throws IOException when the CSV cannot be parsed
-         */
-        public AnchorTabular build(InputStream csvInputStream) throws IOException {
-            return build(csvInputStream, false, false);
-        }
-
-        /**
-         * Builds the configured instance using a CSV file
-         *
-         * @param csvInputStream the inputStream
-         * @param excludeFirst   exclude the first row. Helpful if it is the header row
-         * @param trim           if true, each on each cell String#trim will be called
-         * @return the {@link AnchorTabular} instance
-         * @throws IOException when the CSV cannot be parsed
-         */
-        public AnchorTabular build(InputStream csvInputStream, boolean excludeFirst, boolean trim) throws IOException {
-            Collection<String[]> strings = CSVReader.readCSV(csvInputStream, trim);
-            return build(strings, excludeFirst);
-        }
-
-        /**
-         * Builds the configured instance
-         *
-         * @param dataCollection the date to be transformed
-         * @return the {@link AnchorTabular} instance
-         */
-        public AnchorTabular build(Collection<String[]> dataCollection) {
-            return this.build(dataCollection, false);
-        }
-
-        /**
-         * Builds the configured instance
-         *
-         * @param dataCollection the data to be transformed
-         * @param excludeFirst   exclude the first row. Helpful if it is the header row
-         * @return the {@link AnchorTabular} instance
-         */
-        public AnchorTabular build(Collection<String[]> dataCollection, boolean excludeFirst) {
-//            if (targetColumn == null) {
-//                throw new IllegalArgumentException("Not target column specified");
-//            }
-            if (dataCollection.size() <= 0) {
-                throw new IllegalArgumentException("No data passed");
-            }
-            final int columnLength = columnDescriptions.size();
-            if (!dataCollection.stream().parallel().allMatch((dataRow) -> dataRow.length == columnLength)) {
-                throw new IllegalArgumentException("InternalColumn count does not match loaded data's columns");
-            }
-
-            if (excludeFirst) {
-                final Iterator<String[]> iterator = dataCollection.iterator();
-                iterator.next();
-                iterator.remove();
-            }
-
-            AnchorTabular tabular = AnchorTabular.createAnchorTabular(this.columnDescriptions, this.targetColumn,
-                    dataCollection);
-            tabular.setTabularInstances(preprocessData(tabular, dataCollection, this.doBalance));
-
-            return tabular;
-        }
-
-
-        /**
-         * Registers a column
-         *
-         * @param column the column to be added
-         * @return the {@link AnchorTabular} instance
-         */
-        public Builder addColumn(GenericColumn column) {
-            this.columnDescriptions.add(column);
-            return this;
-        }
-
-        /**
-         * Marks a column to be ignored
-         *
-         * @return the {@link Builder}
-         */
-        public Builder addIgnoredColumn() {
-            return addIgnoredColumn((String) null);
-        }
-
-        /**
-         * Marks a column to be ignored
-         *
-         * @param name a name for reasons of clarity and comprehensibility
-         * @return the {@link Builder}
-         */
-        public Builder addIgnoredColumn(String name) {
-            this.columnDescriptions.add(new IgnoredColumn(name));
-            return this;
-        }
-
-        /**
-         * Marks a column to be ignored
-         *
-         * @param column a column for reasons of clarity and comprehensibility
-         * @return the {@link Builder}
-         */
-        public Builder addIgnoredColumn(GenericColumn column) {
-            this.columnDescriptions.add(new IgnoredColumn(column.getName()));
-            return this;
-        }
-
-        /**
-         * Registers a target column
-         *
-         * @param column the target column to be set
-         * @return the {@link AnchorTabular} instance
-         */
-        public Builder addTargetColumn(GenericColumn column) {
-            if (targetColumn != null)
-                throw new IllegalArgumentException("Only one target column can be set");
-            this.targetColumn = column;
-            this.columnDescriptions.add(column);
-            return this;
-        }
-
-        /**
-         * May be used to configure the preprocessor to balance the dataset, i.e. to truncate the set of instances so
-         * that each label has the same amount of instances
-         *
-         * @param doBalance true, if to balance dataset
-         * @return the current {@link Builder}'s instance
-         */
-        public Builder setDoBalance(boolean doBalance) {
-            this.doBalance = doBalance;
-            return this;
-        }
-    }
-
 }

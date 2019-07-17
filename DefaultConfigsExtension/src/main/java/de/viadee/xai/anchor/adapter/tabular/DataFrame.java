@@ -10,7 +10,9 @@ import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 /**
+ * FIXME
  *
+ * Wo kommt die Klasse her? Wieso unkommentiert? Wirft Exceptions bei leeren Datensets!
  */
 public class DataFrame {
 
