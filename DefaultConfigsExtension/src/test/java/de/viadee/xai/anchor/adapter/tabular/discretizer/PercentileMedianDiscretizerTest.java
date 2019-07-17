@@ -18,125 +18,91 @@ import static org.junit.jupiter.api.Assertions.*;
 class PercentileMedianDiscretizerTest {
 
     @Test
-    void testPercentileMedianDiscretizerConstructorSCV() {
+    void testPercentileMedianDiscretizerConstructorSCV()  throws Exception  {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
 
-        try {
-            Field singleClassValuesField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValues");
-            Field singleClassValueRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValueRelations");
-            singleClassValuesField.setAccessible(true);
-            singleClassValueRelationsField.setAccessible(true);
-            ArrayList<Number> scvList = (ArrayList<Number>) singleClassValuesField.get(disc);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) singleClassValueRelationsField.get(disc);
+        Field singleClassValuesField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValues");
+        Field singleClassValueRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValueRelations");
+        singleClassValuesField.setAccessible(true);
+        singleClassValueRelationsField.setAccessible(true);
+        ArrayList<Number> scvList = (ArrayList<Number>) singleClassValuesField.get(disc);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) singleClassValueRelationsField.get(disc);
 
-            assertEquals(-1, scvList.get(0), "tests if singleClassValues are set correctly");
-            assertEquals(
-                    new DiscretizerRelation(-1, -1.0, -1.0),
-                    scvrList.get(0), "tests if scvr is set to scv"
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        assertEquals(-1, scvList.get(0), "tests if singleClassValues are set correctly");
+        assertEquals(
+                new DiscretizerRelation(-1, -1.0, -1.0),
+                scvrList.get(0), "tests if scvr is set to scv"
+        );
     }
 
 
     @Test
-    void testPercentileMedianDiscretizerConstructorNOSCV() {
+    void testPercentileMedianDiscretizerConstructorNOSCV()  throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5);
 
-        try {
-            Field singleClassValuesField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValues");
-            singleClassValuesField.setAccessible(true);
-            List<Number> scvList = (List<Number>) singleClassValuesField.get(disc);
-            assertTrue(scvList.isEmpty(), "tests if singleClassValues are set to emptyList if scv == null");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field singleClassValuesField = PercentileMedianDiscretizer.class.getDeclaredField("singleClassValues");
+        singleClassValuesField.setAccessible(true);
+        List<Number> scvList = (List<Number>) singleClassValuesField.get(disc);
+        assertTrue(scvList.isEmpty(), "tests if singleClassValues are set to emptyList if scv == null");
+
     }
 
     @Test
-    void testMedianIndexValueOddAndEven() {
+    void testMedianIndexValueOddAndEven()  throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(2, -1);
         Number[] numbers = {0, 1, 1, 2, 2, 3};
         disc.fit(numbers);
 
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
-            assertEquals(
-                    new DiscretizerRelation(100, 0.0, 1.0),
-                    scvrList.get(0), "tests if Methods gets correct median with odd Arraylength"
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+        assertEquals(
+                new DiscretizerRelation(100, 0.0, 1.0),
+                scvrList.get(0), "tests if Methods gets correct median with odd Arraylength"
+        );
 
         Number[] numbersOdd = {0, 1, 1, 1, 2, 2, 2, 3};
         disc.fit(numbersOdd);
 
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
-
-            assertEquals(
-                    new DiscretizerRelation(200, 2.0, 3.0),
-                    scvrList.get(1), "tests if Methods gets correct median with even Arraylength"
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        assertEquals(
+                new DiscretizerRelation(200, 2.0, 3.0),
+                scvrList.get(1), "tests if Methods gets correct median with even Arraylength"
+        );
     }
 
     @Test
-    void testRemoveDuplicateDiscretizedValues() {
+    void testRemoveDuplicateDiscretizedValues()  throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbersNotDistinct = {0, 0, 0, 0, 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         disc.fit(numbersNotDistinct);
 
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(4, scvrList.size(), "tests if Relations are Merged if DiscValue is identical");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        assertEquals(4, scvrList.size(), "tests if Relations are Merged if DiscValue is identical");
 
         Number[] numbersDistinct = {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         disc.fit(numbersDistinct);
 
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
-
-            assertEquals(5, scvrList.size(), "tests if Relations are unmerged if DiscValue are Distinct");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        assertEquals(5, scvrList.size(), "tests if Relations are unmerged if DiscValue are Distinct");
     }
 
     @Test
-    void testDistinctMinAndMaxValues() {
+    void testDistinctMinAndMaxValues() throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(5, -1);
         Number[] numbersNotDistinct = {0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         disc.fit(numbersNotDistinct);
 
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(
-                    new DiscretizerRelation(100, 1.0, 2.0)
-                    , scvrList.get(1), "tests if new min is set if Min is Max of other Relation"
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+        assertEquals(
+                new DiscretizerRelation(100, 1.0, 2.0)
+                , scvrList.get(1), "tests if new min is set if Min is Max of other Relation"
+        );
     }
 
     @Test
@@ -181,71 +147,59 @@ class PercentileMedianDiscretizerTest {
     }
 
     @Test
-    void testFitSmallNrOfValues() {
+    void testFitSmallNrOfValues() throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(10, -1);
         Number[] numbers = {0, 1, 2, 3};
         disc.fit(numbers);
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(4, scvrList.size(), "tests if number of Relations is set correctly if Values > classCount");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+        assertEquals(4, scvrList.size(), "tests if number of Relations is set correctly if Values > classCount");
     }
 
     @Test
-    void testFitWithBackloggedNumbers() {
+    void testFitWithBackloggedNumbers() throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {1, 2, 3, 4, 5, 6, 7};
         disc.fit(numbers);
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(
-                    new DiscretizerRelation(2 * 100, 1.0, 3.0),
-                    scvrList.get(0), "tests if backlog is accounted for"
-            );
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+        assertEquals(
+                new DiscretizerRelation(2 * 100, 1.0, 3.0),
+                scvrList.get(0), "tests if backlog is accounted for"
+        );
     }
 
     @Test
-    void testFitWithEmptyNumberArray() {
+    void testFitWithEmptyNumberArray() throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {};
 
         disc.fit(numbers);
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+        assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
     }
 
     @Test
-    void testFitWithSingleClass() {
+    void testFitWithSingleClass() throws Exception {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, -1);
         Number[] numbers = {-1, -1, -1};
         disc.fit(numbers);
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+
+        assertEquals(Collections.EMPTY_LIST, scvrList, "tests if empty RelationArray is returned");
     }
 
     @Test
@@ -259,20 +213,16 @@ class PercentileMedianDiscretizerTest {
     }
 
     @Test
-    void testIfRelationMergeFalseErrorIsNotThrown() {
+    void testIfRelationMergeFalseErrorIsNotThrown()  throws Exception  {
         PercentileMedianDiscretizer disc = new PercentileMedianDiscretizer(3, false, -1);
         Number[] workingNumbers = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 
         disc.fit(workingNumbers);
-        try {
-            Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
-            discretizerRelationsField.setAccessible(true);
-            ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
+        Field discretizerRelationsField = PercentileMedianDiscretizer.class.getDeclaredField("discretizerRelations");
+        discretizerRelationsField.setAccessible(true);
+        ArrayList<DiscretizerRelation> scvrList = (ArrayList<DiscretizerRelation>) discretizerRelationsField.get(disc);
 
-            assertEquals(3, scvrList.size(), "tests if Exception is not thrown");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        assertEquals(3, scvrList.size(), "tests if Exception is not thrown");
 
     }
 }

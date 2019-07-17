@@ -15,7 +15,6 @@ import org.apache.commons.math3.stat.descriptive.rank.Percentile;
  * Still in use?
  * Remove or fix {@link #unApply}
  */
-@Deprecated
 public class NominalPercentileDiscretizer implements Discretizer {
     private static final long serialVersionUID = 6338528106659032376L;
 

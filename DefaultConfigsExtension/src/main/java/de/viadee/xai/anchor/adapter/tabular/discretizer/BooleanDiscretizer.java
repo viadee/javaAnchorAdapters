@@ -6,7 +6,7 @@ public class BooleanDiscretizer implements Discretizer {
 
     @Override
     public void fit(Serializable[] values) {
-
+        // No logic needed because it is not required in this Use Case
     }
 
     @Override
@@ -18,8 +18,8 @@ public class BooleanDiscretizer implements Discretizer {
     public Integer apply(Serializable serializable) {
         String value = serializable.toString().toLowerCase();
         if (!Boolean.TRUE.toString().equals(value) && !Boolean.FALSE.toString().equals(value))
-            throw new RuntimeException("Value is not a boolean");
-        boolean bool = Boolean.valueOf(String.valueOf(serializable));
+            throw new IllegalArgumentException("Value is not a boolean");
+        boolean bool = Boolean.parseBoolean(String.valueOf(serializable));
         return bool ? 1 : 0;
     }
 }

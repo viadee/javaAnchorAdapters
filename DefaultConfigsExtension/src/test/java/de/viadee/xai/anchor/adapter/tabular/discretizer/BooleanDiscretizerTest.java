@@ -1,6 +1,5 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
