@@ -1,4 +1,4 @@
-package de.viadee.xai.anchor.adapter.tabular.util;
+package de.viadee.xai.anchor.adapter.tabular.builder;
 
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 

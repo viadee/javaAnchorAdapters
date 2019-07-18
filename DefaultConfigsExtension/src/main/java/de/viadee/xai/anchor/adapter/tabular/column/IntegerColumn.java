@@ -103,6 +103,6 @@ public class IntegerColumn extends NumberColumn {
     public static IntegerColumn fromStringInput(String name, Integer replaceNull, int classCount) {
         return new IntegerColumn(name, Arrays.asList(createEmptyTransformator(replaceNull), new StringToIntTransformer()),
                 null,
-                (classCount == 0) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount, replaceNull));
+                (classCount == 0) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

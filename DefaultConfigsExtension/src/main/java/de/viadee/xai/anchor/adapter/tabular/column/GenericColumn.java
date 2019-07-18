@@ -65,35 +65,6 @@ public class GenericColumn implements Serializable {
         return this;
     }
 
-    public Serializable[] transformForAnchor(Serializable[] data) {
-        return transform(this.anchorTransformers, data);
-    }
-
-    /**
-     * Uses the specified dataTransformations to map the values to transformed results
-     *
-     * @param values the values to transformData
-     * @return the transformation's result
-     */
-    public Serializable[] transformData(Serializable[] values) {
-        return transform(this.dataTransformations, values);
-    }
-
-    public Serializable transformData(Serializable value) {
-        return transform(this.dataTransformations, new Serializable[]{value})[0];
-    }
-
-    private static Serializable[] transform(List<Transformer> transformations, Serializable[] data) {
-        Serializable[] result = data;
-        if (transformations != null && !transformations.isEmpty()) {
-            for (Transformer transformation : transformations) {
-                result = transformation.apply(result);
-            }
-        }
-
-        return result;
-    }
-
     /**
      * Gets the name of the column
      *

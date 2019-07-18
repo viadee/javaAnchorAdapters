@@ -1,24 +1,30 @@
-package de.viadee.xai.anchor.adapter.tabular;
+package de.viadee.xai.anchor.adapter.tabular.builder;
+
+import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
-
 /**
- *
+ * Constructs a column-based data frame to be used by preprocessing steps
+ * <p>
+ * Mutable object!
  */
-public class DataFrame {
-
+class DataFrame {
     private final LinkedList<GenericColumn> columns;
-
     private Serializable[][] dataFrame;
 
-    public DataFrame(GenericColumn[] columns, Collection<String[]> data) {
+    /**
+     * Constructs the instance
+     *
+     * @param columns the columns to use
+     * @param data    the actual data
+     */
+    DataFrame(GenericColumn[] columns, Collection<String[]> data) {
         final int nRows = data.size();
         final int nCols = columns.length;
 
@@ -37,33 +43,48 @@ public class DataFrame {
         }
     }
 
-    public DataFrame(GenericColumn[] columns, Serializable[][] dataFrame) {
+    /**
+     * Constructs the instance
+     *
+     * @param columns   the columns to use
+     * @param dataFrame the actual data
+     */
+    DataFrame(GenericColumn[] columns, Serializable[][] dataFrame) {
         this.columns = new LinkedList<>(Arrays.asList(columns));
         this.dataFrame = dataFrame;
     }
 
-    public LinkedList<GenericColumn> getColumns() {
+    /**
+     * Return the internally stored column descriptions
+     *
+     * @return all stored columns
+     */
+    LinkedList<GenericColumn> getColumns() {
         return this.columns;
     }
 
-    public int getColumnIndex(final String featureName) {
-        return this.columns.indexOf(getColumnInfo(featureName));
-    }
-
-    public int getColumnIndex(final GenericColumn column) {
+    /**
+     * Returns the column index
+     *
+     * @param column the {@link GenericColumn}
+     * @return the internally used index of the column
+     */
+    int getColumnIndex(final GenericColumn column) {
         return this.columns.indexOf(column);
     }
 
-    public GenericColumn getColumnInfo(final String featureName) {
+    private GenericColumn getColumnInfo(final String featureName) {
         return this.columns.stream().filter((genericColumn -> genericColumn.getName().equals(featureName))).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No feature with name " + featureName + " found"));
     }
 
-    public Serializable[] getColumn(String featureName) {
-        return getColumn(this.getColumnIndex(featureName));
-    }
-
-    public Serializable[] getColumn(GenericColumn feature) {
+    /**
+     * Returns the column
+     *
+     * @param feature the feature to obtain the column for
+     * @return the column's values
+     */
+    Serializable[] getColumn(GenericColumn feature) {
         return getColumn(this.getColumnIndex(feature));
     }
 
@@ -71,11 +92,23 @@ public class DataFrame {
         return this.dataFrame[featureIndex];
     }
 
-    public Serializable[] removeColumn(String featureName) {
+    /**
+     * Removes a column and its values
+     *
+     * @param featureName the feature to remove
+     * @return the removed column
+     */
+    Serializable[] removeColumn(String featureName) {
         return removeColumn(getColumnInfo(featureName));
     }
 
-    public Serializable[] removeColumn(GenericColumn feature) {
+    /**
+     * Removes a column and its values
+     *
+     * @param feature the feature to remove
+     * @return the removed column
+     */
+    Serializable[] removeColumn(GenericColumn feature) {
         if (feature == null) {
             throw new IllegalArgumentException("feature is null");
         }
@@ -100,11 +133,13 @@ public class DataFrame {
         return removedColumn;
     }
 
-    public void transformColumn(String featureName, Transformer transform) {
-        transformColumn(this.getColumnIndex(featureName), transform);
-    }
-
-    public void transformColumn(GenericColumn feature, Transformer transform) {
+    /**
+     * Applies a transformation to a column
+     *
+     * @param feature   the feature to transform the column for
+     * @param transform the transformed column
+     */
+    void transformColumn(GenericColumn feature, Transformer transform) {
         transformColumn(this.getColumnIndex(feature), transform);
     }
 
@@ -112,11 +147,14 @@ public class DataFrame {
         this.dataFrame[featureIndex] = transform.apply(this.dataFrame[featureIndex]);
     }
 
-    public Integer[] discretizeColumn(String featureName, Discretizer discretizer) {
-        return discretizeColumn(this.getColumnIndex(featureName), discretizer);
-    }
-
-    public Integer[] discretizeColumn(GenericColumn feature, Discretizer discretizer) {
+    /**
+     * Returns the discretized column
+     *
+     * @param feature     the column to use
+     * @param discretizer the discretizer to use
+     * @return the column as a discretized int array
+     */
+    Integer[] discretizeColumn(GenericColumn feature, Discretizer discretizer) {
         return discretizeColumn(this.getColumnIndex(feature), discretizer);
     }
 
@@ -124,16 +162,26 @@ public class DataFrame {
         return discretizer.apply(this.dataFrame[featureIndex]);
     }
 
-    public int getNCols() {
+    /**
+     * @return the column count
+     */
+    int getColumnCount() {
         return this.columns.size();
     }
 
-    public int getNRows() {
+    /**
+     * @return the row count
+     */
+    int getRowCount() {
         return this.dataFrame[0].length;
     }
 
-    public Serializable[] getRow(int rowIndex) {
-        Serializable[] row = new Serializable[getNCols()];
+    /**
+     * @param rowIndex the index to obtain the row for
+     * @return the row as an object array
+     */
+    Serializable[] getRow(int rowIndex) {
+        Serializable[] row = new Serializable[getColumnCount()];
         for (int i = 0; i < row.length; i++) {
             row[i] = this.dataFrame[i][rowIndex];
         }

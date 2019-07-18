@@ -1,7 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizerRelation;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
@@ -29,7 +28,9 @@ public class TabularInstanceVisualizer {
     }
 
     /**
-     * Visualizes an instance by describing its feature values
+     * Visualizes an instance by describing its feature values.
+     * <p>
+     * Displays the non-discretized values
      *
      * @param instance the instance to describe
      * @return the result, one string for each feature
@@ -49,20 +50,6 @@ public class TabularInstanceVisualizer {
         return String.join(System.lineSeparator(), result.toArray(new String[0]));
     }
 
-    private String describeValue(TabularInstance instance, GenericColumn feature) {
-        // TODO test change
-        DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
-        switch (relation.getFeatureType()) {
-            case METRIC:
-                return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
-            case CATEGORICAL:
-                return " = '" + relation.getCategoricalValue() + "'";
-            case UNDEFINED:
-            default:
-                throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
-        }
-    }
-
     /**
      * Visualizes a result by describing its feature values
      *
@@ -78,11 +65,12 @@ public class TabularInstanceVisualizer {
         for (final Integer featureNr : anchorResult.getOrderedFeatures()) {
             final GenericColumn feature = instance.getFeatures()[featureNr];
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
-            featureText.add(feature.getName() + describeValue(instance, feature)
+            featureText.add(feature.getName() + " " + feature.getDiscretizer()
+                    .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
                     + " {" + df.format(candidate.getAddedPrecision()) + ","
                     + df.format(candidate.getAddedCoverage()) + "}");
         }
-        String labelText = instance.getDiscretizedLabel().toString();
+        String labelText = instance.getTransformedLabel() + " (" + instance.getDiscretizedLabel().toString() + ")";
 
         return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
