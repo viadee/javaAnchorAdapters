@@ -38,7 +38,7 @@ class AnchorTabularBuilderByNameTest {
     }
 
     @Test
-    public void testAddInvalidColumnName() throws IOException {
+    public void testAddInvalidColumnName() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new AnchorTabularBuilderByName()
                         .addColumn(new StringColumn("notavailable"))
@@ -46,7 +46,7 @@ class AnchorTabularBuilderByNameTest {
     }
 
     @Test
-    public void testAddDuplicateColumnName() throws IOException {
+    public void testAddDuplicateColumnName() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new AnchorTabularBuilderByName()
                         .addColumn(new StringColumn("attr3"))

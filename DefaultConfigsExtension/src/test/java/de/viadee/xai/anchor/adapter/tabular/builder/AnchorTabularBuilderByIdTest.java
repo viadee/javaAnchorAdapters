@@ -17,7 +17,7 @@ class AnchorTabularBuilderByIdTest {
     }
 
     @Test
-    public void testFailsOnNoColumnsAdded() throws IOException {
+    public void testFailsOnNoColumnsAdded() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new AnchorTabularBuilderById().build(getTestCSV()));
     }
