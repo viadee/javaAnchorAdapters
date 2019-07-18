@@ -10,6 +10,12 @@ import java.util.function.Function;
  */
 public interface Discretizer extends Function<Serializable, Integer>, Serializable {
 
+    /**
+     * Applies this discretizer to the passed data
+     *
+     * @param data the data to discretize
+     * @return the discretized data
+     */
     default Integer[] apply(Serializable[] data) {
         Integer[] discretizedData = new Integer[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -26,5 +32,14 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      */
     void fit(Serializable[] values);
 
-    DiscretizerRelation unApply(int value);
+
+    /**
+     * This method returns the relation for a certain discretized value.
+     * <p>
+     * This allows to unApply a discretization and obtain the original value
+     *
+     * @param discretizedValue the value to get the relation for
+     * @return the {@link DiscretizationTransition}
+     */
+    DiscretizationTransition getTransition(int discretizedValue);
 }

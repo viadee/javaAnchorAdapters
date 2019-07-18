@@ -1,7 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizerRelation;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
@@ -53,16 +52,17 @@ public class TabularInstanceVisualizer {
 
     private String describeValue(TabularInstance instance, GenericColumn feature) {
         // TODO test change
-        DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
-        switch (relation.getFeatureType()) {
-            case NUMERIC:
-                return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
-            case CATEGORICAL:
-                return " = '" + relation.getCategoricalValue() + "'";
-            case UNDEFINED:
-            default:
-                throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
-        }
+        //DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
+        //switch (relation.getFeatureType()) {
+        //    case NUMERIC:
+        //        return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
+        //    case CATEGORICAL:
+        //        return " = '" + relation.getCategoricalValue() + "'";
+        //    case UNDEFINED:
+        //    default:
+        //        throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
+        //}
+        return "";
     }
 
     /**

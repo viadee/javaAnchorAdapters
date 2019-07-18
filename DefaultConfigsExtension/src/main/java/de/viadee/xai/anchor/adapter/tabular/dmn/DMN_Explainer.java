@@ -5,7 +5,9 @@ import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.StringColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizerRelation;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.CategoricalDiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -106,16 +108,16 @@ public class DMN_Explainer {
 
                 String featureValue;
 
-                DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
-                switch (relation.getFeatureType()) {
-                    case METRIC:
-                        featureValue = "[" + relation.getConditionMin() + ".." + relation.getConditionMax() + "]";
-                        break;
-                    case CATEGORICAL:
-                        featureValue = relation.getCategoricalValue().toString();
-                        break;
-                    default:
-                        featureValue = "";
+                DiscretizationOrigin discretizationOrigin = feature.getDiscretizer()
+                        .getTransition(instance.getValue(feature)).getDiscretizationOrigin();
+                if (discretizationOrigin instanceof NumericDiscretizationOrigin) {
+                    NumericDiscretizationOrigin numeric = (NumericDiscretizationOrigin) discretizationOrigin;
+                    featureValue = "[" + numeric.getMinValue() + ".." + numeric.getMaxValue() + "]";
+                } else if (discretizationOrigin instanceof CategoricalDiscretizationOrigin) {
+                    CategoricalDiscretizationOrigin categorical = (CategoricalDiscretizationOrigin) discretizationOrigin;
+                    featureValue = categorical.getValue().toString();
+                } else {
+                    throw new IllegalArgumentException("Undefined transition");
                 }
 
                 ruleValues[index] = featureValue;
