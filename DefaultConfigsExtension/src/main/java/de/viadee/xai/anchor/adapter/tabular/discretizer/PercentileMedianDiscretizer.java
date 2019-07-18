@@ -70,11 +70,6 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
 
-        if (numbers.isEmpty()) {
-            // all values are single class values or empty Array
-            return;
-        }
-
         final int classes = Math.min(classCount, numbers.size());
         final int countPerClass = numbers.size() / classes;
         int backlog = numbers.size() % classes;

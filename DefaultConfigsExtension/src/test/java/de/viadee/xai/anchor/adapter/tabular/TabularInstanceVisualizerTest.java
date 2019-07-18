@@ -6,12 +6,10 @@ import de.viadee.xai.anchor.adapter.tabular.column.StringColumn;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import org.junit.jupiter.api.Test;
-import sun.plugin.javascript.navig.Anchor;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -81,8 +79,5 @@ class TabularInstanceVisualizerTest {
 
         assertEquals(expected, visualization);
     }
-
-
-    // TODO test remaining code once discretization is finished
 
 }
