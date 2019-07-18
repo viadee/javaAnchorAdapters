@@ -2,6 +2,9 @@ package de.viadee.xai.anchor.adapter.tabular.transformations;
 
 import java.io.Serializable;
 
+/**
+ * Transforms TRUE/FALSE values to Boolean types
+ */
 public class StringToBooleanTransformer implements Transformer{
 
     @Override
