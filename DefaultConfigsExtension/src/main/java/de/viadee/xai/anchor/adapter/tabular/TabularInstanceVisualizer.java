@@ -29,7 +29,9 @@ public class TabularInstanceVisualizer {
     }
 
     /**
-     * Visualizes an instance by describing its feature values
+     * Visualizes an instance by describing its feature values.
+     * <p>
+     * Displays the non-discretized values
      *
      * @param instance the instance to describe
      * @return the result, one string for each feature
@@ -53,7 +55,7 @@ public class TabularInstanceVisualizer {
         // TODO test change
         DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
         switch (relation.getFeatureType()) {
-            case METRIC:
+            case NUMERIC:
                 return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
             case CATEGORICAL:
                 return " = '" + relation.getCategoricalValue() + "'";
