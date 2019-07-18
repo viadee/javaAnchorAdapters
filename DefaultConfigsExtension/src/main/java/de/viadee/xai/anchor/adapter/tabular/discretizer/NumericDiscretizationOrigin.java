@@ -33,6 +33,11 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
         return (value.doubleValue() >= minValue.doubleValue() && value.doubleValue() <= maxValue.doubleValue());
     }
 
+    @Override
+    public String outputFormat() {
+        return "IN INCL RANGE [" + getMinValue() + "," + getMaxValue() + "]";
+    }
+
     /**
      * @return the min range value
      */

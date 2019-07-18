@@ -34,4 +34,11 @@ public abstract class DiscretizationOrigin {
      * @return true, if the origin matches the value
      */
     public abstract boolean canDiscretize(Serializable originalValue);
+
+    /**
+     * Prints the discretization (range) in a pretty format
+     *
+     * @return a human readable string
+     */
+    public abstract String outputFormat();
 }

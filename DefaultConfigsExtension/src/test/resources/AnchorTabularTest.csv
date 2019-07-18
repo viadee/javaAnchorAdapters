@@ -1,3 +1,3 @@
-name,attr1,attr2,attr3
-testrow1,someattr1,anotherattr1,thirdattr1
-testrow2,someattr2,anotherattr2,thirdattr2
+name,attr1,attr2,attr3,numAttr
+testrow1,someattr1,anotherattr1,thirdattr1,10
+testrow2,someattr2,anotherattr2,thirdattr2,20

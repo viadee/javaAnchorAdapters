@@ -40,6 +40,7 @@ class AnchorTabularBuilderSequentialTest {
                 .addIgnoredColumn()
                 .addColumn(new StringColumn("attr2"))
                 .addIgnoredColumn()
+                .addIgnoredColumn()
                 .build(getTestCSV(), true);
 
         assertEquals(tabular.getTabularInstances().length, 2);

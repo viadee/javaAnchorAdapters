@@ -50,21 +50,6 @@ public class TabularInstanceVisualizer {
         return String.join(System.lineSeparator(), result.toArray(new String[0]));
     }
 
-    private String describeValue(TabularInstance instance, GenericColumn feature) {
-        // TODO test change
-        //DiscretizerRelation relation = feature.getDiscretizer().unApply(instance.getValue(feature));
-        //switch (relation.getFeatureType()) {
-        //    case NUMERIC:
-        //        return " IN INCL RANGE [" + relation.getConditionMin() + "," + relation.getConditionMax() + "]";
-        //    case CATEGORICAL:
-        //        return " = '" + relation.getCategoricalValue() + "'";
-        //    case UNDEFINED:
-        //    default:
-        //        throw new IllegalArgumentException("Feature of type " + relation.getFeatureType() + " not handled");
-        //}
-        return "";
-    }
-
     /**
      * Visualizes a result by describing its feature values
      *
@@ -80,7 +65,8 @@ public class TabularInstanceVisualizer {
         for (final Integer featureNr : anchorResult.getOrderedFeatures()) {
             final GenericColumn feature = instance.getFeatures()[featureNr];
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
-            featureText.add(feature.getName() + describeValue(instance, feature)
+            featureText.add(feature.getName() + " " + feature.getDiscretizer()
+                    .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
                     + " {" + df.format(candidate.getAddedPrecision()) + ","
                     + df.format(candidate.getAddedCoverage()) + "}");
         }

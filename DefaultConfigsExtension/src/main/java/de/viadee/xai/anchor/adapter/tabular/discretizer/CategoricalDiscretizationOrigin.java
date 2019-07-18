@@ -26,6 +26,11 @@ public class CategoricalDiscretizationOrigin extends DiscretizationOrigin {
         return value.equals(originalValue);
     }
 
+    @Override
+    public String outputFormat() {
+        return "= '" + getValue() + "'";
+    }
+
     /**
      * @return the original value
      */
