@@ -17,9 +17,9 @@ public class TabularInstance implements DataInstance<Serializable[]> {
     private final GenericColumn[] features;
     private final GenericColumn targetFeature;
     private final Serializable[] transformedInstance;
-    private final Integer[] discretizedInstance;
+    private final Double[] discretizedInstance;
     private final Serializable transformedLabel;
-    private final Integer discretizedLabel;
+    private final Double discretizedLabel;
 
     /**
      * Constructs the instance
@@ -33,7 +33,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
      * @param discretizedLabel    the discretized original label, if any
      */
     public TabularInstance(GenericColumn[] features, GenericColumn targetFeature, Serializable[] transformedInstance,
-                           Integer[] discretizedInstance, Serializable transformedLabel, Integer discretizedLabel) {
+                           Double[] discretizedInstance, Serializable transformedLabel, Double discretizedLabel) {
         this.features = features;
         this.targetFeature = targetFeature;
         this.transformedInstance = transformedInstance;
@@ -53,7 +53,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
         this.discretizedLabel = null;
         this.transformedLabel = null;
         this.transformedInstance = new Serializable[instanceToClone.transformedInstance.length];
-        this.discretizedInstance = new Integer[instanceToClone.discretizedInstance.length];
+        this.discretizedInstance = new Double[instanceToClone.discretizedInstance.length];
         System.arraycopy(instanceToClone.transformedInstance, 0, this.transformedInstance, 0, transformedInstance.length);
         System.arraycopy(instanceToClone.discretizedInstance, 0, this.discretizedInstance, 0, discretizedInstance.length);
     }
@@ -66,7 +66,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
     }
 
     @Override
-    public Integer[] getInstance() {
+    public Double[] getInstance() {
         return discretizedInstance;
     }
 
@@ -115,7 +115,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
      * @param feature the feature whose value to obtain
      * @return the discretized value
      */
-    public Integer getValue(GenericColumn feature) {
+    public Double getValue(GenericColumn feature) {
         return this.getValue(Arrays.asList(features).indexOf(feature));
     }
 
@@ -125,14 +125,14 @@ public class TabularInstance implements DataInstance<Serializable[]> {
      * @param featureName the feature's name
      * @return the corresponding value
      */
-    public Integer getValue(String featureName) {
+    public Double getValue(String featureName) {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
         return getValue(this.getFeatureIndex(featureName));
     }
 
-    public Integer getValue(int index) {
+    public Double getValue(int index) {
         return this.discretizedInstance[index];
     }
 
@@ -158,7 +158,7 @@ public class TabularInstance implements DataInstance<Serializable[]> {
     /**
      * @return the discretized label
      */
-    public Integer getDiscretizedLabel() {
+    public Double getDiscretizedLabel() {
         return discretizedLabel;
     }
 }

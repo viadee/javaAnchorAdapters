@@ -21,6 +21,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
     public PercentileMedianDiscretizer(int classCount) {
         this(classCount, true);
     }
+
     /**
      * Constructs the instance
      *
@@ -51,19 +52,22 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
 
             if (relationWhereMinIsMaxOfOther.isPresent()) {
                 final DiscretizationTransition oTransition = relationWhereMinIsMaxOfOther.get();
-                Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
+                numbers.stream().map(Number::doubleValue)
                         .filter((number ->
                                 number > ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue().doubleValue()))
-                        .min(Double::compareTo);
-                if (newMin.isPresent()) {
-                    ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).setMinValue(newMin.get());
-                }
+                        .min(Double::compareTo)
+                        .ifPresent(newMin -> ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin())
+                                .setMinValue(newMin));
             }
         }
     }
 
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+        if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
+            throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
+        }
+
         List<DiscretizationTransition> result = new ArrayList<>();
 
         List<Number> numbers = Stream.of(values).map(i -> (Number) i)
@@ -82,7 +86,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
                 backlog--;
             }
             List<Number> sublist = numbers.subList(startIndex, endIndex);
-            final int medianValue = (int) (medianIndexValue(sublist) * 100.00);
+            final Double medianValue = medianIndexValue(sublist);
 
             result.add(new DiscretizationTransition(
                     new NumericDiscretizationOrigin(sublist.get(0).doubleValue(),
@@ -103,18 +107,18 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
     private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers,
                                                   List<DiscretizationTransition> transitions) {
 
-        List<Integer> discretizedValues = transitions.stream()
+        List<Double> discretizedValues = transitions.stream()
                 .map(DiscretizationTransition::getDiscretizedValue)
 
                 .collect(Collectors.toList());
         if (discretizedValues.size() > new HashSet<>(discretizedValues).size()) {
-            Map<Integer, Long> valueCount = transitions.stream()
+            Map<Double, Long> valueCount = transitions.stream()
                     .map(DiscretizationTransition::getDiscretizedValue)
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-            for (Map.Entry<Integer, Long> entry : valueCount.entrySet()) {
+            for (Map.Entry<Double, Long> entry : valueCount.entrySet()) {
                 if (entry.getValue() > 1) {
-                    List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream().filter((rel) -> rel.getDiscretizedValue() == entry.getKey()).collect(Collectors.toList());
+                    List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream().filter((rel) -> entry.getKey().equals(rel.getDiscretizedValue())).collect(Collectors.toList());
                     Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream()
                             .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin()).getMinValue().doubleValue()).min(Double::compareTo);
                     Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream()
@@ -128,7 +132,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
                         double conditionMin = conditionMinOptional.get();
                         double conditionMax = conditionMaxOptional.get();
 
-                        int discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
+                        Double discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
 
                         DiscretizationTransition combinedRelation = new DiscretizationTransition(new NumericDiscretizationOrigin(conditionMin, conditionMax), discretizedValue);
                         transitions.removeAll(discretizerRelationsWithSameCatValue);

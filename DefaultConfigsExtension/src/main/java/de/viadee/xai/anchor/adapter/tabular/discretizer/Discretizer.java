@@ -8,7 +8,7 @@ import java.util.function.Function;
  * <p>
  * Discretization is used by Anchors tabular to perturb instances and find similar neighbours.
  */
-public interface Discretizer extends Function<Serializable, Integer>, Serializable {
+public interface Discretizer extends Function<Serializable, Double>, Serializable {
 
     /**
      * Applies this discretizer to the passed data
@@ -16,8 +16,8 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      * @param data the data to discretize
      * @return the discretized data
      */
-    default Integer[] apply(Serializable[] data) {
-        Integer[] discretizedData = new Integer[data.length];
+    default Double[] apply(Serializable[] data) {
+        Double[] discretizedData = new Double[data.length];
         for (int i = 0; i < data.length; i++) {
             discretizedData[i] = this.apply(data[i]);
         }
@@ -41,5 +41,5 @@ public interface Discretizer extends Function<Serializable, Integer>, Serializab
      * @param discretizedValue the value to get the relation for
      * @return the {@link DiscretizationTransition}
      */
-    DiscretizationTransition getTransition(int discretizedValue);
+    DiscretizationTransition getTransition(Double discretizedValue);
 }

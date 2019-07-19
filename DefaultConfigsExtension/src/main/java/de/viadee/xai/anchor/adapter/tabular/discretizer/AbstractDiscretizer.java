@@ -1,7 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -12,8 +11,8 @@ public abstract class AbstractDiscretizer implements Discretizer {
     private List<DiscretizationTransition> discretizationTransitions;
 
     @Override
-    public DiscretizationTransition getTransition(int discretizedValue) {
-        return discretizationTransitions.stream().filter(d -> d.getDiscretizedValue() == discretizedValue).findFirst()
+    public DiscretizationTransition getTransition(Double discretizedValue) {
+        return discretizationTransitions.stream().filter(d -> discretizedValue.equals(d.getDiscretizedValue())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value" +
                         discretizedValue));
     }
@@ -36,7 +35,7 @@ public abstract class AbstractDiscretizer implements Discretizer {
                 .map(DiscretizationTransition::getDiscretizedValue).distinct().count();
         if (distinctDiscretizedValues != discretizationTransitions.size()) {
             this.discretizationTransitions = null;
-            // TODO should we allow this?
+            // This could be required for some scenarios.. Not yet, though
             throw new IllegalArgumentException("Discretization targets are ambiguous");
         }
     }
@@ -50,7 +49,7 @@ public abstract class AbstractDiscretizer implements Discretizer {
     protected abstract List<DiscretizationTransition> fitCreateTransitions(Serializable[] values);
 
     @Override
-    public Integer apply(Serializable serializable) {
+    public Double apply(Serializable serializable) {
         final DiscretizationTransition discretizationTransition = discretizationTransitions.stream()
                 .filter(d -> d.getDiscretizationOrigin().canDiscretize(serializable))
                 .findFirst()

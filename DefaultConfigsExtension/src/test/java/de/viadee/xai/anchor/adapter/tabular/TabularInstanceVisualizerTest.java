@@ -74,7 +74,7 @@ class TabularInstanceVisualizerTest {
                 "numAttr IN INCL RANGE [10.0,20.0] {0.2,-0.2} AND " + System.lineSeparator() +
                 "attr3 = 'thirdattr2' {0.2,-0.19} AND " + System.lineSeparator() +
                 "attr2 = 'anotherattr2' {0.5,-0.2}" + System.lineSeparator() +
-                "THEN PREDICT someattr2 (1)" + System.lineSeparator() +
+                "THEN PREDICT someattr2 (1.0)" + System.lineSeparator() +
                 "WITH PRECISION 1.0 AND COVERAGE 0.2";
 
         assertEquals(expected, visualization);

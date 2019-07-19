@@ -42,13 +42,13 @@ final class TabularPreprocessor {
 
         // Split off labels
         Serializable[] transformedLabels = null;
-        Integer[] discretizedLabels = null;
+        Double[] discretizedLabels = null;
         if (targetColumn != null) {
             transformedLabels = dataFrame.removeColumn(targetColumn);
             discretizedLabels = targetColumn.getDiscretizer().apply(transformedLabels);
         }
         // Apply Discretization
-        final Integer[][] discretizedData = discretizeData(dataFrame);
+        final Double[][] discretizedData = discretizeData(dataFrame);
 
         // Create TabularInstances
         TabularInstance[] instances = new TabularInstance[dataFrame.getRowCount()];
@@ -61,7 +61,7 @@ final class TabularPreprocessor {
                     finalColumns,
                     targetColumn,
                     dataFrame.getRow(i),
-                    ArrayUtils.transformToIntArray(discretizedDataFrame.getRow(i)),
+                    ArrayUtils.transformToDoubleArray(discretizedDataFrame.getRow(i)),
                     (transformedLabels != null) ? transformedLabels[i] : null,
                     (discretizedLabels != null) ? discretizedLabels[i] : null
             );
@@ -126,8 +126,8 @@ final class TabularPreprocessor {
      * @param dataFrame the dataframe to apply discretization to
      * @return the discretized data
      */
-    private static Integer[][] discretizeData(DataFrame dataFrame) {
-        Integer[][] discretizedData = new Integer[dataFrame.getColumnCount()][];
+    private static Double[][] discretizeData(DataFrame dataFrame) {
+        Double[][] discretizedData = new Double[dataFrame.getColumnCount()][];
         for (int i = 0; i < dataFrame.getColumnCount(); i++) {
             GenericColumn column = dataFrame.getColumns().get(i);
             discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());

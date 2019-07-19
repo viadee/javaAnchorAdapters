@@ -25,7 +25,7 @@ public class UniqueValueDiscretizer extends AbstractDiscretizer {
         }
 
         return valueToIndexDiscretizer.entrySet().stream().map(e ->
-                new DiscretizationTransition(new CategoricalDiscretizationOrigin(e.getKey()), e.getValue()))
+                new DiscretizationTransition(new CategoricalDiscretizationOrigin(e.getKey()), e.getValue().doubleValue()))
                 .collect(Collectors.toList());
     }
 }

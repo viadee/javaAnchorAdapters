@@ -154,11 +154,11 @@ class DataFrame {
      * @param discretizer the discretizer to use
      * @return the column as a discretized int array
      */
-    Integer[] discretizeColumn(GenericColumn feature, Discretizer discretizer) {
+    Double[] discretizeColumn(GenericColumn feature, Discretizer discretizer) {
         return discretizeColumn(this.getColumnIndex(feature), discretizer);
     }
 
-    private Integer[] discretizeColumn(int featureIndex, Discretizer discretizer) {
+    private Double[] discretizeColumn(int featureIndex, Discretizer discretizer) {
         return discretizer.apply(this.dataFrame[featureIndex]);
     }
 

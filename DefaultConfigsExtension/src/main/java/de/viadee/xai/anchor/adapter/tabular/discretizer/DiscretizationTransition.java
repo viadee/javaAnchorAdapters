@@ -5,7 +5,7 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer;
  */
 public final class DiscretizationTransition {
     private final DiscretizationOrigin discretizationOrigin;
-    private final int discretizedValue;
+    private final Double discretizedValue;
 
     /**
      * Constructs the instance
@@ -14,7 +14,7 @@ public final class DiscretizationTransition {
      * @param discretizedValue     the discretizedValue
      */
     public DiscretizationTransition(DiscretizationOrigin discretizationOrigin,
-                                    int discretizedValue) {
+                                    Double discretizedValue) {
         this.discretizationOrigin = discretizationOrigin;
         this.discretizedValue = discretizedValue;
     }
@@ -29,16 +29,7 @@ public final class DiscretizationTransition {
     /**
      * @return the discretized value
      */
-    public int getDiscretizedValue() {
+    public Double getDiscretizedValue() {
         return discretizedValue;
-    }
-
-    @Override
-    public String toString() {
-        // TODO setup correct output or create new method
-        return "DiscretizationTransition{" +
-                "discretizationOrigin=" + discretizationOrigin +
-                ", discretizedValue=" + discretizedValue +
-                '}';
     }
 }
