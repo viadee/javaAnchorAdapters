@@ -12,7 +12,7 @@ This repository includes *methodological* aspects, i.e. default approaches on ho
 
 This project is to be considered research-in-progress.
 
-# Main Repository
+# de.viadee.xai.anchor.adapter.rmodule.AnchorServer Repository
 
 For more information on Anchors and this implementation, see [main repository](https://github.com/viadee/javaAnchorExplainer).
 

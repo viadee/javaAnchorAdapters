@@ -64,10 +64,10 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
 
     @Override
     public PerturbationFunction.PerturbationResult<TabularInstance> perturb(Set<Integer> immutableFeaturesIdx,
-                                                                            int noPerturbations) {
+                                                                            int nrPerturbations) {
         // Extend list until space is large enough
         List<TabularInstance> shuffledPerturbations = new ArrayList<>();
-        while (shuffledPerturbations.size() < noPerturbations)
+        while (shuffledPerturbations.size() < nrPerturbations)
             shuffledPerturbations.addAll(Arrays.asList(this.perturbationData));
 
         // TODO instead of shuffle rather use ThreadLocalRandom?
@@ -79,7 +79,7 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
 
         List<TabularInstance> rawResult = new ArrayList<>();
         List<boolean[]> featuresChanged = new ArrayList<>();
-        for (int i = 0; i < noPerturbations; i++) {
+        for (int i = 0; i < nrPerturbations; i++) {
             final TabularInstance instanceToClone = shuffledPerturbations.get(i);
             final TabularInstance perturbedInstance = new TabularInstance(instanceToClone);
             // Copy all fixed features
