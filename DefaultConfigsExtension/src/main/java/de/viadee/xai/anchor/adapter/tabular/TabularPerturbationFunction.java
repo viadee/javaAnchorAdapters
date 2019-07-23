@@ -1,15 +1,9 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-
 import de.viadee.xai.anchor.algorithm.PerturbationFunction;
 import de.viadee.xai.anchor.algorithm.global.ReconfigurablePerturbationFunction;
+
+import java.util.*;
 
 /**
  * Implementation of the {@link PerturbationFunction} for arbitrary
@@ -18,6 +12,9 @@ import de.viadee.xai.anchor.algorithm.global.ReconfigurablePerturbationFunction;
  * Uses a set of {@link TabularInstance}s to randomly return, e.g. the testing set.
  * <p>
  * Creating a custom de.viadee.xai.anchor.adapter.tabular perturbation function is highly application specific.
+ * <p>
+ * Quote Ribeiro: "We use a validation dataset to define D, and sample from D(z|A) by fixing the predicates in A and
+ * sampling the rest of the row as a whole."
  */
 public class TabularPerturbationFunction implements ReconfigurablePerturbationFunction<TabularInstance> {
     private static final long serialVersionUID = 5592705226886781336L;
@@ -43,7 +40,7 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
      *
      * @param instance         the {@link TabularInstance} to perturb.
      * @param perturbationData an array of data to generate perturbations from
-     * @param seed the seed to use
+     * @param seed             the seed to use
      */
     public TabularPerturbationFunction(TabularInstance instance, TabularInstance[] perturbationData, Long seed) {
         if (perturbationData == null || perturbationData.length < 1)

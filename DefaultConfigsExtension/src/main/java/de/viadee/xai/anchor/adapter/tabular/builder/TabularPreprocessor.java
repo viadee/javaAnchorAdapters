@@ -99,7 +99,7 @@ final class TabularPreprocessor {
     private static void applyTransformations(DataFrame dataFrame) {
         // apply all transformations of every column
         for (GenericColumn column : dataFrame.getColumns()) {
-            for (Transformer transformer : column.getDataTransformations()) {
+            for (Transformer transformer : column.getTransformers()) {
                 dataFrame.transformColumn(column, transformer);
             }
         }
