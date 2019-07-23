@@ -19,18 +19,17 @@ public class BooleanColumn extends NumberColumn {
      * @param name the column's name
      */
     public BooleanColumn(String name) {
-        this(name, null, null);
+        this(name, null);
     }
 
     /**
      * Instantiates the column
      *
      * @param name               the column's name
-     * @param dataTransformers   the object value to replace null values with. Must be convertible to double values
-     * @param anchorTransformers the transformations to apply before discretization for anchor
+     * @param transformers   the object value to replace null values with. Must be convertible to double values
      */
-    public BooleanColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers) {
-        super(name, dataTransformers, anchorTransformers, null);
+    public BooleanColumn(String name, List<Transformer> transformers) {
+        super(name, transformers, null);
     }
 
     /**
@@ -42,8 +41,7 @@ public class BooleanColumn extends NumberColumn {
     public static BooleanColumn fromStringInput(String name) {
         return new BooleanColumn(
                 name,
-                Arrays.asList(createEmptyTransformator(-1), new StringToBooleanTransformer()),
-                null);
+                Arrays.asList(createEmptyTransformator(-1), new StringToBooleanTransformer()));
     }
 
     /**
@@ -56,7 +54,6 @@ public class BooleanColumn extends NumberColumn {
     public static BooleanColumn fromStringInput(String name, Integer replaceNull) {
         return new BooleanColumn(
                 name,
-                Arrays.asList(createEmptyTransformator(replaceNull), new StringToBooleanTransformer()),
-                null);
+                Arrays.asList(createEmptyTransformator(replaceNull), new StringToBooleanTransformer()));
     }
 }
