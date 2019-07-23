@@ -1,14 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,55 +9,28 @@ import java.util.stream.Stream;
 /**
  * Discretizer partitioning data into n specified classes using their mean values as a class label
  */
-public class PercentileMedianDiscretizer implements Discretizer {
-    private static final long serialVersionUID = -5389805012441004957L;
-
+public class PercentileMedianDiscretizer extends AbstractDiscretizer {
+    private final boolean classReduction;
     private int classCount;
-    private final boolean automaticFitting;
-    private final List<DiscretizerRelation> discretizerRelations;
-    private final List<Number> singleClassValues;
-    private final List<DiscretizerRelation> singleClassValueRelations;
 
     /**
-     * Creates the discretizer with automatic fitting true.
+     * Constructs the instance
      *
-     * @param classCount        the amount of classes to use
-     * @param singleClassValues values which each of them should be a class like null values
+     * @param classCount count of classes
      */
-    public PercentileMedianDiscretizer(int classCount, Number... singleClassValues) {
-        this(classCount, true, singleClassValues);
+    public PercentileMedianDiscretizer(int classCount) {
+        this(classCount, true);
     }
 
     /**
-     * Creates the discretizer.
+     * Constructs the instance
      *
-     * @param classCount        the amount of classes to use
-     * @param automaticFitting  if it happens that multiple relations have the same discretized values these relations
-     *                          will be combined. If then this combined relation is the last remaining (except for single
-     *                          class values) the class count will be increased as long as this condition is true or
-     *                          class count is higher than the number of values
-     * @param singleClassValues values which each of them should be a class like null values
+     * @param classCount     count of classes
+     * @param classReduction if true, classes will be merged having the same discretized value
      */
-    public PercentileMedianDiscretizer(int classCount, boolean automaticFitting, Number... singleClassValues) {
+    public PercentileMedianDiscretizer(int classCount, boolean classReduction) {
         this.classCount = classCount;
-        this.automaticFitting = automaticFitting;
-
-        if (singleClassValues == null) {
-            singleClassValues = new Number[0];
-        }
-        discretizerRelations = new ArrayList<>(this.classCount + singleClassValues.length);
-        if (singleClassValues.length == 0 || singleClassValues[0] == null) {
-            this.singleClassValues = Collections.emptyList();
-            this.singleClassValueRelations = Collections.emptyList();
-        } else {
-            this.singleClassValues = new ArrayList<>(singleClassValues.length);
-            this.singleClassValueRelations = new ArrayList<>(singleClassValues.length);
-            for (Number singleClassValue : singleClassValues) {
-                this.singleClassValues.add(singleClassValue.intValue());
-                this.singleClassValueRelations.add(new DiscretizerRelation(singleClassValue.intValue(),
-                        singleClassValue.doubleValue(), singleClassValue.doubleValue()));
-            }
-        }
+        this.classReduction = classReduction;
     }
 
     private static double medianIndexValue(List<Number> list) {
@@ -75,17 +41,38 @@ public class PercentileMedianDiscretizer implements Discretizer {
         }
     }
 
+    private static void distinctMinAndMaxValues(List<Number> numbers, List<DiscretizationTransition> transitions) {
+        for (DiscretizationTransition transition : transitions) {
+            Optional<DiscretizationTransition> relationWhereMinIsMaxOfOther = transitions.stream()
+                    .filter(oTransition -> Objects.equals(
+                            ((NumericDiscretizationOrigin) transition.getDiscretizationOrigin()).getMaxValue(),
+                            ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue()))
+                    .filter(oTransition -> transition != oTransition)
+                    .findFirst();
+
+            if (relationWhereMinIsMaxOfOther.isPresent()) {
+                final DiscretizationTransition oTransition = relationWhereMinIsMaxOfOther.get();
+                numbers.stream().map(Number::doubleValue)
+                        .filter((number ->
+                                number > ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue().doubleValue()))
+                        .min(Double::compareTo)
+                        .ifPresent(newMin -> ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin())
+                                .setMinValue(newMin));
+            }
+        }
+    }
+
     @Override
-    public void fit(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+        if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
+            throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
+        }
+
+        List<DiscretizationTransition> result = new ArrayList<>();
+
         List<Number> numbers = Stream.of(values).map(i -> (Number) i)
-                .filter(number -> !singleClassValues.contains(number))
                 .sorted(Comparator.comparingDouble(Number::doubleValue))
                 .collect(Collectors.toList());
-
-        if (values.length > 0 && numbers.size() <= 0) {
-            // all values are single class values
-            return;
-        }
 
         final int classes = Math.min(classCount, numbers.size());
         final int countPerClass = numbers.size() / classes;
@@ -99,100 +86,61 @@ public class PercentileMedianDiscretizer implements Discretizer {
                 backlog--;
             }
             List<Number> sublist = numbers.subList(startIndex, endIndex);
-            final int medianValue = (int) medianIndexValue(sublist);
-            discretizerRelations.add(new DiscretizerRelation(medianValue,
-                    sublist.get(0).doubleValue(),
-                    sublist.get(sublist.size() - 1).doubleValue()));
+            final Double medianValue = medianIndexValue(sublist);
+
+            result.add(new DiscretizationTransition(
+                    new NumericDiscretizationOrigin(sublist.get(0).doubleValue(),
+                            sublist.get(sublist.size() - 1).doubleValue()), medianValue));
 
         }
 
-        if (this.automaticFitting) {
-            removeDuplicateDiscretizedValues(values, numbers);
+        if (this.classReduction) {
+            removeDuplicateDiscretizedValues(values, numbers, result);
         }
 
-        distinctMinAndMaxValues(numbers);
+        distinctMinAndMaxValues(numbers, result);
+
+        return result;
     }
 
-    private void distinctMinAndMaxValues(List<Number> numbers) {
-        boolean relationsWhereMinIsMaxOfOther = false;
-        for (DiscretizerRelation relation : this.discretizerRelations) {
-            Optional<DiscretizerRelation> relationWhereMinIsMaxOfOther = this.discretizerRelations.stream()
-                    .filter(oRelation -> Objects.equals(relation.getConditionMax(), oRelation.getConditionMin()))
-                    .filter(oRelation -> relation != oRelation)
-                    .findFirst();
 
-            if (relationWhereMinIsMaxOfOther.isPresent()) {
-                relationsWhereMinIsMaxOfOther = true;
-                final DiscretizerRelation oRelation = relationWhereMinIsMaxOfOther.get();
-                Optional<Double> newMin = numbers.stream().map(Number::doubleValue)
-                        .filter((number -> number > oRelation.getConditionMin())).min(Double::compareTo);
-                //noinspection OptionalIsPresent
-                if (newMin.isPresent()) {
-                    oRelation.setConditionMin(newMin.get());
-                }
-            }
-        }
+    private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers,
+                                                  List<DiscretizationTransition> transitions) {
 
-        if (relationsWhereMinIsMaxOfOther) {
-            distinctMinAndMaxValues(numbers);
-        }
-    }
+        List<Double> discretizedValues = transitions.stream()
+                .map(DiscretizationTransition::getDiscretizedValue)
 
-    private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers) {
-        List<Integer> discretizedValues = this.discretizerRelations.stream()
-                .map(DiscretizerRelation::getDiscretizedValue)
                 .collect(Collectors.toList());
         if (discretizedValues.size() > new HashSet<>(discretizedValues).size()) {
-            Map<Integer, Long> valueCount = this.discretizerRelations.stream()
-                    .map(DiscretizerRelation::getDiscretizedValue)
+            Map<Double, Long> valueCount = transitions.stream()
+                    .map(DiscretizationTransition::getDiscretizedValue)
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-            for (Map.Entry<Integer, Long> entry : valueCount.entrySet()) {
+            for (Map.Entry<Double, Long> entry : valueCount.entrySet()) {
                 if (entry.getValue() > 1) {
-                    List<DiscretizerRelation> discretizerRelationsWithSameCatValue = discretizerRelations.stream().filter((rel) -> rel.getDiscretizedValue() == entry.getKey()).collect(Collectors.toList());
-                    Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMin).min(Double::compareTo);
-                    Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream().map(DiscretizerRelation::getConditionMax).max(Double::compareTo);
+                    List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream().filter((rel) -> entry.getKey().equals(rel.getDiscretizedValue())).collect(Collectors.toList());
+                    Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream()
+                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin()).getMinValue().doubleValue()).min(Double::compareTo);
+                    Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream()
+                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin()).getMaxValue().doubleValue()).min(Double::compareTo);
                     //noinspection ConstantConditions
                     if (conditionMaxOptional.isPresent() && conditionMinOptional.isPresent()) {
+
+                        if (!classReduction) {
+                            throw new IllegalArgumentException("Classcount too high, duplicate discretizedValues occur, reduce classCount or allow Merging");
+                        }
                         double conditionMin = conditionMinOptional.get();
                         double conditionMax = conditionMaxOptional.get();
 
-                        int discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
+                        Double discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
 
-                        DiscretizerRelation combinedRelation = new DiscretizerRelation(discretizedValue, conditionMin, conditionMax);
-                        this.discretizerRelations.removeAll(discretizerRelationsWithSameCatValue);
-                        this.discretizerRelations.add(combinedRelation);
-                        this.discretizerRelations.sort(Comparator.comparingDouble(DiscretizerRelation::getDiscretizedValue));
-                        while (countRelationsWithoutSingleClassRelations() == 1 && this.classCount < numbers.size()) {
-                            this.discretizerRelations.clear();
-                            this.classCount++;
-                            this.fit(values);
-                        }
+                        DiscretizationTransition combinedRelation = new DiscretizationTransition(new NumericDiscretizationOrigin(conditionMin, conditionMax), discretizedValue);
+                        transitions.removeAll(discretizerRelationsWithSameCatValue);
+                        transitions.add(combinedRelation);
+                        transitions.sort(Comparator.comparingDouble(DiscretizationTransition::getDiscretizedValue));
                     }
                 }
             }
         }
-    }
-
-    private long countRelationsWithoutSingleClassRelations() {
-        return this.discretizerRelations.stream().filter((relation) -> !this.singleClassValueRelations.contains(relation)).count();
-    }
-
-    @Override
-    public DiscretizerRelation unApply(final int discretizedValue) {
-        return this.discretizerRelations.stream().filter((relation) -> Objects.equals(relation.getDiscretizedValue(), discretizedValue))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Discrete discretizedValue " + discretizedValue + " not in discretized bounds"));
-    }
-
-    @Override
-    public Integer apply(Serializable o) {
-        Number value = (Number) o;
-        for (DiscretizerRelation relation : this.discretizerRelations) {
-            if (value.doubleValue() >= relation.getConditionMin() && value.doubleValue() <= relation.getConditionMax()) {
-                return relation.getDiscretizedValue();
-            }
-        }
-
-        throw new IllegalArgumentException("Value " + o + " not in discretizer bounds");
     }
 }

@@ -97,6 +97,6 @@ public class DoubleColumn extends NumberColumn {
     public static DoubleColumn fromStringInput(String name, Integer replaceNull, int classCount) {
         return new DoubleColumn(name, Arrays.asList(createEmptyTransformator(replaceNull),
                 new StringToDoubleTransformer()), null,
-                (classCount < 1) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount, replaceNull));
+                (classCount < 1) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

@@ -2,18 +2,20 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Discretizer mapping each value type to a unique integer value
  */
-public class UniqueValueDiscretizer implements Discretizer {
+public class UniqueValueDiscretizer extends AbstractDiscretizer {
     private static final long serialVersionUID = -6185947730488220070L;
 
-    private final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
-
     @Override
-    public void fit(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+        final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
+
         int index = 0;
         for (Serializable object : values) {
             final Integer previous = valueToIndexDiscretizer.putIfAbsent(object, index);
@@ -21,21 +23,9 @@ public class UniqueValueDiscretizer implements Discretizer {
                 index++;
             }
         }
-    }
 
-    @Override
-    public DiscretizerRelation unApply(int value) {
-        Map.Entry<Serializable, Integer> disc = valueToIndexDiscretizer.entrySet().stream().filter((entry) -> entry.getValue().equals(value))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("No value for discrete " + value + " found"));
-
-        return new DiscretizerRelation(disc.getValue(), disc.getKey());
-    }
-
-    @Override
-    public Integer apply(Serializable o) {
-        final Integer result = valueToIndexDiscretizer.get(o);
-        if (result == null)
-            throw new IllegalArgumentException("Object did not appear during fitting");
-        return result;
+        return valueToIndexDiscretizer.entrySet().stream().map(e ->
+                new DiscretizationTransition(new CategoricalDiscretizationOrigin(e.getKey()), e.getValue().doubleValue()))
+                .collect(Collectors.toList());
     }
 }

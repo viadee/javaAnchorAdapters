@@ -138,6 +138,26 @@ public enum ArrayUtils {;
         return intRow;
     }
 
+    public static Double[] transformToDoubleArray(Serializable[] value) {
+        Double[] doubleRow = new Double[value.length];
+        for (int j = 0; j < value.length; j++) {
+            Serializable cell = value[j];
+            if (cell == null) {
+                doubleRow[j] = null;
+            } else if (cell instanceof Double)
+                doubleRow[j] = (Double) cell;
+            else {
+                //noinspection CaughtExceptionImmediatelyRethrown
+                try {
+                    doubleRow[j] = Double.valueOf((String) cell);
+                } catch (Exception e) {
+                    throw e;
+                }
+            }
+        }
+        return doubleRow;
+    }
+
     /**
      * Unboxes an array
      *

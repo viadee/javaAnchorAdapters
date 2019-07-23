@@ -1,4 +1,4 @@
-package de.viadee.xai.anchor.adapter.tabular.util;
+package de.viadee.xai.anchor.adapter.tabular.builder;
 
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 
@@ -37,7 +37,7 @@ public enum Balancer {;
         // Balancing = for each label have the same amount of entries
         // We reattach the labels as balancing shuffles the table, which would lead to our labels being faulty
 
-        final Map<Integer, Integer> countPerLabel = Stream.of(instances)
+        final Map<Double, Integer> countPerLabel = Stream.of(instances)
                 .collect(Collectors.groupingBy(TabularInstance::getDiscretizedLabel,
                         Collectors.reducing(0, e -> 1, Integer::sum)));
         final int minCount = countPerLabel.values().stream().min(Comparator.comparing(Integer::valueOf)).orElseThrow(()
@@ -47,7 +47,7 @@ public enum Balancer {;
 
         final List<TabularInstance> list = new ArrayList<>(Arrays.asList(instances));
         Collections.shuffle(list, rnd);
-        final Map<Integer, Integer> addedCount = new HashMap<>();
+        final Map<Double, Integer> addedCount = new HashMap<>();
         for (TabularInstance instance : list) {
             final Integer currentCount = addedCount.getOrDefault(instance.getDiscretizedLabel(), 0);
             if (currentCount < minCount) {
