@@ -1,6 +1,6 @@
 package RandomSearch;
 
-import LossFunctions.Accuracy.PredictionModel;
+import LossFunctions.PredictionModel;
 import LossFunctions.PerformanceMeasures;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
