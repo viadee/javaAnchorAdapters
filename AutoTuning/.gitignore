@@ -28,4 +28,6 @@ hs_err_pid*
 rs-output
 smac-output
 src/main/resources
-.idea
+.idea/workspace.xml
+.idea/compiler.xml
+/.idea/

@@ -39,8 +39,8 @@ public class main {
 //        anchorBuilder.setTau(0.77).setBeamSize(11).setDelta(0.11).setEpsilon(0.41).setTauDiscrepancy(0.09).setInitSampleCount(3);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch("Hella_ASN_90", anchorBuilder, anchorTabular, 200, true);
-        rs.optimizeExplanations(h2oModel::predict, anchorTabularTest, PerformanceMeasures.Measure.PRECISION, false);
+        RandomSearch rs = new RandomSearch("Hella_ASN_90", anchorBuilder, anchorTabular, 5, true);
+        rs.optimizeExplanations(h2oModel::predict, anchorTabularTest, PerformanceMeasures.Measure.F1, false);
 
         // SMAC with condition
 //        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();
@@ -49,41 +49,4 @@ public class main {
 
         System.out.println("-- COMPLETE --");
     }
-
-    private static void printLocalExplanationResult(TabularInstance instance, AnchorTabular tabular,
-                                                    AnchorConstructionBuilder<TabularInstance> builder) {
-        final AnchorResult<TabularInstance> anchor = builder
-                .build()
-                .constructAnchor();
-
-        System.out.println("====Explained instance====" + System.lineSeparator() +
-                tabular.getVisualizer().visualizeInstance(anchor.getInstance()));
-
-        System.out.println("====Result====" + System.lineSeparator() +
-                tabular.getVisualizer().visualizeResult(anchor));
-    }
-
-    private static void printGlobalExplanationResult(AnchorTabular tabular,
-                                                     AnchorConstructionBuilder<TabularInstance> builder) {
-        // Use the CoveragePick algorithm to create global explanations
-        final List<AnchorResult<TabularInstance>> globalExplanations = new CoveragePick<>(builder, 10,
-                Executors.newCachedThreadPool(), null)
-                .run(tabular.getTabularInstances(), 20);
-
-        System.out.println(tabular.getVisualizer().visualizeGlobalResults(globalExplanations));
-    }
-
-    private static void outputTestsetAccuracy(String name, Function<TabularInstance, Integer> predictFunction) {
-        final TabularInstance[] testData = TitanicDataset.createTabularTestDefinition().getTabularInstances();
-        final int[] actualTestLabels = TitanicDataset.readTestLabels();
-        int matches = 0;
-        for (int i = 0; i < testData.length; i++) {
-            if (predictFunction.apply(testData[i]).equals(actualTestLabels[i]))
-                matches++;
-        }
-
-        System.out.println("====" + name + " Testset Accuracy====" + System.lineSeparator() +
-                matches / (double) testData.length);
-    }
-
 }
