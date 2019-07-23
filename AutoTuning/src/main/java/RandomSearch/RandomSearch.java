@@ -25,6 +25,7 @@ public class RandomSearch {
     private HyperparameterSpace currentHyperparameterSpace;
     private HyperparameterSpace bestHyperparameterSpace;
     private List<AnchorResult<TabularInstance>> bestExplanations;
+    private final RandomSearchLogger logger;
 
     private RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, int terminationConditionNrEx, boolean startWithDefault) {
         this.scenario = scenario;
@@ -37,6 +38,8 @@ public class RandomSearch {
         }
         this.terminationConditionInSec = terminationConditionInSec;
         this.terminationConditionNrEx = terminationConditionNrEx;
+       this.logger = new RandomSearchLogger(scenario, bestHyperparameterSpace);
+
     }
 
     public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, boolean startWithDefault) {
@@ -60,9 +63,6 @@ public class RandomSearch {
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
 
-        // init logging the configurations
-        RandomSearchLogger randomSearchLogger = new RandomSearchLogger(scenario, bestHyperparameterSpace);
-
         while ((System.currentTimeMillis() - startTime) < (terminationConditionInSec * 1000) || nrExecutions < this.terminationConditionNrEx) {
 
             // to calculate the runtime of each Anchors run
@@ -82,7 +82,11 @@ public class RandomSearch {
             PerformanceMeasures performanceMeasures = new PerformanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
             currentHyperparameterSpace.setPerformance(performanceMeasures.calcMeasure(measure));
             currentHyperparameterSpace.setCoverage(performanceMeasures.getCoverage());
-            randomSearchLogger.addValuesToLogging(currentHyperparameterSpace);
+
+            // log results
+            logger.addValuesToLogging(currentHyperparameterSpace);
+            logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(rules));
+            logger.endLine();
 
             // check if performance of current space is the best, if yes set current space as best space
             if (checkIfBetter(currentHyperparameterSpace.getPerformance() * currentHyperparameterSpace.getCoverage())) {
@@ -96,7 +100,8 @@ public class RandomSearch {
             nrExecutions++;
         }
 
-        randomSearchLogger.endLogging();
+        //randomSearchLogger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(bestExplanations));
+        logger.endLogging();
 
         // visualize best hyperparameters and the best global explanations
         visualizeBestHyperparameterSpace(measure);
@@ -112,7 +117,6 @@ public class RandomSearch {
 
     private List<AnchorResult<TabularInstance>> optimizeLocal() {
         final AnchorResult<TabularInstance> localExplanation = anchorBuilder.build().constructAnchor();
-
         return Arrays.asList(localExplanation);
     }
 

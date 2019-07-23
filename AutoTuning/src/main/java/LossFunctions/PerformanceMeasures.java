@@ -7,11 +7,11 @@ import java.util.function.Function;
 
 public class PerformanceMeasures {
 
-    double coverage;
-    int truePositives;
-    int falsePositives;
-    int trueNegatives;
-    int falseNegatives;
+    private double coverage;
+    private int truePositives;
+    private int falsePositives;
+    private int trueNegatives;
+    private int falseNegatives;
 
     public enum Measure {
         ACCURACY,
