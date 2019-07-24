@@ -1,6 +1,6 @@
 package RandomSearch;
 
-public interface ContinuousParameterInterface extends Parameter {
+public interface ContinuousParameterInterface extends NumericalParameter {
 
     String type = "real";
 

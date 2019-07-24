@@ -1,18 +1,16 @@
 package RandomSearch;
 
+import java.io.Serializable;
+
 public interface Parameter {
 
     String getType();
 
     String getName();
 
-    Number getMinValue();
+    Serializable getDefaultValue();
 
-    Number getMaxValue();
-
-    Number getDefaultValue();
-
-    Number getCurrentValue();
+    Serializable getCurrentValue();
 
     void searchRandom();
 

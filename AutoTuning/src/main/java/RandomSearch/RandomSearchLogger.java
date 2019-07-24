@@ -1,5 +1,6 @@
 package RandomSearch;
 
+import LossFunctions.PerformanceMeasures;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
@@ -12,7 +13,7 @@ public class RandomSearchLogger {
     private final FileWriter fileWriterCSV;
     private String directory = "./rs-output/";
 
-    public RandomSearchLogger(String scenario, HyperparameterSpace hyperparameterSpace) {
+    public RandomSearchLogger(String scenario, HyperparameterSpace hyperparameterSpace, PerformanceMeasures.Measure measure) {
 
         try {
             // create directory for random search output if not yet created
@@ -23,7 +24,7 @@ public class RandomSearchLogger {
             for (Parameter p : hyperparameterSpace.getHyperParameters()) {
                 header.append(p.getName() + ";");
             }
-            fileWriterCSV.write(header.toString() + "runtime,coverage,performance,best rule(s)" + "\n");
+            fileWriterCSV.write(header.toString() + "runtime,coverage," + measure + ",best rule(s)" + "\n");
 
         } catch (IOException e) {
             throw new IllegalStateException("Error occurred creating file", e);

@@ -1,6 +1,6 @@
 package RandomSearch;
 
-public interface IntegerParameterInterface extends Parameter {
+public interface IntegerParameterInterface extends NumericalParameter {
 
     String type = "integer";
 

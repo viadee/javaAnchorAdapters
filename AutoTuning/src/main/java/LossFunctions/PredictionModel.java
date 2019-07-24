@@ -61,7 +61,7 @@ public class PredictionModel {
                 double instanceValue = instance.getValue(f);
                 double ruleValue = rule.getInstance().getValue(f);
 
-                System.out.println("Feature: " + rule.getInstance().getFeatures()[f].getName() + " - Instance value: " + instanceValue + " ---- Rule value: " + ruleValue);
+//                System.out.println("Feature: " + rule.getInstance().getFeatures()[f].getName() + " - Instance value: " + instanceValue + " ---- Rule value: " + ruleValue);
 
                 if (instanceValue == ruleValue) {
                     numberMatches++;
