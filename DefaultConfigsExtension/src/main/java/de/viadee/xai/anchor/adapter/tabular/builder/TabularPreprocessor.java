@@ -99,8 +99,12 @@ final class TabularPreprocessor {
     private static void applyTransformations(DataFrame dataFrame) {
         // apply all transformations of every column
         for (GenericColumn column : dataFrame.getColumns()) {
-            for (Transformer transformer : column.getTransformers()) {
-                dataFrame.transformColumn(column, transformer);
+            try {
+                for (Transformer transformer : column.getTransformers()) {
+                    dataFrame.transformColumn(column, transformer);
+                }
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.transformationException(column, e);
             }
         }
     }
@@ -113,10 +117,14 @@ final class TabularPreprocessor {
     private static void fitDiscretizers(final DataFrame dataFrame) {
         // Fit discretizers set in columns. Do not transform yet
         for (GenericColumn column : dataFrame.getColumns()) {
-            if (column.getDiscretizer() == null) {
-                column.setDiscretizer(new UniqueValueDiscretizer());
+            try {
+                if (column.getDiscretizer() == null) {
+                    column.setDiscretizer(new UniqueValueDiscretizer());
+                }
+                column.getDiscretizer().fit(dataFrame.getColumn(column));
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.discretizationFitException(column, e);
             }
-            column.getDiscretizer().fit(dataFrame.getColumn(column));
         }
     }
 
@@ -130,7 +138,11 @@ final class TabularPreprocessor {
         Double[][] discretizedData = new Double[dataFrame.getColumnCount()][];
         for (int i = 0; i < dataFrame.getColumnCount(); i++) {
             GenericColumn column = dataFrame.getColumns().get(i);
-            discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());
+            try {
+                discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.discretizationException(column, e);
+            }
         }
         return discretizedData;
     }

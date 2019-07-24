@@ -1,12 +1,13 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+import java.util.function.Consumer;
 
 /**
  * Represents the type of a column - whether the contained data is categorical or nominal
@@ -17,6 +18,8 @@ public class GenericColumn implements Serializable {
     private final String name;
     private final List<Transformer> transformations;
     private Discretizer discretizer;
+
+    private Consumer<String[]> postBuildListener;
 
     /**
      * @param name the column's name
@@ -89,6 +92,17 @@ public class GenericColumn implements Serializable {
      */
     public boolean isDoUse() {
         return true;
+    }
+
+    /**
+     * The subclass may register a post build listener which gets fed with the data when build is called
+     * <p>
+     * This allows the column to configure itself based on the data existing in the dataset
+     *
+     * @return the post build listener or null
+     */
+    public Consumer<String[]> getPostBuildListener() {
+        return postBuildListener;
     }
 
     @Override

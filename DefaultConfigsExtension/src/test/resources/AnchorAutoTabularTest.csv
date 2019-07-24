@@ -1,0 +1,3 @@
+IdAttr,StringAttr,EnumAttr,BooleanAttr,IntAttr,DoubleAttr,MixedNumAttr,MissingValNumberAttr,MissingValString
+Row1,This is row 1,Blue,true,1,1.1,1.2,,
+Row2,This is another row,Red,false,2,2.1,2,22,Not missing here
