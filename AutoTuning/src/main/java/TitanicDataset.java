@@ -1,4 +1,5 @@
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
+import de.viadee.xai.anchor.adapter.tabular.builder.AnchorTabularBuilderByName;
 import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.StringColumn;
@@ -29,9 +30,8 @@ public class TitanicDataset {
             throw new RuntimeException("Could not load data");
 
         try {
-            return new AnchorTabular.Builder()
+            return new AnchorTabularBuilderByName()
                     .setDoBalance(false)
-                    .addIgnoredColumn("PassengerId")
                     .addTargetColumn(IntegerColumn.fromStringInput("Survived"))
                     .addColumn(IntegerColumn.fromStringInput("Pclass"))
                     .addColumn(new StringColumn("Name"))
@@ -42,10 +42,7 @@ public class TitanicDataset {
                     .addColumn(IntegerColumn.fromStringInput("Ticket", -1,
                             Collections.singletonList(new TicketNumberTransformer()), null))
                     .addColumn(DoubleColumn.fromStringInput("Fare", -1, 6))
-                    .addColumn(new StringColumn("Cabin", Arrays.asList(
-                            new ReplaceNonEmptyTransformer(true),
-                            new ReplaceEmptyTransformer(false)),
-                            null, null))
+                    .addColumn(new StringColumn("Cabin", Arrays.asList(new ReplaceEmptyTransformer(false), new ReplaceNonEmptyTransformer(true)), null))
                     .addColumn(new StringColumn("Embarked"))
                     .build(trainingDataStream, true, false);
         } catch (IOException e) {
@@ -66,10 +63,9 @@ public class TitanicDataset {
             throw new RuntimeException("Could not load data");
 
         try {
-            return new AnchorTabular.Builder()
+            return new AnchorTabularBuilderByName()
                     .setDoBalance(false)
-                    .addIgnoredColumn("PassengerId")
-                    // Label is not specified in test data, so we need to skip it
+                    .addTargetColumn(IntegerColumn.fromStringInput("Survived"))
                     .addColumn(IntegerColumn.fromStringInput("Pclass"))
                     .addColumn(new StringColumn("Name"))
                     .addColumn(new StringColumn("Sex"))
@@ -79,16 +75,13 @@ public class TitanicDataset {
                     .addColumn(IntegerColumn.fromStringInput("Ticket", -1,
                             Collections.singletonList(new TicketNumberTransformer()), null))
                     .addColumn(DoubleColumn.fromStringInput("Fare", -1, 6))
-                    .addColumn(new StringColumn("Cabin", Arrays.asList(
-                            new ReplaceNonEmptyTransformer(true),
-                            new ReplaceEmptyTransformer(false)),
-                            null, null))
+                    .addColumn(new StringColumn("Cabin", Arrays.asList(new ReplaceEmptyTransformer(false), new ReplaceNonEmptyTransformer(true)), null))
                     .addColumn(new StringColumn("Embarked"))
                     .build(trainingDataStream, true, false);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException("Could not read data");
-        }
-    }
+        }    }
 
     private static final class TicketNumberTransformer implements Transformer {
 

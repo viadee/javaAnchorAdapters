@@ -2,6 +2,8 @@ package RandomSearch;
 
 import LossFunctions.PredictionModel;
 import LossFunctions.PerformanceMeasures;
+import Parameter.NumericalParameter;
+import Parameter.Parameter;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;

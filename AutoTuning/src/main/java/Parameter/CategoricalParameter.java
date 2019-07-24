@@ -1,8 +1,10 @@
-package RandomSearch;
+package Parameter;
 
 import java.util.Random;
 
-public class CategoricalParameter implements Parameter{
+public class CategoricalParameter implements Parameter {
+
+    String type = "categorical";
 
     private String name;
     private String[] allValues;
@@ -23,7 +25,7 @@ public class CategoricalParameter implements Parameter{
     }
 
     public String getType() {
-        return null;
+        return type;
     }
 
     public String getName() {

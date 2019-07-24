@@ -1,12 +1,10 @@
 package RandomSearch;
 
 import LossFunctions.PerformanceMeasures;
-import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
-import de.viadee.xai.anchor.algorithm.AnchorResult;
+import Parameter.Parameter;
 
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 public class RandomSearchLogger {
 

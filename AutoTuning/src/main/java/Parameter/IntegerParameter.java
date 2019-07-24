@@ -1,4 +1,4 @@
-package RandomSearch;
+package Parameter;
 
 import java.util.Random;
 

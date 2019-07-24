@@ -1,6 +1,6 @@
-package RandomSearch;
+package Parameter;
 
-public interface NumericalParameter extends Parameter{
+public interface NumericalParameter extends Parameter {
 
     @Override
     Number getDefaultValue();

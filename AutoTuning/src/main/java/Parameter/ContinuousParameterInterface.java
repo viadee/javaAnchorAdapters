@@ -1,4 +1,4 @@
-package RandomSearch;
+package Parameter;
 
 public interface ContinuousParameterInterface extends NumericalParameter {
 

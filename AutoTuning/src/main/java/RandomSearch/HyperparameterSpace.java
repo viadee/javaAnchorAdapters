@@ -1,5 +1,9 @@
 package RandomSearch;
 
+import Parameter.Parameter;
+import Parameter.IntegerParameter;
+import Parameter.ContinuousParameter;
+
 import java.util.ArrayList;
 import java.util.List;
 
