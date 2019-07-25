@@ -1,5 +1,6 @@
 import LossFunctions.PerformanceMeasures;
 import RandomSearch.RandomSearch;
+import RandomSearch.RandomSearchBuilder;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
@@ -39,8 +40,15 @@ public class main {
 //        anchorBuilder.setTau(0.77).setBeamSize(11).setDelta(0.11).setEpsilon(0.41).setTauDiscrepancy(0.09).setInitSampleCount(3);
 
         // RANDOM SEARCH with time condintion
-        RandomSearch rs = new RandomSearch("Hella_ASN_90", anchorBuilder, anchorTabular, 5, true);
-        rs.optimizeExplanations(h2oModel::predict, anchorTabularTest, PerformanceMeasures.Measure.F1, false);
+        RandomSearch rs = new RandomSearchBuilder()
+                .setAnchorBuilder(anchorBuilder)
+//                .setAnchorTabular(anchorTabular)
+                .setClassificationFunction(h2oModel::predict)
+                .setScenario("Hella_ASN_90")
+                .setExecutionTermination(5)
+                .build();
+
+        rs.optimizeExplanations(false);
 
         // SMAC with condition
 //        HyperparameterSpace hyperparameterSpace = new HyperparameterSpace();

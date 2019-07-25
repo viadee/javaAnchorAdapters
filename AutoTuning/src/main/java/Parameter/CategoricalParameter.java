@@ -16,8 +16,14 @@ public class CategoricalParameter implements Parameter {
         this(name, currentValue, currentValue, new String[]{currentValue});
     }
 
+    public CategoricalParameter(String name, String[] allValues) {
+        this(name, allValues.length != 0 ? allValues[0] : null, allValues.length != 0 ? allValues[0] : null, allValues);
+    }
 
     public CategoricalParameter(String name, String defaultValue, String currentValue, String[] allValues) {
+        if (defaultValue == null){
+            throw new IllegalArgumentException("Categorical parameters need at least one category");
+        }
         this.allValues = allValues;
         this.name = name;
         this.defaultValue = defaultValue;
@@ -42,7 +48,7 @@ public class CategoricalParameter implements Parameter {
 
     public void searchRandom() {
         Random random = new Random();
-        int newParameter = random.nextInt(allValues.length - 1);
+        int newParameter = random.nextInt(allValues.length);
 
         currentValue = allValues[newParameter];
     }

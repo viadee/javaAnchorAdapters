@@ -9,6 +9,7 @@ import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.global.CoveragePick;
+import de.viadee.xai.anchor.algorithm.util.ParameterValidation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,43 +23,49 @@ public class RandomSearch {
     private final String scenario;
     private final AnchorConstructionBuilder<TabularInstance> anchorBuilder;
     private final AnchorTabular anchorTabular;
+    private final Function<TabularInstance, Integer> classificationFunction;
     private final long terminationConditionInSec;
     private final int terminationConditionNrEx;
+    private final PerformanceMeasures.Measure measure;
+
     private HyperparameterSpace currentHyperparameterSpace;
     private HyperparameterSpace bestHyperparameterSpace;
     private List<AnchorResult<TabularInstance>> bestExplanations;
     private RandomSearchLogger logger;
 
-    private RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, int terminationConditionNrEx, boolean startWithDefault) {
+    RandomSearch(String scenario,
+                 AnchorConstructionBuilder<TabularInstance> anchorBuilder,
+                 AnchorTabular anchorTabular,
+                 long terminationConditionInSec,
+                 int terminationConditionNrEx,
+                 boolean startWithDefault,
+                 Function<TabularInstance, Integer> classificationFunction,
+                 PerformanceMeasures.Measure measure) {
+
+        if (anchorBuilder == null)
+            throw new IllegalArgumentException("AnchorConstructionBuilder " + ParameterValidation.NULL_MESSAGE);
+        if (anchorTabular == null)
+            throw new IllegalArgumentException("AnchorTabular " + ParameterValidation.NULL_MESSAGE);
+        if (classificationFunction == null)
+            throw new IllegalArgumentException("Classification function " + ParameterValidation.NULL_MESSAGE);
+        if (terminationConditionInSec == 0 && terminationConditionNrEx == 0)
+            throw new IllegalArgumentException("No termination condition defined to run random search");
+
         this.scenario = scenario;
         this.anchorBuilder = anchorBuilder;
         this.anchorTabular = anchorTabular;
+        this.classificationFunction = classificationFunction;
         this.bestHyperparameterSpace = new HyperparameterSpace();
+        this.measure = measure;
         this.currentHyperparameterSpace = new HyperparameterSpace();
-        if (!startWithDefault) {
-            this.currentHyperparameterSpace = randomizeHyperparameters(currentHyperparameterSpace);
-        }
         this.terminationConditionInSec = terminationConditionInSec;
         this.terminationConditionNrEx = terminationConditionNrEx;
+
+        if (!startWithDefault)
+            this.currentHyperparameterSpace = randomizeHyperparameters(currentHyperparameterSpace);
     }
 
-    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec, boolean startWithDefault) {
-        this(scenario, anchorBuilder, anchorTabular, terminationConditionInSec, 0, startWithDefault);
-    }
-
-    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, int terminationConditionNrEx, boolean startWithDefault) {
-        this(scenario, anchorBuilder, anchorTabular, 0, terminationConditionNrEx, startWithDefault);
-    }
-
-    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, long terminationConditionInSec) {
-        this(scenario, anchorBuilder, anchorTabular, terminationConditionInSec, 0, true);
-    }
-
-    public RandomSearch(String scenario, AnchorConstructionBuilder<TabularInstance> anchorBuilder, AnchorTabular anchorTabular, int terminationConditionNrEx) {
-        this(scenario, anchorBuilder, anchorTabular, 0, terminationConditionNrEx, true);
-    }
-
-    public void optimizeExplanations(Function<TabularInstance, Integer> classificationFunction, AnchorTabular anchorTabular, PerformanceMeasures.Measure measure, boolean global) {
+    public void optimizeExplanations(boolean global) {
 
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
@@ -125,12 +132,12 @@ public class RandomSearch {
     private void setNewParameters() {
 
         anchorBuilder
-                .setTau(((NumericalParameter)currentHyperparameterSpace.getParameterByName("tau")).getCurrentValue().doubleValue())
-                .setBeamSize(((NumericalParameter)currentHyperparameterSpace.getParameterByName("beamsize")).getCurrentValue().intValue())
-                .setDelta(((NumericalParameter)currentHyperparameterSpace.getParameterByName("delta")).getCurrentValue().doubleValue())
-                .setEpsilon(((NumericalParameter)currentHyperparameterSpace.getParameterByName("epsilon")).getCurrentValue().doubleValue())
-                .setTauDiscrepancy(((NumericalParameter)currentHyperparameterSpace.getParameterByName("tauDiscrepancy")).getCurrentValue().doubleValue())
-                .setInitSampleCount(((NumericalParameter)currentHyperparameterSpace.getParameterByName("initSampleCount")).getCurrentValue().intValue());
+                .setTau(((NumericalParameter) currentHyperparameterSpace.getParameterByName("tau")).getCurrentValue().doubleValue())
+                .setBeamSize(((NumericalParameter) currentHyperparameterSpace.getParameterByName("beamsize")).getCurrentValue().intValue())
+                .setDelta(((NumericalParameter) currentHyperparameterSpace.getParameterByName("delta")).getCurrentValue().doubleValue())
+                .setEpsilon(((NumericalParameter) currentHyperparameterSpace.getParameterByName("epsilon")).getCurrentValue().doubleValue())
+                .setTauDiscrepancy(((NumericalParameter) currentHyperparameterSpace.getParameterByName("tauDiscrepancy")).getCurrentValue().doubleValue())
+                .setInitSampleCount(((NumericalParameter) currentHyperparameterSpace.getParameterByName("initSampleCount")).getCurrentValue().intValue());
     }
 
 
