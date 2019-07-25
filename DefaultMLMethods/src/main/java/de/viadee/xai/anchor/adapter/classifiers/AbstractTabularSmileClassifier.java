@@ -16,12 +16,28 @@ import java.util.stream.Stream;
  * discretized instantiation.
  * Therefore, these models are only to be used for testing.
  * <p>
+ * Note: There is a chance to learn and predict on transformed values. This is only possible for models where all
+ * values are numeric / boolean
+ * <p>
  * TODO make optional to operate on transformed / discretized values
  */
 public abstract class AbstractTabularSmileClassifier implements Function<TabularInstance, Integer> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTabularSmileClassifier.class);
-    private final boolean useDiscretizedValues = false;
+
+    private final boolean useDiscretizedValues;
+
     private SoftClassifier<double[]> classifier;
+
+
+    /**
+     * Creates the instance
+     *
+     * @param useDiscretizedValues if true, the model will be learned on transformed, i.e., original values.
+     *                             Generally, this is to be preferred but not always possible.
+     */
+    AbstractTabularSmileClassifier(boolean useDiscretizedValues) {
+        this.useDiscretizedValues = useDiscretizedValues;
+    }
 
     private static Number toNumeric(Object obj) {
         Number result;

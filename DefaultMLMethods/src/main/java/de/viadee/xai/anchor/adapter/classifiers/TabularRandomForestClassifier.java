@@ -12,9 +12,12 @@ public class TabularRandomForestClassifier extends AbstractTabularSmileClassifie
     /**
      * Instantiates the classifier
      *
-     * @param nTrees the number of trees to use
+     * @param nTrees               the number of trees to use
+     * @param useDiscretizedValues if true, the model will be learned on transformed, i.e., original values.
+     *                             Generally, this is to be preferred but not always possible.
      */
-    public TabularRandomForestClassifier(int nTrees) {
+    public TabularRandomForestClassifier(int nTrees, boolean useDiscretizedValues) {
+        super(useDiscretizedValues);
         this.nTrees = nTrees;
     }
 

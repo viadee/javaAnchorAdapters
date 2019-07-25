@@ -14,8 +14,11 @@ public class GradientBoostedTreeTabularClassifier extends AbstractTabularSmileCl
      * Instantiates the classifier
      *
      * @param nTrees the number of trees to use
+     * @param useDiscretizedValues if true, the model will be learned on transformed, i.e., original values.
+     *                             Generally, this is to be preferred but not always possible.
      */
-    public GradientBoostedTreeTabularClassifier(int nTrees) {
+    public GradientBoostedTreeTabularClassifier(int nTrees, boolean useDiscretizedValues) {
+        super(useDiscretizedValues);
         this.nTrees = nTrees;
     }
 
