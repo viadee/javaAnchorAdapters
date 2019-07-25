@@ -9,15 +9,6 @@ import java.io.Serializable;
  */
 public class StringToBooleanTransformer implements Transformer {
 
-    private static boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     @Override
     public Boolean apply(Serializable serializable) {
         return tryConvertToBoolean(serializable);
