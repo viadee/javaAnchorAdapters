@@ -37,4 +37,9 @@ public class CategoricalDiscretizationOrigin extends DiscretizationOrigin {
     public Serializable getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "CategoricalDiscretizationOrigin [" + value + "]";
+    }
 }

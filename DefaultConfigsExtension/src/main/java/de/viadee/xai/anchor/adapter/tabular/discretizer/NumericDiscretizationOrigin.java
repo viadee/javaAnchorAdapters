@@ -30,12 +30,12 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
             throw new IllegalArgumentException("Non-number type passed to numeric discretizer");
         }
         final Number value = (Number) originalValue;
-        return (value.doubleValue() >= minValue.doubleValue() && value.doubleValue() <= maxValue.doubleValue());
+        return (value.doubleValue() >= minValue.doubleValue() && value.doubleValue() < maxValue.doubleValue());
     }
 
     @Override
     public String outputFormat() {
-        return "IN INCL RANGE [" + getMinValue() + "," + getMaxValue() + "]";
+        return "IN RANGE [" + getMinValue() + "," + getMaxValue() + ")";
     }
 
     /**
@@ -58,5 +58,10 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
      */
     public void setMinValue(Number minValue) {
         this.minValue = minValue;
+    }
+
+    @Override
+    public String toString() {
+        return "NumericDiscretizationOrigin [" + minValue + ", " + maxValue + ")";
     }
 }

@@ -13,7 +13,7 @@ public abstract class AbstractDiscretizer implements Discretizer {
     @Override
     public DiscretizationTransition getTransition(Double discretizedValue) {
         return discretizationTransitions.stream().filter(d -> discretizedValue.equals(d.getDiscretizedValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value" +
+                .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value " +
                         discretizedValue));
     }
 

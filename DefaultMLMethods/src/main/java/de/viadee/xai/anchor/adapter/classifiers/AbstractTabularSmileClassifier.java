@@ -31,7 +31,7 @@ public abstract class AbstractTabularSmileClassifier implements Function<Tabular
      * @param trainingSet the set to train the model on
      */
     public void fit(TabularInstance[] trainingSet) {
-        if (Stream.of(trainingSet).anyMatch(instance -> !(instance.getTransformedLabel() instanceof Number))) {
+        if (Stream.of(trainingSet).anyMatch(instance -> !(instance.getDiscretizedLabel() instanceof Number))) {
             throw new IllegalArgumentException("Labels need to be numeric");
         }
 
