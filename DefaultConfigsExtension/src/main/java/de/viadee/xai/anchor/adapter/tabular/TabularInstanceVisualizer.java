@@ -1,16 +1,13 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
 import java.io.Serializable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
@@ -59,24 +56,24 @@ public class TabularInstanceVisualizer {
     public String visualizeResult(AnchorResult<TabularInstance> anchorResult) {
         final List<String> featureText = new ArrayList<>();
         final TabularInstance instance = anchorResult.getInstance();
-        final DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         for (final Integer featureNr : anchorResult.getOrderedFeatures()) {
             final GenericColumn feature = instance.getFeatures()[featureNr];
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
             featureText.add(feature.getName() + " " + feature.getDiscretizer()
                     .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
-                    + " {" + df.format(candidate.getAddedPrecision()) + ", "
-                    + df.format(candidate.getAddedCoverage()) + "}");
+                    + " {" +
+                    FormatTools.roundToTwo(candidate.getAddedPrecision()) + ", " +
+                    FormatTools.roundToTwo(candidate.getAddedCoverage()) +
+                    "}");
         }
-        String labelText = instance.getTransformedLabel() + " (" + instance.getDiscretizedLabel().toString() + ")";
 
         return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
-                "THEN PREDICT " + labelText +
+                "THEN PREDICT " +
+                instance.getTransformedLabel() + " (" + FormatTools.roundToTwo(instance.getDiscretizedLabel()) + ")" +
                 System.lineSeparator() +
-                "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
+                "WITH PRECISION " + FormatTools.roundToTwo(anchorResult.getPrecision()) +
+                " AND COVERAGE " + FormatTools.roundToTwo(anchorResult.getCoverage());
     }
 
     /**

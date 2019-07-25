@@ -1,7 +1,8 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
+package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationType;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 
 import java.io.Serializable;
 
@@ -56,7 +57,7 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
     /**
      * @param minValue the new min value
      */
-    void setMinValue(Number minValue) {
+    public void setMinValue(Number minValue) {
         this.minValue = minValue;
     }
 
@@ -73,7 +74,11 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
     }
 
     private String formatRangeNotation() {
-        return ((isFirst) ? "]" : "[") + minValue + ", " + maxValue + ((isLast) ? "[" : ")");
+        return ((isFirst) ? "]" : "[") +
+                FormatTools.roundToTwo(minValue) +
+                ", " +
+                FormatTools.roundToTwo(maxValue) +
+                ((isLast) ? "[" : ")");
     }
 
     /**
