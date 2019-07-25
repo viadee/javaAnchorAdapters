@@ -3,7 +3,7 @@ package de.viadee.xai.anchor.adapter.classifiers;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.CategoricalDiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import smile.classification.SoftClassifier;
@@ -18,6 +18,8 @@ import java.util.stream.Stream;
  * This may cause anchors to return imprecise values, as the model is never passed all available values but only their
  * discretized instantiation.
  * Therefore, these models are only to be used for testing.
+ * <p>
+ * TODO make optional to operate on transformed / discretized values
  */
 public abstract class AbstractTabularSmileClassifier implements Function<TabularInstance, Integer> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTabularSmileClassifier.class);
@@ -31,10 +33,6 @@ public abstract class AbstractTabularSmileClassifier implements Function<Tabular
      * @param trainingSet the set to train the model on
      */
     public void fit(TabularInstance[] trainingSet) {
-        if (Stream.of(trainingSet).anyMatch(instance -> !(instance.getDiscretizedLabel() instanceof Number))) {
-            throw new IllegalArgumentException("Labels need to be numeric");
-        }
-
         double[][] doubleTrainingSet = new double[trainingSet.length][];
         for (int i = 0; i < trainingSet.length; i++) {
             final Object[] column = trainingSet[i].getInstance();
@@ -79,8 +77,7 @@ public abstract class AbstractTabularSmileClassifier implements Function<Tabular
 
         if (labelDiscretizer == null) {
             return prediction;
-        }
-        else {
+        } else {
             DiscretizationOrigin discretizationOrigin = labelDiscretizer.getTransition((double) prediction).getDiscretizationOrigin();
             return ((Number) ((CategoricalDiscretizationOrigin) discretizationOrigin).getValue()).intValue();
         }

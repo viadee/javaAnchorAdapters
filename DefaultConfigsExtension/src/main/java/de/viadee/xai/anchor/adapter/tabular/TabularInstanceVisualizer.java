@@ -67,7 +67,7 @@ public class TabularInstanceVisualizer {
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
             featureText.add(feature.getName() + " " + feature.getDiscretizer()
                     .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
-                    + " {" + df.format(candidate.getAddedPrecision()) + ","
+                    + " {" + df.format(candidate.getAddedPrecision()) + ", "
                     + df.format(candidate.getAddedCoverage()) + "}");
         }
         String labelText = instance.getTransformedLabel() + " (" + instance.getDiscretizedLabel().toString() + ")";

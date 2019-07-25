@@ -1,5 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.NumericDiscretizationOrigin;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
