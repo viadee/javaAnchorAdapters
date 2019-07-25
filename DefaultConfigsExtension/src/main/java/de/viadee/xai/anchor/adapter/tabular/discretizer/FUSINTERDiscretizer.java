@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Implementation of the FUSINTER discretization Algorithm described by [Zighed, Rabaséda, Rakotomalala 1998]
@@ -13,6 +15,13 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
     private final double lambda;
     private final double alpha;
+
+    // All possible classification in values
+    private int[] targetValues;
+    // Number of possible classifications
+    private int m;
+    // Number of instances
+    private int n;
 
     /**
      * generates a FUSINTER discretizer with parameters suggested by the authors
@@ -25,6 +34,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         this.lambda = lambda;
         this.alpha = alpha;
     }
+
     final class Interval {
         /**
          * private Interval class for FUSINTER Method with begin and end as int for indexing over (2D-Array)
@@ -32,17 +42,19 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
         private int begin;
         private int end;
+        private Number[][] test;
 //        private final Number []cd;
 
         /**
-         *
          * @param begin beginindex of Interval
-         * @param end endindex of Interval
-         * TODO: add values to parameters (?) and get Numberstream von classdistribution
+         * @param end   endindex of Interval
+         *              TODO:  and get Numberstream von classdistribution
          */
-        Interval(int begin,int end) {
-            this.begin= begin;
-            this.end= end;
+        Interval(int begin, int end, Number[][] values) {
+            this.begin = begin;
+            this.end = end;
+            this.test = values;
+
 //            computeIntervalRatios();
         }
 
@@ -61,6 +73,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 //            computeIntervalRatios();
 //        }
     }
+
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
         return null;
@@ -68,23 +81,25 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
 //    protected List<DiscretizationTransition> fitCreateSupervisedTransitionsSer(Serializable[][] values) {
 
-        // 1. Sort the values
+    // 1. Sort the values
 //        List<Number> sortedList = Stream.of(values).map(i -> (Number) i)
 //                .sorted(Comparator.comparingDouble(Number::doubleValue))
 //                .collect(Collectors.toList());
 
-        // 2. Generate initial Intervals
+    // 2. Generate initial Intervals
 
-        // 3. Evaluate if merge of two neighboring discRelations improves criterion.
+    // 3. Evaluate if merge of two neighboring discRelations improves criterion.
 
-        // 4. Return list of DiscretizationTransitions
+    // 4. Return list of DiscretizationTransitions
 //        return null;
 //    }
 
     List<Interval> fitCreateSupervisedTransitions(Number[][] values) {
-//        if (Stream.of(values).anyMatch(v -> !(v instanceof Number[]))) {
-//            throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
-//        }
+
+        targetValues = IntStream.range(0, values.length)
+                .map(i -> values[i][0].intValue()).distinct().toArray();
+        m = targetValues.length;
+        n = values.length;
 
         // 1.  Sort the values
         // TODO: parallise the sorting
@@ -118,42 +133,83 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
         int amountSameValue = 0;
-        for(int i = 1; i < values.length; i++) {
-            if(!values[i][0].equals(values[i-1][0])){
+        for (int i = 1; i < values.length; i++) {
+            if (!values[i][0].equals(values[i - 1][0])) {
                 amountSameValue = 0;
-                if(!values[i][1].equals(values[i-1][1])){
-                    resultDiscTrans.add(new Interval(lowerLimit, i-1));
+                if (!values[i][1].equals(values[i - 1][1])) {
+                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, values));
                     lowerLimit = i;
                 }
             } else {
                 amountSameValue++;
-                if(!values[i][1].equals(values[i-amountSameValue][1])){
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue));
+                if (!values[i][1].equals(values[i - amountSameValue][1])) {
+                    resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, values));
                     lowerLimit = i - amountSameValue;
                     i++;
-                    while(values[i][0].equals(values[i-1][0])){
+                    while (values[i][0].equals(values[i - 1][0])) {
                         i++;
                     }
-                    resultDiscTrans.add(new Interval(lowerLimit, i-1));
+                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, values));
                     lowerLimit = i;
                 }
             }
         }
-        resultDiscTrans.add(new Interval(lowerLimit, values.length -1));
+        resultDiscTrans.add(new Interval(lowerLimit, values.length - 1, values));
 
 
         return resultDiscTrans;
     }
 
-    private List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
-        double alpha; // = this.alpha;
-        double lambda; // = this.lambda;
-        int m; // Number of targetValues
-        int n = values.length - 1; // Number of instances
-        int n_j; // end - begin Number of instances in interval (j)
-        int nij; // Number of instances with classification (i) in interval (j)
+    List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
 
+        // will be set FALSE if no improvement is possible in this iteration (1. exit-condition)
+        boolean improvement = true;
+
+        while (equalClassSplits.size() > 1 && improvement) {
+            int deleteIndex = 0;
+            double maxMergeCrit = 0.0;
+            double oldCrit = determineDiscCrit(equalClassSplits);
+            for(int i = 0; i < equalClassSplits.size(); i++) {
+                final double mergeCrit = oldCrit - determineDiscCrit(equalClassSplits, i);
+                // TODO: first if needed?
+                if(deleteIndex == 0) {
+                    deleteIndex = i;
+                    maxMergeCrit = mergeCrit;
+                } else {
+                    if(mergeCrit > maxMergeCrit){
+                        deleteIndex = i;
+                        maxMergeCrit = mergeCrit;
+                    }
+                }
+            }
+
+            if(maxMergeCrit > 0){
+                // merge Intervals of at index i
+                equalClassSplits.remove(deleteIndex);
+            } else {
+                improvement = false;
+            }
+        }
 
         return null;
+    }
+
+    double determineDiscCrit(List<Interval> intervals) {
+        // Number of instances in interval (j)
+        int n_j;
+        // Number of instances with classification (i) in interval (j)
+        int nij;
+
+
+        return 0.0;
+    }
+    double determineDiscCrit(List<Interval> intervals, int index) {
+        // Number of instances in interval (j)
+        int n_j;
+        // Number of instances with classification (i) in interval (j)
+        int nij;
+
+
+        return 0.0;
     }
 }

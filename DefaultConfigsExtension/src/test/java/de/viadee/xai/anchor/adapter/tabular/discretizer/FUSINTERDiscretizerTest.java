@@ -3,6 +3,8 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,9 +49,7 @@ class FUSINTERDiscretizerTest {
                         {10.0, 0},
                 }
         );
-//        assertEquals(2, list.get(0).end);
-//        assertEquals(3, list.get(1).begin);
-//        assertEquals(10, list.get(2).end);
+        assertEquals(3, list.size());
     }
 
     /**
@@ -75,9 +75,31 @@ class FUSINTERDiscretizerTest {
                         {10.0, 0},
                 }
         );
+        assertEquals(5, list.size());
+    }
 
-//        assertEquals(4, list.get(1).end);
-//        assertEquals(7, list.get(2).end);
+    @Test
+    void testIntervalDistribution() {
+        Number[][] values = new Number[][]{
+                {0.0, 0},
+                {1.0, 0},
+                {2.0, 0},
+                {3.0, 1},
+                {4.0, 1},
+                {5.0, 1},
+                {5.0, 0},
+                {5.0, 0},
+                {6.0, 1},
+                {7.0, 0},
+                {8.0, 0},
+                {9.0, 0},
+                {10.0, 0},
+        };
+        int[] stream = IntStream.range(0, values.length)
+                .map(i -> values[i][0].intValue()).distinct().toArray();
+        for (int i = 0; i < stream.length; i++) {
+            System.out.println(stream[i]);
+        }
     }
 
 }
