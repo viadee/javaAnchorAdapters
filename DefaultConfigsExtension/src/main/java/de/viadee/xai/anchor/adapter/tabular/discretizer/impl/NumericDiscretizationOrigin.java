@@ -56,7 +56,7 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
     /**
      * @param minValue the new min value
      */
-    public void setMinValue(Number minValue) {
+    void setMinValue(Number minValue) {
         this.minValue = minValue;
     }
 
@@ -69,7 +69,7 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
 
     @Override
     public String toString() {
-        return "NumericDiscretizationOrigin " + formatRangeNotation();
+        return formatRangeNotation();
     }
 
     private String formatRangeNotation() {

@@ -3,6 +3,7 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.NumericDiscretizationOrigin;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,10 +14,8 @@ public abstract class AbstractDiscretizer implements Discretizer {
     private List<DiscretizationTransition> discretizationTransitions;
 
     @Override
-    public DiscretizationTransition getTransition(Double discretizedValue) {
-        return discretizationTransitions.stream().filter(d -> discretizedValue.equals(d.getDiscretizedValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value " +
-                        discretizedValue));
+    public Collection<DiscretizationTransition> getTransitions() {
+        return discretizationTransitions;
     }
 
     @Override

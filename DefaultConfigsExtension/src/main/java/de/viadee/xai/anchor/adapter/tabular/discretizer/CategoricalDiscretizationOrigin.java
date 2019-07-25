@@ -40,6 +40,6 @@ public class CategoricalDiscretizationOrigin extends DiscretizationOrigin {
 
     @Override
     public String toString() {
-        return "CategoricalDiscretizationOrigin [" + value + "]";
+        return "[" + value + "]";
     }
 }

@@ -7,6 +7,8 @@ import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
  * ultimately come up with an {@link AnchorTabular} instance
  */
 final class TabularPreprocessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabularPreprocessor.class);
 
 
     /**
@@ -122,6 +125,13 @@ final class TabularPreprocessor {
                     column.setDiscretizer(new UniqueValueDiscretizer());
                 }
                 column.getDiscretizer().fit(dataFrame.getColumn(column));
+
+                LOGGER.debug("Discretization for column [" + column.getName() + "] is configured as follows:" +
+                        System.lineSeparator() + "\t" +
+                        column.getDiscretizer().getTransitions().stream().map(t ->
+                                t.getDiscretizationOrigin().toString() + " --> " + t.getDiscretizedValue().toString())
+                                .collect(Collectors.joining(System.lineSeparator() + "\t"))
+                );
             } catch (Exception e) {
                 throw AnchorTabularBuilderException.discretizationFitException(column, e);
             }
