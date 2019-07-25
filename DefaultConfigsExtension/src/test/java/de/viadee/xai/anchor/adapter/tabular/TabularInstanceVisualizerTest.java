@@ -65,7 +65,7 @@ class TabularInstanceVisualizerTest {
         anchorCandidateAttr2.setCoverage(0.2);
 
         AnchorResult<TabularInstance> result = new AnchorResult<>(anchorCandidateAttr2,
-                tabular.getTabularInstances()[1], tabular.getTabularInstances()[1].getDiscretizedLabel(),
+                tabular.getTabularInstances()[1], tabular.getTabularInstances()[1].getDiscretizedLabel().intValue(),
                 true, 10, 10);
 
         String visualization = tabularInstanceVisualizer.visualizeResult(result);
@@ -74,7 +74,7 @@ class TabularInstanceVisualizerTest {
                 "numAttr IN [10, 20) {0.2, -0.2} AND " + System.lineSeparator() +
                 "attr3 = 'thirdattr2' {0.2, -0.19} AND " + System.lineSeparator() +
                 "attr2 = 'anotherattr2' {0.5, -0.2}" + System.lineSeparator() +
-                "THEN PREDICT someattr2 (1)" + System.lineSeparator() +
+                "THEN PREDICT [someattr2] (1)" + System.lineSeparator() +
                 "WITH PRECISION 1 AND COVERAGE 0.2";
 
         assertEquals(expected, visualization);

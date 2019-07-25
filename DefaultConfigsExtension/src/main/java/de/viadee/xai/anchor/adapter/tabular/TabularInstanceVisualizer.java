@@ -70,7 +70,9 @@ public class TabularInstanceVisualizer {
         return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
                 "THEN PREDICT " +
-                instance.getTransformedLabel() + " (" + FormatTools.roundToTwo(instance.getDiscretizedLabel()) + ")" +
+                anchorResult.getInstance().getTargetFeature().getDiscretizer()
+                        .getTransition(Double.valueOf(anchorResult.getExplainedInstanceLabel())).getDiscretizationOrigin() +
+                " (" + FormatTools.roundToTwo(anchorResult.getExplainedInstanceLabel()) + ")" +
                 System.lineSeparator() +
                 "WITH PRECISION " + FormatTools.roundToTwo(anchorResult.getPrecision()) +
                 " AND COVERAGE " + FormatTools.roundToTwo(anchorResult.getCoverage());
