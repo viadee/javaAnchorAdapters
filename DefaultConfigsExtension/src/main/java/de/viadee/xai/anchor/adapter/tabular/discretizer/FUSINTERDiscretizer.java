@@ -11,33 +11,34 @@ import java.util.List;
  */
 public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
-    private double lambda;
-    private double alpha;
+    private final double lambda;
+    private final double alpha;
 
     /**
      * generates a FUSINTER discretizer with parameters suggested by the authors
      */
     public FUSINTERDiscretizer() {
-        this(1.0, 0.0975);
+        this(1.0, 0.975);
     }
 
     public FUSINTERDiscretizer(double lambda, double alpha) {
         this.lambda = lambda;
         this.alpha = alpha;
     }
-    class Interval {
+    final class Interval {
         /**
          * private Interval class for FUSINTER Method with begin and end as int for indexing over (2D-Array)
          */
 
-        int begin;
-        int end;
-        Number []cd;
+        private int begin;
+        private int end;
+//        private final Number []cd;
 
         /**
          *
          * @param begin beginindex of Interval
          * @param end endindex of Interval
+         * TODO: add values to parameters (?) and get Numberstream von classdistribution
          */
         Interval(int begin,int end) {
             this.begin= begin;
@@ -86,6 +87,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 //        }
 
         // 1.  Sort the values
+        // TODO: parallise the sorting
         Arrays.sort(values, new Comparator<Number[]>() {
 
             @Override
@@ -103,14 +105,8 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         equalClassSplits = equalClassSplit(values);
 
         // 3.  Evaluate if merge of two neighboring discRelations improves criterion.
-
-//      double criterion = 0.0;
-//      double max
-//      double evalInitial
-//        while(equalClassSplits.size() > 1){
-//           if(evalInitial - max > 0)
-//              merge
-//        }
+        List<Interval> evaluatedIntervals;
+        evaluatedIntervals = evaluateIntervals(equalClassSplits, values);
 
         // 4. Return list of DiscretizationTransitions
 
@@ -118,9 +114,8 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return equalClassSplits;
     }
 
-
     List<Interval> equalClassSplit(Number[][] values) {
-        List<Interval> resultDiscTrans = new ArrayList<>();
+        final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
         int amountSameValue = 0;
         for(int i = 1; i < values.length; i++) {
@@ -150,4 +145,15 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return resultDiscTrans;
     }
 
+    private List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
+        double alpha; // = this.alpha;
+        double lambda; // = this.lambda;
+        int m; // Number of targetValues
+        int n = values.length - 1; // Number of instances
+        int n_j; // end - begin Number of instances in interval (j)
+        int nij; // Number of instances with classification (i) in interval (j)
+
+
+        return null;
+    }
 }
