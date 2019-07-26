@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Implementation of the FUSINTER discretization Algorithm described by [Zighed, Rabaséda, Rakotomalala 1998]
@@ -35,74 +34,20 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         this.alpha = alpha;
     }
 
-    final class Interval {
-        /**
-         * private Interval class for FUSINTER Method with begin and end as int for indexing over (2D-Array)
-         */
-
-        private int begin;
-        private int end;
-        private Number[][] test;
-//        private final Number []cd;
-
-        /**
-         * @param begin beginindex of Interval
-         * @param end   endindex of Interval
-         *              TODO:  and get Numberstream von classdistribution
-         */
-        Interval(int begin, int end, Number[][] values) {
-            this.begin = begin;
-            this.end = end;
-            this.test = values;
-
-//            computeIntervalRatios();
-        }
-
-//        void computeIntervalRatios() {
-//            cd=classDistribution(attribute,values,begin,end);
-//        }
-//
-//        /**
-//         * <p>
-//         * Enlarge the interval using a new "end"
-//         * </p>
-//         * @param newEnd indicates the new end
-//         */
-//        public void enlargeInterval(int newEnd) {
-//            end=newEnd;
-//            computeIntervalRatios();
-//        }
-    }
-
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
         return null;
     }
 
-//    protected List<DiscretizationTransition> fitCreateSupervisedTransitionsSer(Serializable[][] values) {
-
-    // 1. Sort the values
-//        List<Number> sortedList = Stream.of(values).map(i -> (Number) i)
-//                .sorted(Comparator.comparingDouble(Number::doubleValue))
-//                .collect(Collectors.toList());
-
-    // 2. Generate initial Intervals
-
-    // 3. Evaluate if merge of two neighboring discRelations improves criterion.
-
-    // 4. Return list of DiscretizationTransitions
-//        return null;
-//    }
-
     List<Interval> fitCreateSupervisedTransitions(Number[][] values) {
 
         targetValues = IntStream.range(0, values.length)
-                .map(i -> values[i][0].intValue()).distinct().toArray();
+                .map(i -> values[i][1].intValue()).sorted().distinct().toArray();
         m = targetValues.length;
         n = values.length;
 
         // 1.  Sort the values
-        // TODO: parallise the sorting
+        // TODO: parallise the sorting (Streaming?)
         Arrays.sort(values, new Comparator<Number[]>() {
 
             @Override
@@ -126,8 +71,23 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         // 4. Return list of DiscretizationTransitions
 
 //        List<Interval> --> List<DiscretizationTransition>
-        return equalClassSplits;
+        return evaluatedIntervals;
     }
+
+//    protected List<DiscretizationTransition> fitCreateSupervisedTransitionsSer(Serializable[][] values) {
+
+    // 1. Sort the values
+//        List<Number> sortedList = Stream.of(values).map(i -> (Number) i)
+//                .sorted(Comparator.comparingDouble(Number::doubleValue))
+//                .collect(Collectors.toList());
+
+    // 2. Generate initial Intervals
+
+    // 3. Evaluate if merge of two neighboring discRelations improves criterion.
+
+    // 4. Return list of DiscretizationTransitions
+//        return null;
+//    }
 
     List<Interval> equalClassSplit(Number[][] values) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
@@ -141,9 +101,12 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
                     lowerLimit = i;
                 }
             } else {
+                //TODO: Fix for value 17 - 18 - 19 in FUSINTER example.
                 amountSameValue++;
                 if (!values[i][1].equals(values[i - amountSameValue][1])) {
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, values));
+                    if(resultDiscTrans.get(resultDiscTrans.size() -1).getEnd() != i - amountSameValue -1) {
+                        resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, values));
+                    }
                     lowerLimit = i - amountSameValue;
                     i++;
                     while (values[i][0].equals(values[i - 1][0])) {
@@ -169,47 +132,117 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             int deleteIndex = 0;
             double maxMergeCrit = 0.0;
             double oldCrit = determineDiscCrit(equalClassSplits);
-            for(int i = 0; i < equalClassSplits.size(); i++) {
-                final double mergeCrit = oldCrit - determineDiscCrit(equalClassSplits, i);
-                // TODO: first if needed?
-                if(deleteIndex == 0) {
+            for (int i = 0; i < equalClassSplits.size() - 1; i++) {
+                List<Interval> possibleMergedInterval = mergeInterval(equalClassSplits, i, values);
+                final double mergeCrit = oldCrit - determineDiscCrit(possibleMergedInterval);
+                if (mergeCrit > maxMergeCrit) {
                     deleteIndex = i;
                     maxMergeCrit = mergeCrit;
-                } else {
-                    if(mergeCrit > maxMergeCrit){
-                        deleteIndex = i;
-                        maxMergeCrit = mergeCrit;
-                    }
                 }
             }
 
-            if(maxMergeCrit > 0){
+            if (maxMergeCrit > 0) {
                 // merge Intervals of at index i
-                equalClassSplits.remove(deleteIndex);
+                equalClassSplits = mergeInterval(equalClassSplits, deleteIndex, values);
             } else {
                 improvement = false;
             }
         }
 
-        return null;
+        return equalClassSplits;
     }
 
+    //TODO: write more tests
     double determineDiscCrit(List<Interval> intervals) {
         // Number of instances in interval (j)
         int n_j;
         // Number of instances with classification (i) in interval (j)
         int nij;
+        double criterion = 0;
+        double intervalSum = 0;
+        for (int j = 0; j < intervals.size(); j++) {
+            double intervalXclassSum = 0;
+            for (int i = 0; i < m; i++) {
+                double quotient = (intervals.get(j).getClassDist()[i] + lambda) / (intervals.get(j).getSize() + m * lambda);
+                intervalXclassSum += (quotient * (1 - quotient));
+            }
+            intervalSum = alpha * ((intervals.get(j).getSize()) / (double) n) * intervalXclassSum + ((1 - alpha) * ((m * lambda) / (intervals.get(j).getSize())));
+
+            criterion += intervalSum;
+        }
 
 
-        return 0.0;
+        return criterion;
     }
-    double determineDiscCrit(List<Interval> intervals, int index) {
-        // Number of instances in interval (j)
-        int n_j;
-        // Number of instances with classification (i) in interval (j)
-        int nij;
 
+    List<Interval> mergeInterval(List<Interval> intervals, int i, Number[][] values) {
+        List<Interval> temp = new ArrayList<>(intervals.subList(0, intervals.size()));
+        int mergeBegin = temp.get(i).getBegin();
+        int mergeEnd = temp.get(i + 1).getEnd();
+        temp.add(i, new Interval(mergeBegin, mergeEnd, values));
+        temp.remove(i + 1);
+        temp.remove(i + 1);
 
-        return 0.0;
+        return temp;
+    }
+
+    final class Interval {
+        /**
+         * private Interval class for FUSINTER Method with begin and end as int for indexing over (2D-Array)
+         */
+
+        private int begin;
+        private int end;
+        private int size;
+        private Number[][] values;
+        private int[] classDist = new int[targetValues.length];
+
+        /**
+         * @param begin beginindex of Interval
+         * @param end   endindex of Interval
+         *              TODO:  and get Numberstream von classdistribution
+         */
+        Interval(int begin, int end, Number[][] values) {
+            this.begin = begin;
+            this.end = end;
+            this.size = end - begin + 1;
+            this.values = values;
+
+            for (int t = 0; t < targetValues.length; t++) {
+                int finalT = t;
+                int[] finalTargetValues = targetValues;
+                classDist[t] = (int) IntStream.rangeClosed(begin, end)
+                        .map(i -> values[i][1].intValue()).filter(i -> i == finalTargetValues[finalT])
+                        .count();
+            }
+        }
+
+        int getBegin() {
+            return begin;
+        }
+
+        int getEnd() {
+            return end;
+        }
+
+        int[] getClassDist() {
+            return classDist;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        //
+//        /**
+//         * <p>
+//         * Enlarge the interval using a new "end"
+//         * </p>
+//         * @param newEnd indicates the new end
+//         */
+//        public void enlargeInterval(int newEnd) {
+//            end=newEnd;
+//            computeIntervalRatios();
+//        }
     }
 }
