@@ -1,6 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
@@ -24,6 +25,10 @@ public class TabularInstanceVisualizer {
         throw new IllegalStateException("Illegal result hierarchy");
     }
 
+    private static DiscretizationOrigin discretizationOrigin(GenericColumn feature, double discretizedValue) {
+        return feature.getDiscretizer().getTransition(discretizedValue).getDiscretizationOrigin();
+    }
+
     /**
      * Visualizes an instance by describing its feature values.
      * <p>
@@ -41,7 +46,8 @@ public class TabularInstanceVisualizer {
             result.add(column.getName() + "='" + transformedValue.toString() + "'");
         }
         if (instance.getTargetFeature() != null && instance.getTransformedLabel() != null) {
-            result.add("WITH LABEL " + instance.getTargetFeature().getName() + "='" + instance.getTransformedLabel().toString() + "'");
+            result.add("WITH LABEL " + instance.getTargetFeature().getName() + "='" +
+                    instance.getTransformedLabel().toString() + "'");
         }
 
         return String.join(System.lineSeparator(), result.toArray(new String[0]));
@@ -59,23 +65,33 @@ public class TabularInstanceVisualizer {
         for (final Integer featureNr : anchorResult.getOrderedFeatures()) {
             final GenericColumn feature = instance.getFeatures()[featureNr];
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
-            featureText.add(feature.getName() + " " + feature.getDiscretizer()
-                    .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
-                    + " {" +
+            featureText.add(feature.getName() + " " + discretizationOrigin(feature, instance.getValue(featureNr))
+                    .outputFormat() +
+                    " {" +
                     FormatTools.roundToTwo(candidate.getAddedPrecision()) + ", " +
                     FormatTools.roundToTwo(candidate.getAddedCoverage()) +
                     "}");
         }
 
-        return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
+        final String explainedLabel = discretizationOrigin(instance.getTargetFeature(),
+                (double) anchorResult.getExplainedInstanceLabel()).toString();
+        String result = "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
-                "THEN PREDICT " +
-                anchorResult.getInstance().getTargetFeature().getDiscretizer()
-                        .getTransition(Double.valueOf(anchorResult.getExplainedInstanceLabel())).getDiscretizationOrigin() +
+                "THEN PREDICT " + explainedLabel +
                 " (" + FormatTools.roundToTwo(anchorResult.getExplainedInstanceLabel()) + ")" +
                 System.lineSeparator() +
                 "WITH PRECISION " + FormatTools.roundToTwo(anchorResult.getPrecision()) +
                 " AND COVERAGE " + FormatTools.roundToTwo(anchorResult.getCoverage());
+
+        if (anchorResult.getInstance().getDiscretizedLabel() != null &&
+                anchorResult.getInstance().getDiscretizedLabel().intValue() != anchorResult.getExplainedInstanceLabel()) {
+            result += System.lineSeparator() +
+                    "CAUTION: The explained label [" + explainedLabel + "] differs from the actual label [" +
+                    discretizationOrigin(instance.getTargetFeature(), anchorResult.getInstance().getDiscretizedLabel()
+                            .intValue()) + "]";
+        }
+
+        return result;
     }
 
     /**
