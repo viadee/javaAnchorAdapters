@@ -86,9 +86,9 @@ public class TabularInstanceVisualizer {
         if (anchorResult.getInstance().getDiscretizedLabel() != null &&
                 anchorResult.getInstance().getDiscretizedLabel().intValue() != anchorResult.getExplainedInstanceLabel()) {
             result += System.lineSeparator() +
-                    "CAUTION: The explained label [" + explainedLabel + "] differs from the actual label [" +
+                    "CAUTION: The explained label " + explainedLabel + " differs from the actual label " +
                     discretizationOrigin(instance.getTargetFeature(), anchorResult.getInstance().getDiscretizedLabel()
-                            .intValue()) + "]";
+                            .intValue()) + "";
         }
 
         return result;
