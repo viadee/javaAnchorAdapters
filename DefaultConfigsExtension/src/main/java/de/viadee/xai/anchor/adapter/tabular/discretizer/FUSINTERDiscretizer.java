@@ -47,7 +47,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         n = values.length;
 
         // 1.  Sort the values
-        // TODO: parallise the sorting (Streaming?)
+        // TODO: make the sorting parallel(Streaming?)
         Arrays.sort(values, new Comparator<Number[]>() {
 
             @Override
@@ -68,27 +68,12 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         List<Interval> evaluatedIntervals;
         evaluatedIntervals = evaluateIntervals(equalClassSplits, values);
 
-        // 4. Return list of DiscretizationTransitions
-
-//        List<Interval> --> List<DiscretizationTransition>
+        // 4. Return list of Intervals/DiscretizationTransitions/Cut Points
+        // List<Interval> --> List<DiscretizationTransition>
         return evaluatedIntervals;
     }
 
-//    protected List<DiscretizationTransition> fitCreateSupervisedTransitionsSer(Serializable[][] values) {
-
-    // 1. Sort the values
-//        List<Number> sortedList = Stream.of(values).map(i -> (Number) i)
-//                .sorted(Comparator.comparingDouble(Number::doubleValue))
-//                .collect(Collectors.toList());
-
-    // 2. Generate initial Intervals
-
-    // 3. Evaluate if merge of two neighboring discRelations improves criterion.
-
-    // 4. Return list of DiscretizationTransitions
-//        return null;
-//    }
-
+    // TODO: Serializable[][] parameter
     List<Interval> equalClassSplit(Number[][] values) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
@@ -114,16 +99,16 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
                     }
                     resultDiscTrans.add(new Interval(lowerLimit, i - 1, values));
                     lowerLimit = i;
+                    amountSameValue = 0;
                 }
             }
         }
         resultDiscTrans.add(new Interval(lowerLimit, values.length - 1, values));
 
-
         return resultDiscTrans;
     }
 
-    List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
+    private List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
 
         // will be set FALSE if no improvement is possible in this iteration (1. exit-condition)
         boolean improvement = true;
@@ -153,11 +138,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     }
 
     //TODO: write more tests
-    double determineDiscCrit(List<Interval> intervals) {
-        // Number of instances in interval (j)
-        int n_j;
-        // Number of instances with classification (i) in interval (j)
-        int nij;
+    private double determineDiscCrit(List<Interval> intervals) {
         double criterion = 0;
         double intervalSum = 0;
         for (int j = 0; j < intervals.size(); j++) {
@@ -175,7 +156,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return criterion;
     }
 
-    List<Interval> mergeInterval(List<Interval> intervals, int i, Number[][] values) {
+    private List<Interval> mergeInterval(List<Interval> intervals, int i, Number[][] values) {
         List<Interval> temp = new ArrayList<>(intervals.subList(0, intervals.size()));
         int mergeBegin = temp.get(i).getBegin();
         int mergeEnd = temp.get(i + 1).getEnd();
@@ -194,19 +175,16 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         private int begin;
         private int end;
         private int size;
-        private Number[][] values;
         private int[] classDist = new int[targetValues.length];
 
         /**
-         * @param begin beginindex of Interval
-         * @param end   endindex of Interval
-         *              TODO:  and get Numberstream von classdistribution
+         * @param begin begin index of Interval
+         * @param end   end index of Interval
          */
         Interval(int begin, int end, Number[][] values) {
             this.begin = begin;
             this.end = end;
             this.size = end - begin + 1;
-            this.values = values;
 
             for (int t = 0; t < targetValues.length; t++) {
                 int finalT = t;
@@ -232,17 +210,5 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         public int getSize() {
             return size;
         }
-
-        //
-//        /**
-//         * <p>
-//         * Enlarge the interval using a new "end"
-//         * </p>
-//         * @param newEnd indicates the new end
-//         */
-//        public void enlargeInterval(int newEnd) {
-//            end=newEnd;
-//            computeIntervalRatios();
-//        }
     }
 }
