@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * Implementation of the FUSINTER discretization Algorithm described by [Zighed, Rabaséda, Rakotomalala 1998]
+ * Implementation of the FUSINTER discretization algorithm described by [Zighed, Rabaséda, Rakotomalala 1998]
  */
 public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
@@ -39,41 +39,35 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return null;
     }
 
+    /**
+     * TODO: Serializable[][] parameter
+     * Implementation of FUSINTER, 1. sort, 2. equalClassIntervals 3. merge if entropy improves
+     * @param values array of arrays of type {Number, int}, 1. is the column to be discretized
+     *               and 2. is the classification
+     * @return list of Intervals determined to have the highest entropy
+     */
     List<Interval> fitCreateSupervisedTransitions(Number[][] values) {
 
-        targetValues = IntStream.range(0, values.length)
-                .map(i -> values[i][1].intValue()).sorted().distinct().toArray();
+        targetValues = Arrays.stream(values).mapToInt(value -> value[1].intValue()).sorted().distinct().toArray();
         m = targetValues.length;
         n = values.length;
 
-        // 1.  Sort the values
-        // TODO: make the sorting parallel(Streaming?)
-        Arrays.sort(values, new Comparator<Number[]>() {
-
-            @Override
-            // Compare values according to value
-            public int compare(Number[] array1,
-                               Number[] array2) {
-
-                Double value1 = array1[0].doubleValue();
-                Double value2 = array2[0].doubleValue();
-                return value1.compareTo(value2);
-            }
-        });
-        // 2. Generate initial Intervals
-        List<Interval> equalClassSplits;
-        equalClassSplits = equalClassSplit(values);
-
-        // 3.  Evaluate if merge of two neighboring discRelations improves criterion.
+        Arrays.sort(values, Comparator.comparing(value -> value[0].doubleValue()));
+        List<Interval> equalClassSplits = equalClassSplit(values);
         List<Interval> evaluatedIntervals;
         evaluatedIntervals = evaluateIntervals(equalClassSplits, values);
 
-        // 4. Return list of Intervals/DiscretizationTransitions/Cut Points
+        // return list of Intervals/DiscretizationTransitions/Cut Points
         // List<Interval> --> List<DiscretizationTransition>
         return evaluatedIntervals;
     }
 
-    // TODO: Serializable[][] parameter
+    /**
+     * generates initial Intervals. Values with same class together, if a value has several classes, all index with
+     * this value will be a separate Interval.
+     * @param values, Array of Attribute Class.
+     * @return initial List of Intervals
+     */
     List<Interval> equalClassSplit(Number[][] values) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
@@ -86,7 +80,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
                     lowerLimit = i;
                 }
             } else {
-                //TODO: Fix for value 17 - 18 - 19 in FUSINTER example.
                 amountSameValue++;
                 if (!values[i][1].equals(values[i - amountSameValue][1])) {
                     if(resultDiscTrans.get(resultDiscTrans.size() -1).getEnd() != i - amountSameValue -1) {
@@ -109,8 +102,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     }
 
     private List<Interval> evaluateIntervals(List<Interval> equalClassSplits, Number[][] values) {
-
-        // will be set FALSE if no improvement is possible in this iteration (1. exit-condition)
         boolean improvement = true;
 
         while (equalClassSplits.size() > 1 && improvement) {
@@ -127,7 +118,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             }
 
             if (maxMergeCrit > 0) {
-                // merge Intervals of at index i
                 equalClassSplits = mergeInterval(equalClassSplits, deleteIndex, values);
             } else {
                 improvement = false;
@@ -137,25 +127,32 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return equalClassSplits;
     }
 
-    //TODO: write more tests
     private double determineDiscCrit(List<Interval> intervals) {
         double criterion = 0;
-        double intervalSum = 0;
-        for (int j = 0; j < intervals.size(); j++) {
-            double intervalXclassSum = 0;
+        for(Interval interval: intervals) {
+            double intervalClassSum = 0;
             for (int i = 0; i < m; i++) {
-                double quotient = (intervals.get(j).getClassDist()[i] + lambda) / (intervals.get(j).getSize() + m * lambda);
-                intervalXclassSum += (quotient * (1 - quotient));
+                double quotient = (interval.getClassDist()[i] + lambda) / (interval.getSize() + m * lambda);
+                intervalClassSum += (quotient * (1 - quotient));
             }
-            intervalSum = alpha * ((intervals.get(j).getSize()) / (double) n) * intervalXclassSum + ((1 - alpha) * ((m * lambda) / (intervals.get(j).getSize())));
+            double intervalSum = alpha * ((interval.getSize()) / (double) n) * intervalClassSum;
+            intervalSum += ((1 - alpha) * ((m * lambda) / (interval.getSize())));
 
             criterion += intervalSum;
         }
 
-
         return criterion;
     }
 
+    /**
+     * Interval i begin = 0, i end = 5
+     * Interval i+1 begin = 6, i+1 end = 9
+     * -> Interval j begin = 0, end 9
+     * @param intervals list of Interval to be reduced by one Element
+     * @param i index of element that will be merged
+     * @param values list of values used for index
+     * @return new List with Interval i and i+1 merged
+     */
     private List<Interval> mergeInterval(List<Interval> intervals, int i, Number[][] values) {
         List<Interval> temp = new ArrayList<>(intervals.subList(0, intervals.size()));
         int mergeBegin = temp.get(i).getBegin();
@@ -169,7 +166,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
     final class Interval {
         /**
-         * private Interval class for FUSINTER Method with begin and end as int for indexing over (2D-Array)
+         * private Interval class for FUSINTER Method with begin and end index to determine class distribution
          */
 
         private int begin;
@@ -180,6 +177,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         /**
          * @param begin begin index of Interval
          * @param end   end index of Interval
+         * @param values list of all values, only used to determine class distribution in interval
          */
         Interval(int begin, int end, Number[][] values) {
             this.begin = begin;

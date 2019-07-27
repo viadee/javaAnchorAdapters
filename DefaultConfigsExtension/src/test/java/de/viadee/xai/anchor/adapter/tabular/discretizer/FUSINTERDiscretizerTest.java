@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,13 +84,17 @@ class FUSINTERDiscretizerTest {
         assertEquals(5, list.size());
     }
 
+    /**
+     * Tests Steps 4-8 (Evaluation of potential merges of the equalClassSplits) of the described Algorithm,
+     * Number[][] to be discretized is taken from FUSINTER paper Figure 7.
+     */
     @Test
     void testIntervalReduction() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
         List<FUSINTERDiscretizer.Interval> list = fusinterDiscretizer.fitCreateSupervisedTransitions(
                 new Number[][]{
-                        {1.0, 0},
-                        {2.0, 1},
+                        {1.0, 1},
+                        {2.0, 0},
                         {3.0, 1},
                         {4.0, 1},
                         {5.0, 1},
@@ -105,17 +107,42 @@ class FUSINTERDiscretizerTest {
                         {12.0, 1},
                         {13.0, 1},
                         {14.0, 1},
-                        {15.0, 1},
+                        {15.0, 0},
                         {16.0, 1},
-                        {17.0, 1},
+                        {17.0, 0},
                         {18.0, 1},
-                        {19.0, 1},
-                        {20.0, 0},
+                        {19.0, 0},
+                        {20.0, 1},
+                        {21.0, 0},
+                        {22.0, 1},
+                        {23.0, 0},
+                        {24.0, 1},
+                        {25.0, 0},
+                        {26.0, 1},
+                        {27.0, 0},
+                        {28.0, 0},
+                        {29.0, 0},
+                        {30.0, 1},
+                        {31.0, 0},
+                        {32.0, 0},
+                        {33.0, 0},
+                        {34.0, 0},
+                        {35.0, 0},
+                        {36.0, 0},
+                        {37.0, 0},
+                        {38.0, 1},
+                        {39.0, 0},
+                        {40.0, 1},
                 }
         );
-        assertEquals(1, list.size());
+        assertEquals(4, list.size());
     }
 
+
+    /**
+     * Tests Steps 4-8 (Evaluation of potential merges of the equalClassSplits) of the described Algorithm,
+     * Number[][] to be discretized is taken from FUSINTER paper Figure 5 and 6.
+     */
     @Test
     void testIntervalReductionBig() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
