@@ -37,17 +37,18 @@ final class TabularPreprocessor {
 
         removeUnusedColumns(dataFrame);
         applyTransformations(dataFrame);
-        fitDiscretizers(dataFrame);
-
 
         // Split off labels
+        // target column needs to be fit and discretized first in order for supervised column discretizers to work
         Serializable[] transformedLabels = null;
         Double[] discretizedLabels = null;
         if (targetColumn != null) {
             transformedLabels = dataFrame.removeColumn(targetColumn);
+            targetColumn.getDiscretizer().fit(transformedLabels, null);
             discretizedLabels = targetColumn.getDiscretizer().apply(transformedLabels);
         }
         // Apply Discretization
+        fitNonTargetDiscretizers(dataFrame, discretizedLabels);
         final Double[][] discretizedData = discretizeData(dataFrame);
 
         // Create TabularInstances
@@ -109,15 +110,15 @@ final class TabularPreprocessor {
      * Fits all discretizers
      *
      * @param dataFrame the {@link DataFrame} that is currently being used
+     * @param labels    the discretized target column
      */
-    private static void fitDiscretizers(final DataFrame dataFrame) {
+    private static void fitNonTargetDiscretizers(final DataFrame dataFrame, final Double[] labels) {
+        // If no discretizer has been set, set a unique value discretizer
+        dataFrame.getColumns().stream().filter(c -> c.getDiscretizer() == null)
+                .forEach(c -> c.setDiscretizer(new UniqueValueDiscretizer()));
+
         // Fit discretizers set in columns. Do not transform yet
-        for (GenericColumn column : dataFrame.getColumns()) {
-            if (column.getDiscretizer() == null) {
-                column.setDiscretizer(new UniqueValueDiscretizer());
-            }
-            column.getDiscretizer().fit(dataFrame.getColumn(column));
-        }
+        dataFrame.getColumns().forEach(c -> c.getDiscretizer().fit(dataFrame.getColumn(c), labels));
     }
 
     /**

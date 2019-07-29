@@ -12,8 +12,15 @@ import java.util.stream.Collectors;
 public class UniqueValueDiscretizer extends AbstractDiscretizer {
     private static final long serialVersionUID = -6185947730488220070L;
 
+    /**
+     * Constructs the instance
+     */
+    public UniqueValueDiscretizer() {
+        super(false);
+    }
+
     @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
 
         int index = 0;

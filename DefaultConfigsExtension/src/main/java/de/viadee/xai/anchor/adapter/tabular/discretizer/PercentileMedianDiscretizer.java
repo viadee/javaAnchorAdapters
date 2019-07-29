@@ -29,6 +29,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
      * @param classReduction if true, classes will be merged having the same discretized value
      */
     public PercentileMedianDiscretizer(int classCount, boolean classReduction) {
+        super(false);
         this.classCount = classCount;
         this.classReduction = classReduction;
     }
@@ -63,7 +64,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
     }
 
     @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }
