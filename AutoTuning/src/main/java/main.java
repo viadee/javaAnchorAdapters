@@ -1,4 +1,5 @@
 import LossFunctions.PerformanceMeasures;
+import RandomSearch.DiscretizationSpace;
 import RandomSearch.RandomSearch;
 import RandomSearch.RandomSearchBuilder;
 import de.viadee.xai.anchor.adapter.classifiers.TabularRandomForestClassifier;
@@ -34,6 +35,8 @@ public class main {
         // Next pick specific instance (countess or patrick dooley)
         final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[1704];
 
+        final DiscretizationSpace discretizationSpace = new DiscretizationSpace(anchorTabular);
+
         final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabularTest
                 .createDefaultBuilder(h2oModel::predict, explainedInstance);
 
@@ -42,8 +45,9 @@ public class main {
         // RANDOM SEARCH with time condintion
         RandomSearch rs = new RandomSearchBuilder()
                 .setAnchorBuilder(anchorBuilder)
-//                .setAnchorTabular(anchorTabular)
+                .setAnchorTabular(anchorTabular)
                 .setClassificationFunction(h2oModel::predict)
+                .setMeasure(PerformanceMeasures.Measure.F1)
                 .setScenario("Hella_ASN_90")
                 .setExecutionTermination(5)
                 .build();

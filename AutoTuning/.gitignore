@@ -31,3 +31,4 @@ src/main/resources
 .idea/workspace.xml
 .idea/compiler.xml
 /.idea/
+/src/main/java/main.java
