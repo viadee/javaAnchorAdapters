@@ -89,4 +89,18 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
     public void setLast(boolean last) {
         isLast = last;
     }
+
+    /**
+     * @return is lower boundary open
+     */
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    /**
+     * @return is upper boundary open
+     */
+    public boolean isLast() {
+        return isLast;
+    }
 }
