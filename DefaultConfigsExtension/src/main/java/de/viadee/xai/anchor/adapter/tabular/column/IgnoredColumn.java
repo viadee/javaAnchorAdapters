@@ -19,7 +19,7 @@ public class IgnoredColumn extends GenericColumn {
      * @param name a name for reasons of clarity and comprehensibility
      */
     public IgnoredColumn(String name) {
-        super(name, null, null, null);
+        super(name, null, null);
     }
 
     @Override

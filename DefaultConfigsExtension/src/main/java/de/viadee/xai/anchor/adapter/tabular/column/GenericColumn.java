@@ -1,12 +1,13 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
+import java.util.function.Consumer;
 
 /**
  * Represents the type of a column - whether the contained data is categorical or nominal
@@ -15,53 +16,39 @@ public class GenericColumn implements Serializable {
     private static final long serialVersionUID = -7907742161569543398L;
 
     private final String name;
-    private final List<Transformer> dataTransformations;
-    private final List<Transformer> anchorTransformers;
+    private final List<Transformer> transformations;
     private Discretizer discretizer;
+
+    private Consumer<String[]> postBuildListener;
 
     /**
      * @param name the column's name
      */
     public GenericColumn(String name) {
-        this(name, null, null, null);
+        this(name, null, null);
     }
 
     /**
      * @param name            the column's name
-     * @param dataTransformations the transformations to apply for the predict data
-     * @param anchorTransformers the transformations to apply before discretization for anchor
+     * @param transformations the transformations to apply for the predict data
      * @param discretizer     the discretization mapping the column to classes
      */
-    public GenericColumn(String name, List<Transformer> dataTransformations, List<Transformer> anchorTransformers, Discretizer discretizer) {
+    public GenericColumn(String name, List<Transformer> transformations, Discretizer discretizer) {
         this.name = name;
-        this.dataTransformations = (dataTransformations == null) ? new ArrayList<>() : new ArrayList<>(dataTransformations);
-        this.anchorTransformers = (anchorTransformers == null) ? new ArrayList<>() : new ArrayList<>(anchorTransformers);
+        this.transformations = (transformations == null) ? new ArrayList<>() : new ArrayList<>(transformations);
         this.discretizer = discretizer;
     }
 
     /**
      * Adds a transformation.
      * <p>
-     * All dataTransformations are executed by the list's order
+     * All transformations are executed by the list's order
      *
      * @param transformation the transformation to use
      * @return this object to use for further configuration
      */
-    public GenericColumn addDataTransformer(Transformer transformation) {
-        this.dataTransformations.add(transformation);
-        return this;
-    }
-
-    /**
-     * Adds a predictTransformation.
-     * <p>
-     * All dataTransformations are executed by the list's order before calling predict. Useful when having NullTransformations to re transformData to a null value
-     *
-     * @param predictTransformation the predictTransformation to use
-     * @return this object to use for further configuration
-     */
-    public GenericColumn addAnchorTransformer(Transformer predictTransformation) {
-        this.dataTransformations.add(predictTransformation);
+    public GenericColumn addTransformer(Transformer transformation) {
+        this.transformations.add(transformation);
         return this;
     }
 
@@ -74,12 +61,8 @@ public class GenericColumn implements Serializable {
         return name;
     }
 
-    public List<Transformer> getDataTransformations() {
-        return dataTransformations;
-    }
-
-    public List<Transformer> getAnchorTransformations() {
-        return dataTransformations;
+    public List<Transformer> getTransformers() {
+        return transformations;
     }
 
     /**
@@ -111,28 +94,37 @@ public class GenericColumn implements Serializable {
         return true;
     }
 
+    /**
+     * The subclass may register a post build listener which gets fed with the data when build is called
+     * <p>
+     * This allows the column to configure itself based on the data existing in the dataset
+     *
+     * @return the post build listener or null
+     */
+    public Consumer<String[]> getPostBuildListener() {
+        return postBuildListener;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GenericColumn that = (GenericColumn) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(dataTransformations, that.dataTransformations) &&
-                Objects.equals(anchorTransformers, that.anchorTransformers) &&
+                Objects.equals(transformations, that.transformations) &&
                 Objects.equals(discretizer, that.discretizer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, dataTransformations, anchorTransformers, discretizer);
+        return Objects.hash(name, transformations, discretizer);
     }
 
     @Override
     public String toString() {
         return "GenericColumn{" +
                 "name='" + name + '\'' +
-                ", dataTransformations=" + dataTransformations +
-                ", anchorTransformers=" + anchorTransformers +
+                ", transformations=" + transformations +
                 ", discretizer=" + discretizer +
                 '}';
     }

@@ -1,13 +1,15 @@
 package de.viadee.xai.anchor.adapter.tabular.util;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * Provides some basic functions to handle arrays.
  */
-public enum ArrayUtils {;
+public enum ArrayUtils {
+    ;
 
     /**
      * Appends a column to an existing table
@@ -215,5 +217,23 @@ public enum ArrayUtils {;
         for (int i = 0; i < values.length; i++) {
             values[i][targetColumn] = replaceValues[i];
         }
+    }
+
+    /**
+     * Finds a max index
+     *
+     * @param collection a collection to find the max index in
+     * @return the max index
+     */
+    public static int maxIndex(Collection<Integer> collection) {
+        Integer i = 0, maxIndex = -1, max = null;
+        for (Integer x : collection) {
+            if ((x != null) && ((max == null) || (x > max))) {
+                max = x;
+                maxIndex = i;
+            }
+            i++;
+        }
+        return maxIndex;
     }
 }

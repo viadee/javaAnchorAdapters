@@ -44,12 +44,41 @@ class StringToBooleanTransformerTest {
     }
 
     @Test
-    void testApplyInt() {
+    void testApplyIntOne() {
         //Given
         String test = "1";
         StringToBooleanTransformer stringToBooleanTransformer = new StringToBooleanTransformer();
 
+        //When
+        boolean result = stringToBooleanTransformer.apply(test);
+
         //Then
-        Assertions.assertThrows(IllegalArgumentException.class, () -> stringToBooleanTransformer.apply(test));
+        assertEquals(Boolean.TRUE, result);
+    }
+
+    @Test
+    void testApplyIntNotZeroOne() {
+        //Given
+        String test = "2";
+        StringToBooleanTransformer stringToBooleanTransformer = new StringToBooleanTransformer();
+
+        //When
+        boolean result = stringToBooleanTransformer.apply(test);
+
+        //Then
+        assertEquals(Boolean.TRUE, result);
+    }
+
+    @Test
+    void testApplyIntZero() {
+        //Given
+        String test = "0";
+        StringToBooleanTransformer stringToBooleanTransformer = new StringToBooleanTransformer();
+
+        //When
+        boolean result = stringToBooleanTransformer.apply(test);
+
+        //Then
+        assertEquals(Boolean.FALSE, result);
     }
 }

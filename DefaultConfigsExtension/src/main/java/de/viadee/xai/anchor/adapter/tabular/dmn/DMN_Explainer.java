@@ -7,7 +7,7 @@ import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.StringColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.CategoricalDiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.NumericDiscretizationOrigin;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;

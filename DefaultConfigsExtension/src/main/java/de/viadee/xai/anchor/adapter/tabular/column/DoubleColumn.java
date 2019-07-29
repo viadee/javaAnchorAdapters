@@ -1,8 +1,8 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.PercentileMedianDiscretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.PercentileMedianDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.StringToDoubleTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
@@ -23,19 +23,18 @@ public class DoubleColumn extends NumberColumn {
      * @param name the column's name
      */
     public DoubleColumn(String name) {
-        this(name, null, null, null);
+        this(name, null, null);
     }
 
     /**
      * Instantiates the column
      *
      * @param name               the column's name
-     * @param dataTransformers   the object value to replace null values with. Must be convertible to double values
-     * @param anchorTransformers the transformations to apply before discretization for anchor
+     * @param transformers   the object value to replace null values with. Must be convertible to double values
      * @param discretizer        the discretizer to use
      */
-    public DoubleColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
-        super(name, dataTransformers, anchorTransformers, discretizer);
+    public DoubleColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers, discretizer);
     }
 
     /**
@@ -82,7 +81,6 @@ public class DoubleColumn extends NumberColumn {
         return new DoubleColumn(
                 name,
                 Arrays.asList(createEmptyTransformator(replaceNull), new StringToDoubleTransformer()),
-                null,
                 (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
 
@@ -96,7 +94,7 @@ public class DoubleColumn extends NumberColumn {
      */
     public static DoubleColumn fromStringInput(String name, Integer replaceNull, int classCount) {
         return new DoubleColumn(name, Arrays.asList(createEmptyTransformator(replaceNull),
-                new StringToDoubleTransformer()), null,
+                new StringToDoubleTransformer()),
                 (classCount < 1) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

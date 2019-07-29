@@ -1,8 +1,8 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.PercentileMedianDiscretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.PercentileMedianDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.StringToIntTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
@@ -24,19 +24,18 @@ public class IntegerColumn extends NumberColumn {
      * @param name the column's name
      */
     public IntegerColumn(String name) {
-        this(name, null, null, null);
+        this(name, null, null);
     }
 
     /**
      * Instantiates the column
      *
-     * @param name               the column's name
-     * @param dataTransformers   the object value to replace null values with. Must be convertible to Integer values
-     * @param anchorTransformers the transformations to apply before discretization for anchor
-     * @param discretizer        the discretizer to use
+     * @param name         the column's name
+     * @param transformers the object value to replace null values with. Must be convertible to Integer values
+     * @param discretizer  the discretizer to use
      */
-    public IntegerColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
-        super(name, dataTransformers, anchorTransformers, discretizer);
+    public IntegerColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers, discretizer);
     }
 
     /**
@@ -88,7 +87,8 @@ public class IntegerColumn extends NumberColumn {
             allTransformers.addAll(transformers);
         allTransformers.add(new StringToIntTransformer());
 
-        return new IntegerColumn(name, allTransformers, null,
+        // TODO do we really need the uniquevaluediscretizer here? causes overhead! just map to actual int
+        return new IntegerColumn(name, allTransformers,
                 (discretizer == null) ? new UniqueValueDiscretizer() : discretizer);
     }
 
@@ -102,7 +102,6 @@ public class IntegerColumn extends NumberColumn {
      */
     public static IntegerColumn fromStringInput(String name, Integer replaceNull, int classCount) {
         return new IntegerColumn(name, Arrays.asList(createEmptyTransformator(replaceNull), new StringToIntTransformer()),
-                null,
                 (classCount == 0) ? new UniqueValueDiscretizer() : new PercentileMedianDiscretizer(classCount));
     }
 }

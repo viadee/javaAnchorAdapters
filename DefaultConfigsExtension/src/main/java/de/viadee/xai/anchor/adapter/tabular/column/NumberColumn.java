@@ -1,11 +1,13 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.transformations.AssertNumberTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceEmptyTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.SerializableSupplier;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,19 +24,24 @@ public abstract class NumberColumn extends GenericColumn {
      * @param name the column's name
      */
     public NumberColumn(String name) {
-        this(name, null, null, null);
+        this(name, null, null);
     }
 
     /**
      * Instantiates the column
      *
      * @param name         the column's name
-     * @param dataTransformers the object value to replace null values with. Must be convertible to Integer values
-     * @param anchorTransformers the transformations to apply before discretization for anchor
+     * @param transformers the object value to replace null values with. Must be convertible to Integer values
      * @param discretizer  the discretizer to use
      */
-    public NumberColumn(String name, List<Transformer> dataTransformers, List<Transformer> anchorTransformers, Discretizer discretizer) {
-        super(name, dataTransformers, anchorTransformers, discretizer);
+    public NumberColumn(String name, List<Transformer> transformers, Discretizer discretizer) {
+        super(name, transformers == null
+                        ? Collections.singletonList(new AssertNumberTransformer())
+                        : transformers,
+                discretizer);
+        if (transformers != null && transformers.stream().anyMatch(t -> t instanceof AssertNumberTransformer)) {
+            addTransformer(new AssertNumberTransformer());
+        }
     }
 
     /**

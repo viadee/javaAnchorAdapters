@@ -1,10 +1,10 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.algorithm.DataInstance;
+
+import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Represents an instance (i.e. row) of a data table.
@@ -84,7 +84,10 @@ public class TabularInstance implements DataInstance<Serializable[]> {
         if (this.features == null) {
             throw new IllegalArgumentException("no feature names provided");
         }
-        return getTransformedValue(this.getFeatureIndex(featureName));
+        final int featureIndex = this.getFeatureIndex(featureName);
+        if (featureIndex < 0)
+            throw new IllegalArgumentException("No feature registered for given name");
+        return getTransformedValue(featureIndex);
     }
 
     private int getFeatureIndex(String featureName) {

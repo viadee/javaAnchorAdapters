@@ -1,6 +1,9 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.NumericDiscretizationOrigin;
+
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,15 +20,13 @@ public abstract class AbstractDiscretizer implements Discretizer {
      *
      * @param isSupervised true, if this is a supervised discretizer
      */
-    AbstractDiscretizer(boolean isSupervised) {
+    protected AbstractDiscretizer(boolean isSupervised) {
         this.isSupervised = isSupervised;
     }
 
     @Override
-    public DiscretizationTransition getTransition(Double discretizedValue) {
-        return discretizationTransitions.stream().filter(d -> discretizedValue.equals(d.getDiscretizedValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value" +
-                        discretizedValue));
+    public Collection<DiscretizationTransition> getTransitions() {
+        return discretizationTransitions;
     }
 
     /**
@@ -64,6 +65,23 @@ public abstract class AbstractDiscretizer implements Discretizer {
             this.discretizationTransitions = null;
             // This could be required for some scenarios.. Not yet, though
             throw new IllegalArgumentException("Discretization targets are ambiguous");
+        }
+
+        // In case all origins are numeric we need to set open lower and upper boundaries
+        if (this.discretizationTransitions.size() > 1 && this.discretizationTransitions.stream()
+                .allMatch(d -> d.getDiscretizationOrigin() instanceof NumericDiscretizationOrigin)) {
+            DiscretizationTransition minDisc = this.discretizationTransitions.get(0);
+            DiscretizationTransition maxDisc = this.discretizationTransitions.get(0);
+            for (final DiscretizationTransition current : this.discretizationTransitions) {
+                if (((NumericDiscretizationOrigin) current.getDiscretizationOrigin()).getMinValue().doubleValue() <
+                        ((NumericDiscretizationOrigin) minDisc.getDiscretizationOrigin()).getMinValue().doubleValue())
+                    minDisc = current;
+                if (((NumericDiscretizationOrigin) current.getDiscretizationOrigin()).getMaxValue().doubleValue() >
+                        ((NumericDiscretizationOrigin) maxDisc.getDiscretizationOrigin()).getMaxValue().doubleValue())
+                    maxDisc = current;
+            }
+            ((NumericDiscretizationOrigin) minDisc.getDiscretizationOrigin()).setFirst(true);
+            ((NumericDiscretizationOrigin) maxDisc.getDiscretizationOrigin()).setLast(true);
         }
     }
 

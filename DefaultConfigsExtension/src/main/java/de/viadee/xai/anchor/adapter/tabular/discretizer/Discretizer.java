@@ -1,6 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.function.Function;
 
 /**
@@ -44,5 +45,16 @@ public interface Discretizer extends Function<Serializable, Double>, Serializabl
      * @param discretizedValue the value to get the relation for
      * @return the {@link DiscretizationTransition}
      */
-    DiscretizationTransition getTransition(Double discretizedValue);
+    default DiscretizationTransition getTransition(Double discretizedValue) {
+        return getTransitions().stream().filter(d -> discretizedValue.equals(d.getDiscretizedValue())).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Could not find transition for discretized value " +
+                        discretizedValue));
+    }
+
+    /**
+     * This method returns all stored transitions
+     *
+     * @return the {@link DiscretizationTransition}s
+     */
+    Collection<DiscretizationTransition> getTransitions();
 }
