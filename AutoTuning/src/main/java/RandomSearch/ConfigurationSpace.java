@@ -3,7 +3,7 @@ package RandomSearch;
 public class ConfigurationSpace {
 
     private HyperparameterSpace hyperparameterSpace;
-    private ConfigurationSpace configurationSpace;
+    private DiscretizationSpace discretizationSpace;
 
     // performance indicators
     private double performance = 0;
@@ -11,11 +11,20 @@ public class ConfigurationSpace {
     private long runtime = 0;
 
     public ConfigurationSpace() {
+        this.hyperparameterSpace = new HyperparameterSpace();
     }
 
-    public ConfigurationSpace(HyperparameterSpace hyperparameterSpace, ConfigurationSpace configurationSpace) {
+    public ConfigurationSpace(HyperparameterSpace hyperparameterSpace, DiscretizationSpace discretizationSpace) {
         this.hyperparameterSpace = hyperparameterSpace;
-        this.configurationSpace = configurationSpace;
+        this.discretizationSpace = discretizationSpace;
+    }
+
+    public ConfigurationSpace(ConfigurationSpace copyFrom) {
+        this.runtime = copyFrom.getRuntime();
+        this.coverage = copyFrom.getCoverage();
+        this.performance = copyFrom.getPerformance();
+        this.hyperparameterSpace = copyFrom.getHyperparameterSpace();
+        this.discretizationSpace = copyFrom.getDiscretizationSpace();
     }
 
     public HyperparameterSpace getHyperparameterSpace() {
@@ -26,12 +35,12 @@ public class ConfigurationSpace {
         this.hyperparameterSpace = hyperparameterSpace;
     }
 
-    public ConfigurationSpace getConfigurationSpace() {
-        return configurationSpace;
+    public DiscretizationSpace getDiscretizationSpace() {
+        return discretizationSpace;
     }
 
-    public void setConfigurationSpace(ConfigurationSpace configurationSpace) {
-        this.configurationSpace = configurationSpace;
+    public void setConfigurationSpace(DiscretizationSpace discretizationSpace) {
+        this.discretizationSpace = discretizationSpace;
     }
 
     public double getPerformance() {

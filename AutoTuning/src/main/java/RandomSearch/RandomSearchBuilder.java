@@ -7,6 +7,11 @@ import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 
 import java.util.function.Function;
 
+/**
+ * The builder class for the random search optimization method for the Anchors explanations.
+ * <p></p>
+ * Set various needed values to build an instance of the RandomSearch class.
+ */
 public class RandomSearchBuilder {
 
     private AnchorConstructionBuilder<TabularInstance> anchorBuilder;
@@ -182,7 +187,7 @@ public class RandomSearchBuilder {
      */
     public RandomSearch build() {
         prepareForBuild();
-        return new RandomSearch(scenario, anchorBuilder, anchorTabular, timeTermination, executionTermination, startWithDefault, classificationFunction, measure);
+        return new RandomSearch(scenario, anchorBuilder, anchorTabular, configurationSpace, timeTermination, executionTermination, startWithDefault, classificationFunction, measure);
     }
 
 

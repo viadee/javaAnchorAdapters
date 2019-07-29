@@ -11,7 +11,7 @@ public class RandomSearchLogger {
     private final FileWriter fileWriterCSV;
     private String directory = "./rs-output/";
 
-    public RandomSearchLogger(String scenario, HyperparameterSpace hyperparameterSpace, PerformanceMeasures.Measure measure) {
+    public RandomSearchLogger(String scenario, ConfigurationSpace configurationSpace, PerformanceMeasures.Measure measure) {
 
         try {
             // create directory for random search output if not yet created
@@ -19,10 +19,10 @@ public class RandomSearchLogger {
             File f = new File("rundata_" + new Date().getTime());
             fileWriterCSV = new FileWriter(directory + scenario + File.separator + f.getName() + ".csv");
             StringBuilder header = new StringBuilder();
-            for (Parameter p : hyperparameterSpace.getHyperParameters()) {
+            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
                 header.append(p.getName() + ";");
             }
-            fileWriterCSV.write(header.toString() + "runtime,coverage," + measure + ",best rule(s)" + "\n");
+            fileWriterCSV.write(header.toString() + "runtime,coverage," + measure.toString().toLowerCase() + ",best rule(s)" + "\n");
 
         } catch (IOException e) {
             throw new IllegalStateException("Error occurred creating file", e);
@@ -30,16 +30,16 @@ public class RandomSearchLogger {
 
     }
 
-    public void addValuesToLogging(HyperparameterSpace hyperparameterSpace) {
+    public void addValuesToLogging(ConfigurationSpace configurationSpace) {
 
         try {
             StringBuilder values = new StringBuilder();
-            for (Parameter p : hyperparameterSpace.getHyperParameters()) {
+            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
                 values.append(p.getCurrentValue() + ";");
             }
-            values.append(hyperparameterSpace.getRuntime() + ";");
-            values.append(hyperparameterSpace.getCoverage() + ";");
-            values.append(hyperparameterSpace.getPerformance() + ";");
+            values.append(configurationSpace.getRuntime() + ";");
+            values.append(configurationSpace.getCoverage() + ";");
+            values.append(configurationSpace.getPerformance() + ";");
 
             fileWriterCSV.write(values.toString());
         } catch (IOException e) {

@@ -9,11 +9,6 @@ import java.util.List;
 
 public final class HyperparameterSpace {
 
-    // performance indicators
-    private double performance = 0;
-    private double coverage = 0;
-    private long runtime = 0;
-
     private final List<Parameter> hyperParameters;
 
     public HyperparameterSpace() {
@@ -31,9 +26,6 @@ public final class HyperparameterSpace {
     }
 
     public HyperparameterSpace(HyperparameterSpace copyFrom) {
-        this.runtime = copyFrom.getRuntime();
-        this.coverage = copyFrom.getCoverage();
-        this.performance = copyFrom.getPerformance();
         this.hyperParameters = clone(copyFrom.getHyperParameters());
     }
 
@@ -41,6 +33,12 @@ public final class HyperparameterSpace {
         this.hyperParameters = hyperParameters;
     }
 
+    /**
+     * Get a specific parameter from the hyperparameter set by name
+     *
+     * @param name the name of the parameter
+     * @return the parameter with the given name
+     */
     public Parameter getParameterByName(String name) {
         for (Parameter p : hyperParameters) {
             if (p.getName().equals(name)) {
@@ -50,34 +48,12 @@ public final class HyperparameterSpace {
         throw new RuntimeException("No parameter found by the name of " + name);
     }
 
-    public List<Parameter> getHyperParameters() {
-        return hyperParameters;
-    }
-
-    public long getRuntime() {
-        return runtime;
-    }
-
-    public void setRuntime(long runtime) {
-        this.runtime = runtime;
-    }
-
-    public double getPerformance() {
-        return performance;
-    }
-
-    public void setPerformance(double precision) {
-        this.performance = precision;
-    }
-
-    public double getCoverage() {
-        return coverage;
-    }
-
-    public void setCoverage(double coverage) {
-        this.coverage = coverage;
-    }
-
+    /**
+     * Clone a given parameter set space
+     *
+     * @param original the original parameter set
+     * @return the cloned parameter set
+     */
     public static List<Parameter> clone(List<Parameter> original) {
         List<Parameter> result = new ArrayList<>();
         for (Parameter p : original) {
@@ -85,4 +61,18 @@ public final class HyperparameterSpace {
         }
         return result;
     }
+
+    /**
+     * Randomize all parameters in this hyperparameter space
+     */
+    public void randomizeParameters() {
+        for (Parameter p : hyperParameters) {
+            p.searchRandom();
+        }
+    }
+
+    public List<Parameter> getHyperParameters() {
+        return hyperParameters;
+    }
+
 }
