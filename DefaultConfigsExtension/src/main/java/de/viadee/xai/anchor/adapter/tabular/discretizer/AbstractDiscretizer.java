@@ -1,7 +1,5 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.NumericDiscretizationOrigin;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;

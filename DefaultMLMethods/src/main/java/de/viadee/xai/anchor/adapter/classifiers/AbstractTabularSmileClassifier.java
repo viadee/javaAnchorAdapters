@@ -1,9 +1,6 @@
 package de.viadee.xai.anchor.adapter.classifiers;
 
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.CategoricalDiscretizationOrigin;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import smile.classification.SoftClassifier;
@@ -19,13 +16,59 @@ import java.util.stream.Stream;
  * discretized instantiation.
  * Therefore, these models are only to be used for testing.
  * <p>
+ * Note: There is a chance to learn and predict on transformed values. This is only possible for models where all
+ * values are numeric / boolean
+ * <p>
  * TODO make optional to operate on transformed / discretized values
  */
 public abstract class AbstractTabularSmileClassifier implements Function<TabularInstance, Integer> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTabularSmileClassifier.class);
 
+    private final boolean useDiscretizedValues;
+
     private SoftClassifier<double[]> classifier;
-    private UniqueValueDiscretizer labelDiscretizer;
+
+
+    /**
+     * Creates the instance
+     *
+     * @param useDiscretizedValues if true, the model will be learned on transformed, i.e., original values.
+     *                             Generally, this is to be preferred but not always possible.
+     */
+    AbstractTabularSmileClassifier(boolean useDiscretizedValues) {
+        this.useDiscretizedValues = useDiscretizedValues;
+    }
+
+    private static Number toNumeric(Object obj) {
+        Number result;
+        if (Boolean.FALSE.equals(obj))
+            result = 0D;
+        else if (Boolean.TRUE.equals(obj))
+            result = 1D;
+        else if (obj instanceof Number)
+            result = (Number) obj;
+        else
+            throw new IllegalArgumentException("Only numeric values may be used");
+
+        return result;
+    }
+
+    private int getLabelValue(TabularInstance instance) {
+        Object result = useDiscretizedValues ? instance.getDiscretizedLabel() : instance.getTransformedLabel();
+        try {
+            return toNumeric(result).intValue();
+        } catch (IllegalArgumentException e) {
+            // Is this good? For label try to use discretized instead
+            if (!useDiscretizedValues)
+                return toNumeric(instance.getDiscretizedLabel()).intValue();
+            throw e;
+        }
+    }
+
+    private Number[] getInstance(TabularInstance instance) {
+        Object[] result = (useDiscretizedValues) ? instance.getInstance() : instance.getTransformedInstance();
+        return Stream.of(result).map(AbstractTabularSmileClassifier::toNumeric).toArray(Number[]::new);
+    }
 
     /**
      * Instantiates and fits new Random forest classifier using the tabular data
@@ -35,30 +78,15 @@ public abstract class AbstractTabularSmileClassifier implements Function<Tabular
     public void fit(TabularInstance[] trainingSet) {
         double[][] doubleTrainingSet = new double[trainingSet.length][];
         for (int i = 0; i < trainingSet.length; i++) {
-            final Object[] column = trainingSet[i].getInstance();
+            final Number[] column = getInstance(trainingSet[i]);
             double[] doubleColumn = new double[column.length];
             for (int j = 0; j < column.length; j++) {
-                doubleColumn[j] = ((Number) column[j]).doubleValue();
+                doubleColumn[j] = column[j].doubleValue();
             }
             doubleTrainingSet[i] = doubleColumn;
         }
+        int[] labels = Stream.of(trainingSet).mapToInt(this::getLabelValue).toArray();
 
-        if (Stream.of(trainingSet).anyMatch(i -> ((Number) i.getDiscretizedLabel()).doubleValue() % 1 != 0)) {
-            LOGGER.warn("There are labels having non-int numeric values. UniqueValueDiscretizer will be applied");
-            labelDiscretizer = new UniqueValueDiscretizer();
-            labelDiscretizer.fit(Stream.of(trainingSet).map(t -> (Number) t.getDiscretizedLabel()).toArray(Number[]::new));
-        }
-
-        int[] labels;
-        if (labelDiscretizer == null) {
-            // Only int values
-            labels = Stream.of(trainingSet).mapToInt(t -> t.getDiscretizedLabel().intValue()).toArray();
-        } else {
-            final Double[] tmpLabels = labelDiscretizer.apply(Stream.of(trainingSet).map(t -> (Number) t.getDiscretizedLabel()).toArray(Number[]::new));
-            labels = Stream.of(tmpLabels).mapToInt(Double::intValue).toArray();
-        }
-
-        //double[] labels = Stream.of(trainingSet).mapToInt(TabularInstance::getDiscretizedLabel).toArray();
         this.classifier = fit(doubleTrainingSet, labels);
     }
 
@@ -69,17 +97,10 @@ public abstract class AbstractTabularSmileClassifier implements Function<Tabular
         if (classifier == null)
             throw new IllegalStateException("The model must be fit in order to be used.");
 
-        final double[] doubleColumn = new double[instance.getInstance().length];
+        final double[] doubleColumn = new double[getInstance(instance).length];
         for (int j = 0; j < doubleColumn.length; j++)
-            doubleColumn[j] = instance.getInstance()[j];
+            doubleColumn[j] = getInstance(instance)[j].doubleValue();
 
-        int prediction = classifier.predict(doubleColumn);
-
-        if (labelDiscretizer == null) {
-            return prediction;
-        } else {
-            DiscretizationOrigin discretizationOrigin = labelDiscretizer.getTransition((double) prediction).getDiscretizationOrigin();
-            return ((Number) ((CategoricalDiscretizationOrigin) discretizationOrigin).getValue()).intValue();
-        }
+        return classifier.predict(doubleColumn);
     }
 }

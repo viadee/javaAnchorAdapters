@@ -7,6 +7,7 @@ import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.ArrayUtils;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  */
 final class TabularPreprocessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(TabularPreprocessor.class);
+    private static final int MAX_LOGGED_DISC_TRANSITIONS = 15;
 
 
     /**
@@ -128,12 +130,21 @@ final class TabularPreprocessor {
                 }
                 column.getDiscretizer().fit(dataFrame.getColumn(column), labels);
 
+                final List<String> outputs = column.getDiscretizer().getTransitions().stream()
+                        .limit(MAX_LOGGED_DISC_TRANSITIONS + 1).map(t ->
+                                t.getDiscretizationOrigin().toString() +
+                                        " --> " +
+                                        FormatTools.roundToTwo(t.getDiscretizedValue()))
+                        .collect(Collectors.toList());
+                if (outputs.size() > MAX_LOGGED_DISC_TRANSITIONS) {
+                    outputs.remove(outputs.size() - 1);
+                    outputs.add("... (and " + (column.getDiscretizer().getTransitions().size() -
+                            MAX_LOGGED_DISC_TRANSITIONS) +
+                            " more elements)");
+                }
                 LOGGER.debug("Discretization for column [" + column.getName() + "] is configured as follows:" +
                         System.lineSeparator() + "\t" +
-                        column.getDiscretizer().getTransitions().stream().map(t ->
-                                t.getDiscretizationOrigin().toString() + " --> " + t.getDiscretizedValue().toString())
-                                .collect(Collectors.joining(System.lineSeparator() + "\t"))
-                );
+                        outputs.stream().collect(Collectors.joining(System.lineSeparator() + "\t")));
             } catch (Exception e) {
                 throw AnchorTabularBuilderException.discretizationFitException(column, e);
             }

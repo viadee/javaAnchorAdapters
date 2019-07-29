@@ -13,7 +13,7 @@ import java.util.function.Function;
  * <p>
  * To make use of this, use the AbstractTabularBuilder and its
  * various implementations to create an instance of this class.
- *
+ * <p>
  * TODO This class used to contain all preprocessing logic. This logic has been separated. Check, whether to deprecate
  */
 public class AnchorTabular {
@@ -80,9 +80,14 @@ public class AnchorTabular {
      */
     public AnchorConstructionBuilder<TabularInstance> createDefaultBuilder(final Function<TabularInstance, Integer> classificationFunction,
                                                                            final TabularInstance explainedInstance) {
-        TabularPerturbationFunction tabularPerturbationFunction = new TabularPerturbationFunction(
+        //final int labelToBeExplained = (explainedInstance.getDiscretizedLabel() == null)
+        //        ? classificationFunction.apply(explainedInstance)
+        //        : explainedInstance.getDiscretizedLabel().intValue();
+        final int labelToBeExplained = classificationFunction.apply(explainedInstance);
+        final TabularPerturbationFunction tabularPerturbationFunction = new TabularPerturbationFunction(
                 explainedInstance,
                 this.tabularInstances);
-        return new AnchorConstructionBuilder<>(classificationFunction::apply, tabularPerturbationFunction, explainedInstance);
+        return new AnchorConstructionBuilder<>(classificationFunction::apply, tabularPerturbationFunction,
+                explainedInstance, labelToBeExplained);
     }
 }
