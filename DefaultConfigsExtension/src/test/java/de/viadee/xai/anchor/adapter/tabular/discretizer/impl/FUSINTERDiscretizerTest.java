@@ -1,11 +1,15 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
