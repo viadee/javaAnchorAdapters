@@ -2,10 +2,10 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,12 +26,18 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     private int n;
 
     /**
-     * generates a FUSINTER discretizer with parameters suggested by the authors
+     * Generates a FUSINTER discretizer with parameters suggested by the authors
      */
     public FUSINTERDiscretizer() {
         this(1.0, 0.975);
     }
 
+    /**
+     * Generates a FUSINTER discretizer with custom parameters
+     *
+     * @param lambda lambda value
+     * @param alpha  alpha value
+     */
     public FUSINTERDiscretizer(double lambda, double alpha) {
         super(true);
         this.lambda = lambda;
@@ -145,6 +151,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
     /**
      * determines the Entropy of the given Intervals with the quadratic entropy formula
+     *
      * @param intervals to be evaluated
      * @return double from 0 to 1 with 0 being perfect entropy
      */
@@ -167,6 +174,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
     /**
      * merges Interval i and i+1,
+     *
      * @param intervals     list of Interval to be reduced by one Element
      * @param i             index of element that will be merged
      * @param keyValuePairs list of values used for index
