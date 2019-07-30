@@ -8,6 +8,9 @@ import java.util.function.Function;
  * Represents functionality every column needs to provide: discretization.
  * <p>
  * Discretization is used by Anchors tabular to perturb instances and find similar neighbours.
+ * <p>
+ * This interface supports both unsupervised and supervised discretizers. In supervised cases, labels are passed to
+ * {@link #fit(Serializable[], Double[])}
  */
 public interface Discretizer extends Function<Serializable, Double>, Serializable {
 
@@ -30,9 +33,9 @@ public interface Discretizer extends Function<Serializable, Double>, Serializabl
      * Fits the discretizer and passes all values that it might get asked to discretize
      *
      * @param values the domain
+     * @param labels the labels or null, iff unsupervised. Caution: labels are required to be discretized first
      */
-    void fit(Serializable[] values);
-
+    void fit(Serializable[] values, Double[] labels);
 
     /**
      * This method returns the relation for a certain discretized value.

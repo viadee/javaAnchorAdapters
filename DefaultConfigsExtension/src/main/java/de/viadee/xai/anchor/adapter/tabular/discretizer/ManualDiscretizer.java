@@ -23,6 +23,7 @@ public class ManualDiscretizer extends AbstractDiscretizer {
      * @param classBoundaries the upper class boundaries to be used
      */
     public ManualDiscretizer(Double... classBoundaries) {
+        super(false);
         this.classBoundaries = new TreeSet<>(Arrays.asList(classBoundaries));
     }
 
@@ -32,12 +33,13 @@ public class ManualDiscretizer extends AbstractDiscretizer {
      * @param classBoundaries the upper class boundaries to be used
      */
     public ManualDiscretizer(Integer... classBoundaries) {
+        super(false);
         this.classBoundaries = Arrays.stream(classBoundaries).map(Integer::doubleValue)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
     @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }

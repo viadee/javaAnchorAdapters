@@ -9,26 +9,53 @@ import java.util.List;
  * with the {@link DiscretizationTransition}
  */
 public abstract class AbstractDiscretizer implements Discretizer {
+    private final boolean isSupervised;
+
     private List<DiscretizationTransition> discretizationTransitions;
+
+    /**
+     * Constructs the instance
+     *
+     * @param isSupervised true, if this is a supervised discretizer
+     */
+    protected AbstractDiscretizer(boolean isSupervised) {
+        this.isSupervised = isSupervised;
+    }
 
     @Override
     public Collection<DiscretizationTransition> getTransitions() {
         return discretizationTransitions;
     }
 
-    @Override
+    /**
+     * Fits the discretizer and passes all values that it might get asked to discretize
+     *
+     * @param values the domain
+     */
     public void fit(Serializable[] values) {
+        this.fit(values, null);
+    }
+
+    @Override
+    public void fit(Serializable[] values, Double[] labels) {
         if (values == null || values.length == 0) {
             // all values are single class values
             throw new IllegalArgumentException("No values for fitting procedure passed");
         }
 
+        if (isSupervised && labels == null) {
+            throw new IllegalArgumentException("Labels need to be specified for supervised discretizers");
+        }
+
+        if (isSupervised && labels.length != values.length) {
+            throw new IllegalArgumentException("Labels need to be of same length as column values");
+        }
 
         if (discretizationTransitions != null) {
             throw new IllegalArgumentException("Discretizer has already been fitted");
         }
 
-        this.discretizationTransitions = fitCreateTransitions(values);
+        this.discretizationTransitions = fitCreateTransitions(values, labels);
 
         final long distinctDiscretizedValues = discretizationTransitions.stream()
                 .map(DiscretizationTransition::getDiscretizedValue).distinct().count();
@@ -60,9 +87,10 @@ public abstract class AbstractDiscretizer implements Discretizer {
      * Fits on the data
      *
      * @param values the values to be fitted on
+     * @param labels the labels. != null, iff supervised
      * @return a {@link java.util.Collection} containing the {@link DiscretizationTransition}s
      */
-    protected abstract List<DiscretizationTransition> fitCreateTransitions(Serializable[] values);
+    protected abstract List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels);
 
     @Override
     public Double apply(Serializable serializable) {
