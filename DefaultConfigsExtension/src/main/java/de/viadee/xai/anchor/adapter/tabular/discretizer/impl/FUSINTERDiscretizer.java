@@ -101,12 +101,14 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             } else {
                 amountSameValue++;
                 if (!currentValue.equals(keyValuePairs.get(i - amountSameValue).getValue())) {
-                    if (resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
+                    if ( !resultDiscTrans.isEmpty() && resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
                         resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, keyValuePairs));
                     }
                     lowerLimit = i - amountSameValue;
                     i++;
-
+                    if(i == keyValuePairs.size()){
+                        break;
+                    }
                     while (keyValuePairs.get(i).getKey().equals(keyValuePairs.get(i - 1).getKey())) {
                         i++;
                     }
