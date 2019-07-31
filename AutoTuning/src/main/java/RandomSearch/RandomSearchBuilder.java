@@ -166,8 +166,8 @@ public class RandomSearchBuilder {
      * <p>
      * If not set ACCURACY will be used as performance measurement
      *
-     * @param performanceMeasure
-     * @return
+     * @param performanceMeasure the performance measure it will be optimized on
+     * @return the current {@link RandomSearchBuilder} for chaining
      */
     public RandomSearchBuilder setMeasure(PerformanceMeasures.Measure performanceMeasure) {
         this.measure = performanceMeasure;

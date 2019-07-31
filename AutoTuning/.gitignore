@@ -27,6 +27,14 @@ hs_err_pid*
 # optimizer output
 rs-output
 smac-output
+
+# resources
 src/main/resources
+
+# IDE stuff
 /.idea/
+
+# rest
 /src/main/java/main.java
+/src/main/java/TitanicDataset.java
+/src/main/java/HellaDataset.java
