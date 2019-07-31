@@ -1,4 +1,8 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
+
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 
 import java.io.Serializable;
 import java.util.*;
@@ -40,17 +44,22 @@ public class ManualDiscretizer extends AbstractDiscretizer {
 
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
-        if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
+        if (Stream.of(values).anyMatch(v -> !(v instanceof Number)))
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
-        }
+
         final List<DiscretizationTransition> result = new ArrayList<>();
 
         final List<Double> vals = Stream.of(values).map(v -> ((Number) v).doubleValue()).collect(Collectors.toList());
 
-        final Double min = Math.min(Collections.min(vals), Collections.min(classBoundaries));
-        final Double max = Math.max(Collections.max(vals), Collections.max(classBoundaries));
+        final Double min = classBoundaries.isEmpty()
+                ? Collections.min(vals)
+                : Math.min(Collections.min(vals), Collections.min(classBoundaries));
+        final Double max = classBoundaries.isEmpty()
+                ? Collections.max(vals)
+                : Math.max(Collections.max(vals), Collections.max(classBoundaries));
 
         Double currentLowerBoundary = min;
+
         for (Double boundary : classBoundaries) {
             Double average = (currentLowerBoundary + boundary) / 2;
             result.add(new DiscretizationTransition(
@@ -58,13 +67,10 @@ public class ManualDiscretizer extends AbstractDiscretizer {
                     average));
             currentLowerBoundary = boundary;
         }
-        if (result.isEmpty()) {
-            throw new IllegalArgumentException("Discretizer could not be fit as no classes could be derived from " +
-                    "passed boundary parameters");
-        }
-        // If max is higher then last set boundary add one more
-        if (!((NumericDiscretizationOrigin) result.get(result.size() - 1).getDiscretizationOrigin()).getMaxValue()
-                .equals(max)) {
+
+        if (result.isEmpty()
+                || (!((NumericDiscretizationOrigin) result.get(result.size() - 1).getDiscretizationOrigin()).getMaxValue().equals(max)
+                || !((NumericDiscretizationOrigin) result.get(result.size() - 1).getDiscretizationOrigin()).getMinValue().equals(max))) {
             result.add(new DiscretizationTransition(
                     new NumericDiscretizationOrigin(currentLowerBoundary, max),
                     (currentLowerBoundary + max) / 2));
