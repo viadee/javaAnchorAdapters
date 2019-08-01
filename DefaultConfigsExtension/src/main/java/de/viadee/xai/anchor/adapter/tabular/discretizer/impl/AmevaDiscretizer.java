@@ -104,16 +104,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
 
         Collections.sort(actualCutPoints);
 
-        int lowerBoundary = 0;
-        int z = 0;
-        List<Interval> evaluatedIntervals = new ArrayList<>();
-        for(Double cp: actualCutPoints) {
-            while(keyValuePairs.get(z).getKey().doubleValue() < cp && z < keyValuePairs.size()) {
-                z++;
-            }
-            evaluatedIntervals.add(new Interval(lowerBoundary, z, keyValuePairs));
-            z = lowerBoundary = z + 1;
-        }
+        List<Interval> evaluatedIntervals = getIntervalsFromCutPoints(actualCutPoints);
 //        Output: Discretization scheme L(k).
         return evaluatedIntervals.stream().map(Interval::toDiscretizationTransition).collect(Collectors.toList());
     }
@@ -142,20 +133,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         List<Double> potentialCutPoints = new ArrayList<>(actualCutPoints);
         potentialCutPoints.add(potentialCutPoint);
         Collections.sort(potentialCutPoints);
-        List<Interval> intervals = new ArrayList<>();
-
-        int lowerBoundary = 0;
-        int z = 0;
-        for(Double cp: potentialCutPoints) {
-            while(keyValuePairs.get(z).getKey().doubleValue() < cp && z < keyValuePairs.size() - 1) {
-                z++;
-            }
-            intervals.add(new Interval(lowerBoundary, z, keyValuePairs));
-            z = lowerBoundary = z + 1;
-        }
-        if(intervals.get(intervals.size() -1).getEnd() != keyValuePairs.get(keyValuePairs.size() -1).getKey().doubleValue()) {
-            intervals.add(new Interval(lowerBoundary, keyValuePairs.size() - 1, keyValuePairs));
-        }
+        List<Interval> intervals = getIntervalsFromCutPoints(potentialCutPoints);
 
         double chiSquared = 0.0;
         for(int i = 0; i < targetValues.length; i++){
@@ -169,5 +147,22 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
 
         double ameva = chiSquared / (intervals.size() * (targetValues.length  - 1)) /*k * (l - 1)*/;
         return ameva;
+    }
+
+    private List<Interval> getIntervalsFromCutPoints(List<Double> cutPoints) {
+        int lowerBoundary = 0;
+        int z = 0;
+        List<Interval> createdIntervals = new ArrayList<>();
+        for(Double cp: cutPoints) {
+            while(keyValuePairs.get(z).getKey().doubleValue() < cp && z < keyValuePairs.size()) {
+                z++;
+            }
+            createdIntervals.add(new Interval(lowerBoundary, z, keyValuePairs));
+            z = lowerBoundary = z + 1;
+        }
+        if(createdIntervals.get(createdIntervals.size() -1).getEnd() != keyValuePairs.get(keyValuePairs.size() -1).getKey().doubleValue()) {
+            createdIntervals.add(new Interval(lowerBoundary, keyValuePairs.size() - 1, keyValuePairs));
+        }
+        return createdIntervals;
     }
 }
