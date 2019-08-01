@@ -1,13 +1,19 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationType;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
+
 import java.io.Serializable;
 
 /**
  * Represents a numeric discretization origin
  */
 public class NumericDiscretizationOrigin extends DiscretizationOrigin {
-    private Number minValue;
     private final Number maxValue;
+    private Number minValue;
+    private boolean isFirst = false;
+    private boolean isLast = false;
 
     /**
      * Constructs the instance
@@ -30,12 +36,15 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
             throw new IllegalArgumentException("Non-number type passed to numeric discretizer");
         }
         final Number value = (Number) originalValue;
-        return (value.doubleValue() >= minValue.doubleValue() && value.doubleValue() <= maxValue.doubleValue());
+
+        final boolean matchesLower = isFirst || value.doubleValue() >= minValue.doubleValue();
+        final boolean matchesUpper = isLast || value.doubleValue() <= maxValue.doubleValue();
+        return (matchesLower && matchesUpper);
     }
 
     @Override
     public String outputFormat() {
-        return "IN INCL RANGE [" + getMinValue() + "," + getMaxValue() + "]";
+        return "IN " + formatRangeNotation();
     }
 
     /**
@@ -46,17 +55,57 @@ public class NumericDiscretizationOrigin extends DiscretizationOrigin {
     }
 
     /**
+     * @param minValue the new min value
+     */
+    public void setMinValue(Number minValue) {
+        this.minValue = minValue;
+    }
+
+    /**
      * @return the max range value
      */
     public Number getMaxValue() {
         return maxValue;
     }
 
+    @Override
+    public String toString() {
+        return formatRangeNotation();
+    }
+
+    private String formatRangeNotation() {
+        return ((isFirst) ? "]" : "[") +
+                FormatTools.roundToTwo(minValue) +
+                ", " +
+                FormatTools.roundToTwo(maxValue) +
+                ((isLast) ? "[" : ")");
+    }
+
     /**
-     *
-     * @param minValue the new min value
+     * @param first true, if this is the first element and the lower boundary should be infinitely open
      */
-    public void setMinValue(Number minValue) {
-        this.minValue = minValue;
+    public void setFirst(boolean first) {
+        isFirst = first;
+    }
+
+    /**
+     * @param last true, if this is the last element and the upper boundary should be infinitely open
+     */
+    public void setLast(boolean last) {
+        isLast = last;
+    }
+
+    /**
+     * @return is lower boundary open
+     */
+    public boolean isFirst() {
+        return isFirst;
+    }
+
+    /**
+     * @return is upper boundary open
+     */
+    public boolean isLast() {
+        return isLast;
     }
 }

@@ -1,5 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
+
 /**
  * The relation between original and discretized value
  */
@@ -31,5 +33,11 @@ public final class DiscretizationTransition {
      */
     public Double getDiscretizedValue() {
         return discretizedValue;
+    }
+
+    @Override
+    public String toString() {
+        return "DiscretizationTransition From " + discretizationOrigin.toString() +
+                " to class " + FormatTools.roundToTwo(discretizedValue);
     }
 }

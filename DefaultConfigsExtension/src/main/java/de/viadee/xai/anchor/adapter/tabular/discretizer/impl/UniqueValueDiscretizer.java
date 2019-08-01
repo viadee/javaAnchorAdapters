@@ -1,4 +1,8 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
+
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.CategoricalDiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,8 +16,15 @@ import java.util.stream.Collectors;
 public class UniqueValueDiscretizer extends AbstractDiscretizer {
     private static final long serialVersionUID = -6185947730488220070L;
 
+    /**
+     * Constructs the instance
+     */
+    public UniqueValueDiscretizer() {
+        super(false);
+    }
+
     @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         final Map<Serializable, Integer> valueToIndexDiscretizer = new HashMap<>();
 
         int index = 0;

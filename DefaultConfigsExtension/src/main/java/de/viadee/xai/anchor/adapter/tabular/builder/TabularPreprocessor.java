@@ -4,9 +4,12 @@ import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstanceVisualizer;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.ArrayUtils;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
  * ultimately come up with an {@link AnchorTabular} instance
  */
 final class TabularPreprocessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabularPreprocessor.class);
+    private static final int MAX_LOGGED_DISC_TRANSITIONS = 15;
 
 
     /**
@@ -37,17 +42,18 @@ final class TabularPreprocessor {
 
         removeUnusedColumns(dataFrame);
         applyTransformations(dataFrame);
-        fitDiscretizers(dataFrame);
-
 
         // Split off labels
+        // target column needs to be fit and discretized first in order for supervised column discretizers to work
         Serializable[] transformedLabels = null;
         Double[] discretizedLabels = null;
         if (targetColumn != null) {
             transformedLabels = dataFrame.removeColumn(targetColumn);
+            targetColumn.getDiscretizer().fit(transformedLabels, null);
             discretizedLabels = targetColumn.getDiscretizer().apply(transformedLabels);
         }
         // Apply Discretization
+        fitNonTargetDiscretizers(dataFrame, discretizedLabels);
         final Double[][] discretizedData = discretizeData(dataFrame);
 
         // Create TabularInstances
@@ -99,8 +105,12 @@ final class TabularPreprocessor {
     private static void applyTransformations(DataFrame dataFrame) {
         // apply all transformations of every column
         for (GenericColumn column : dataFrame.getColumns()) {
-            for (Transformer transformer : column.getTransformers()) {
-                dataFrame.transformColumn(column, transformer);
+            try {
+                for (Transformer transformer : column.getTransformers()) {
+                    dataFrame.transformColumn(column, transformer);
+                }
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.transformationException(column, e);
             }
         }
     }
@@ -109,14 +119,35 @@ final class TabularPreprocessor {
      * Fits all discretizers
      *
      * @param dataFrame the {@link DataFrame} that is currently being used
+     * @param labels    the discretized target column
      */
-    private static void fitDiscretizers(final DataFrame dataFrame) {
+    private static void fitNonTargetDiscretizers(final DataFrame dataFrame, final Double[] labels) {
         // Fit discretizers set in columns. Do not transform yet
         for (GenericColumn column : dataFrame.getColumns()) {
-            if (column.getDiscretizer() == null) {
-                column.setDiscretizer(new UniqueValueDiscretizer());
+            try {
+                if (column.getDiscretizer() == null) {
+                    column.setDiscretizer(new UniqueValueDiscretizer());
+                }
+                column.getDiscretizer().fit(dataFrame.getColumn(column), labels);
+
+                final List<String> outputs = column.getDiscretizer().getTransitions().stream()
+                        .limit(MAX_LOGGED_DISC_TRANSITIONS + 1).map(t ->
+                                t.getDiscretizationOrigin().toString() +
+                                        " --> " +
+                                        FormatTools.roundToTwo(t.getDiscretizedValue()))
+                        .collect(Collectors.toList());
+                if (outputs.size() > MAX_LOGGED_DISC_TRANSITIONS) {
+                    outputs.remove(outputs.size() - 1);
+                    outputs.add("... (and " + (column.getDiscretizer().getTransitions().size() -
+                            MAX_LOGGED_DISC_TRANSITIONS) +
+                            " more elements)");
+                }
+                LOGGER.debug("Discretization for column [" + column.getName() + "] is configured as follows:" +
+                        System.lineSeparator() + "\t" +
+                        outputs.stream().collect(Collectors.joining(System.lineSeparator() + "\t")));
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.discretizationFitException(column, e);
             }
-            column.getDiscretizer().fit(dataFrame.getColumn(column));
         }
     }
 
@@ -130,7 +161,11 @@ final class TabularPreprocessor {
         Double[][] discretizedData = new Double[dataFrame.getColumnCount()][];
         for (int i = 0; i < dataFrame.getColumnCount(); i++) {
             GenericColumn column = dataFrame.getColumns().get(i);
-            discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());
+            try {
+                discretizedData[i] = dataFrame.discretizeColumn(column, column.getDiscretizer());
+            } catch (Exception e) {
+                throw AnchorTabularBuilderException.discretizationException(column, e);
+            }
         }
         return discretizedData;
     }

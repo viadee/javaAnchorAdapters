@@ -1,16 +1,14 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
 import java.io.Serializable;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * May be used to visualize an instance of the algorithms result for the user.
@@ -25,6 +23,10 @@ public class TabularInstanceVisualizer {
             current = current.getParentCandidate();
         }
         throw new IllegalStateException("Illegal result hierarchy");
+    }
+
+    private static DiscretizationOrigin discretizationOrigin(GenericColumn feature, double discretizedValue) {
+        return feature.getDiscretizer().getTransition(discretizedValue).getDiscretizationOrigin();
     }
 
     /**
@@ -44,7 +46,8 @@ public class TabularInstanceVisualizer {
             result.add(column.getName() + "='" + transformedValue.toString() + "'");
         }
         if (instance.getTargetFeature() != null && instance.getTransformedLabel() != null) {
-            result.add("WITH LABEL " + instance.getTargetFeature().getName() + "='" + instance.getTransformedLabel().toString() + "'");
+            result.add("WITH LABEL " + instance.getTargetFeature().getName() + "='" +
+                    instance.getTransformedLabel().toString() + "'");
         }
 
         return String.join(System.lineSeparator(), result.toArray(new String[0]));
@@ -59,24 +62,36 @@ public class TabularInstanceVisualizer {
     public String visualizeResult(AnchorResult<TabularInstance> anchorResult) {
         final List<String> featureText = new ArrayList<>();
         final TabularInstance instance = anchorResult.getInstance();
-        final DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         for (final Integer featureNr : anchorResult.getOrderedFeatures()) {
             final GenericColumn feature = instance.getFeatures()[featureNr];
             final AnchorCandidate candidate = getCandidateForFeatureNr(anchorResult, featureNr);
-            featureText.add(feature.getName() + " " + feature.getDiscretizer()
-                    .getTransition(instance.getValue(featureNr)).getDiscretizationOrigin().outputFormat()
-                    + " {" + df.format(candidate.getAddedPrecision()) + ","
-                    + df.format(candidate.getAddedCoverage()) + "}");
+            featureText.add(feature.getName() + " " + discretizationOrigin(feature, instance.getValue(featureNr))
+                    .outputFormat() +
+                    " {" +
+                    FormatTools.roundToTwo(candidate.getAddedPrecision()) + ", " +
+                    FormatTools.roundToTwo(candidate.getAddedCoverage()) +
+                    "}");
         }
-        String labelText = instance.getTransformedLabel() + " (" + instance.getDiscretizedLabel().toString() + ")";
 
-        return "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
+        final String explainedLabel = discretizationOrigin(instance.getTargetFeature(),
+                (double) anchorResult.getExplainedInstanceLabel()).toString();
+        String result = "IF " + String.join(" AND " + System.lineSeparator(), featureText.toArray(new String[0])) +
                 System.lineSeparator() +
-                "THEN PREDICT " + labelText +
+                "THEN PREDICT " + explainedLabel +
+                " (" + FormatTools.roundToTwo(anchorResult.getExplainedInstanceLabel()) + ")" +
                 System.lineSeparator() +
-                "WITH PRECISION " + anchorResult.getPrecision() + " AND COVERAGE " + anchorResult.getCoverage();
+                "WITH PRECISION " + FormatTools.roundToTwo(anchorResult.getPrecision()) +
+                " AND COVERAGE " + FormatTools.roundToTwo(anchorResult.getCoverage());
+
+        if (anchorResult.getInstance().getDiscretizedLabel() != null &&
+                anchorResult.getInstance().getDiscretizedLabel().intValue() != anchorResult.getExplainedInstanceLabel()) {
+            result += System.lineSeparator() +
+                    "CAUTION: The explained label " + explainedLabel + " differs from the actual label " +
+                    discretizationOrigin(instance.getTargetFeature(), anchorResult.getInstance().getDiscretizedLabel()
+                            .intValue()) + "";
+        }
+
+        return result;
     }
 
     /**

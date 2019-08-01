@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Used to construct an {@link AnchorTabular} instance.
@@ -91,6 +92,21 @@ abstract class AbstractTabularBuilder<T extends AbstractTabularBuilder<T>> {
 
         final int columnSize = dataCollection.iterator().next().length;
         final Collection<GenericColumn> columnDescriptions = getColumnDescriptions(columnSize);
+
+        if (columnDescriptions.size() != columnSize) {
+            throw new IllegalArgumentException("Exactly one description needs to be defined for each columm");
+        }
+
+        // Pass the column values to the builder, if a listener has been set
+        // This helps to e.g. let the column configure itself
+        final AtomicInteger columnIndex = new AtomicInteger(0);
+        for (GenericColumn column : columnDescriptions) {
+            if (column.getPostBuildListener() != null) {
+                column.getPostBuildListener().accept(
+                        dataCollection.stream().map(row -> row[columnIndex.get()]).toArray(String[]::new));
+            }
+            columnIndex.getAndIncrement();
+        }
 
         if (columnDescriptions.stream().noneMatch(GenericColumn::isDoUse)) {
             throw new IllegalArgumentException("At least one column needs to return true on isDoUse");

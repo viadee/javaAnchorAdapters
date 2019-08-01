@@ -1,4 +1,8 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
+
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 
 import java.io.Serializable;
 import java.util.*;
@@ -29,6 +33,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
      * @param classReduction if true, classes will be merged having the same discretized value
      */
     public PercentileMedianDiscretizer(int classCount, boolean classReduction) {
+        super(false);
         this.classCount = classCount;
         this.classReduction = classReduction;
     }
@@ -63,7 +68,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
     }
 
     @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values) {
+    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }
@@ -95,7 +100,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
         }
 
         if (this.classReduction) {
-            removeDuplicateDiscretizedValues(values, numbers, result);
+            removeDuplicateDiscretizedValues(result);
         }
 
         distinctMinAndMaxValues(numbers, result);
@@ -104,8 +109,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
     }
 
 
-    private void removeDuplicateDiscretizedValues(Serializable[] values, List<Number> numbers,
-                                                  List<DiscretizationTransition> transitions) {
+    private void removeDuplicateDiscretizedValues(List<DiscretizationTransition> transitions) {
 
         List<Double> discretizedValues = transitions.stream()
                 .map(DiscretizationTransition::getDiscretizedValue)
@@ -118,23 +122,28 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
 
             for (Map.Entry<Double, Long> entry : valueCount.entrySet()) {
                 if (entry.getValue() > 1) {
-                    List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream().filter((rel) -> entry.getKey().equals(rel.getDiscretizedValue())).collect(Collectors.toList());
+                    List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream()
+                            .filter((rel) -> entry.getKey().equals(rel.getDiscretizedValue()))
+                            .collect(Collectors.toList());
                     Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream()
-                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin()).getMinValue().doubleValue()).min(Double::compareTo);
+                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin())
+                                    .getMinValue().doubleValue()).min(Double::compareTo);
                     Optional<Double> conditionMaxOptional = discretizerRelationsWithSameCatValue.stream()
-                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin()).getMaxValue().doubleValue()).min(Double::compareTo);
-                    //noinspection ConstantConditions
-                    if (conditionMaxOptional.isPresent() && conditionMinOptional.isPresent()) {
+                            .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin())
+                                    .getMaxValue().doubleValue()).max(Double::compareTo);
 
+                    if (conditionMaxOptional.isPresent()) {
                         if (!classReduction) {
-                            throw new IllegalArgumentException("Classcount too high, duplicate discretizedValues occur, reduce classCount or allow Merging");
+                            throw new IllegalArgumentException("Classcount too high, duplicate discretizedValues occur, " +
+                                    "reduce classCount or allow Merging");
                         }
                         double conditionMin = conditionMinOptional.get();
                         double conditionMax = conditionMaxOptional.get();
 
                         Double discretizedValue = discretizerRelationsWithSameCatValue.get(0).getDiscretizedValue();
 
-                        DiscretizationTransition combinedRelation = new DiscretizationTransition(new NumericDiscretizationOrigin(conditionMin, conditionMax), discretizedValue);
+                        DiscretizationTransition combinedRelation = new DiscretizationTransition(
+                                new NumericDiscretizationOrigin(conditionMin, conditionMax), discretizedValue);
                         transitions.removeAll(discretizerRelationsWithSameCatValue);
                         transitions.add(combinedRelation);
                         transitions.sort(Comparator.comparingDouble(DiscretizationTransition::getDiscretizedValue));
