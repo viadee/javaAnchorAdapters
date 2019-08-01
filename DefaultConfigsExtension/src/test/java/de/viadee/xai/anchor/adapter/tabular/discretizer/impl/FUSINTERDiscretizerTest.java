@@ -1,11 +1,11 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +32,9 @@ class FUSINTERDiscretizerTest {
      * Tests Step 2 (Initial Splitting) of FUSINTER Algorithm
      */
     @Test
-    void testEqualClassSplittingSeparateClasses() throws Exception {
+    void testEqualClassSplittingSeparateClasses() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        Field targetValues = FUSINTERDiscretizer.class.getDeclaredField("targetValues");
-        targetValues.setAccessible(true);
-        targetValues.set(fusinterDiscretizer, new Double[]{0.0, 1.0});
-        List<FUSINTERDiscretizer.Interval> list = fusinterDiscretizer.equalClassSplit(
+        List<Interval> list = fusinterDiscretizer.equalClassSplit(
                 Arrays.asList(
                         new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
                         new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),
@@ -59,12 +56,9 @@ class FUSINTERDiscretizerTest {
      * Tests Step 3 (Values with Mixed Classes Have own Interval) of FUSINTER Algorithm
      */
     @Test
-    void testEqualClassSplittingMixedClasses() throws Exception {
+    void testEqualClassSplittingMixedClasses() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        Field targetValues = FUSINTERDiscretizer.class.getDeclaredField("targetValues");
-        targetValues.setAccessible(true);
-        targetValues.set(fusinterDiscretizer, new Double[]{0.0, 1.0});
-        List<FUSINTERDiscretizer.Interval> list = fusinterDiscretizer.equalClassSplit(
+        List<Interval> list = fusinterDiscretizer.equalClassSplit(
                 Arrays.asList(
                         new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
                         new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),

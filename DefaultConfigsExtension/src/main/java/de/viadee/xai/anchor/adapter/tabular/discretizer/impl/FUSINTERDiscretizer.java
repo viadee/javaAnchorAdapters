@@ -2,7 +2,7 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 
 import java.io.Serializable;
 import java.util.*;
@@ -18,8 +18,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     private final double lambda;
     private final double alpha;
 
-    // All possible classification in values
-    private Double[] targetValues;
     // Number of possible classifications
     private int m;
     // Number of instances
@@ -59,9 +57,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }
 
-        targetValues = Arrays.stream(labels).sorted().distinct().toArray(Double[]::new);
-
-        m = targetValues.length;
+        m = Arrays.stream(labels).sorted().distinct().toArray(Double[]::new).length;
         n = values.length;
 
         final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs = IntStream
@@ -194,71 +190,4 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return temp;
     }
 
-    final class Interval {
-        /**
-         * private Interval class for FUSINTER Method with begin and end index to determine class distribution
-         */
-
-        private final int begin;
-        private final int end;
-        private final int size;
-        private final int[] classDist = new int[targetValues.length];
-        private final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs;
-
-        /**
-         * @param begin         begin index of Interval
-         * @param end           end index of Interval
-         * @param keyValuePairs list of all values, only used to determine class distribution in interval
-         */
-        Interval(int begin, int end, List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
-            this.begin = begin;
-            this.end = end;
-            this.size = end - begin + 1;
-            this.keyValuePairs = keyValuePairs;
-
-            for (int t = 0; t < targetValues.length; t++) {
-                final int finalT = t;
-                Double[] finalTargetValues = targetValues;
-                classDist[t] = (int) IntStream.rangeClosed(begin, end)
-                        .mapToObj(i -> keyValuePairs.get(i).getValue())
-                        .filter(i -> Double.compare(i, finalTargetValues[finalT]) == 0)
-                        .count();
-            }
-        }
-
-        int getBegin() {
-            return begin;
-        }
-
-        int getEnd() {
-            return end;
-        }
-
-        int[] getClassDist() {
-            return classDist;
-        }
-
-        int getSize() {
-            return size;
-        }
-
-        /**
-         * @return the interval as a {@link DiscretizationTransition}
-         */
-        private DiscretizationTransition toDiscretizationTransition() {
-            return new DiscretizationTransition(new NumericDiscretizationOrigin(
-                    keyValuePairs.get(begin).getKey(),
-                    keyValuePairs.get(end).getKey()),
-                    medianIndexValue()
-            );
-        }
-
-        double medianIndexValue() {
-            if (getSize() % 2 == 0) {
-                return (keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue() + keyValuePairs.get(end + 1 - getSize() / 2 - 1).getKey().doubleValue()) / 2;
-            } else {
-                return keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue();
-            }
-        }
-    }
 }
