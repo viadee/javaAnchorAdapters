@@ -71,7 +71,7 @@ class TabularInstanceVisualizerTest {
         String visualization = tabularInstanceVisualizer.visualizeResult(result);
         
         String expected = "IF name = 'testrow2' {0.1, -0.19} AND " + System.lineSeparator() +
-                "numAttr IN [10, 20) {0.2, -0.2} AND " + System.lineSeparator() +
+                "numAttr IN ]10, 20[ {0.2, -0.2} AND " + System.lineSeparator() +
                 "attr3 = 'thirdattr2' {0.2, -0.19} AND " + System.lineSeparator() +
                 "attr2 = 'anotherattr2' {0.5, -0.2}" + System.lineSeparator() +
                 "THEN PREDICT [someattr2] (1)" + System.lineSeparator() +
