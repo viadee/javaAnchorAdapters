@@ -1,7 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
 public abstract class AbstractDiscretizer implements Discretizer {
     private final boolean isSupervised;
 
-    private List<DiscretizationTransition> discretizationTransitions = new ArrayList<>();
+    private List<DiscretizationTransition> discretizationTransitions;
 
     /**
      * Constructs the instance
