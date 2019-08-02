@@ -4,10 +4,12 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * Interval class for Discretization methods with begin and end index to determine class distribution
+ * can be transformed to DiscretizerTransitions
+ */
 public final class Interval {
-    /**
-     * private Interval class for FUSINTER Method with begin and end index to determine class distribution
-     */
+
 
     private final int begin;
     private final int end;
@@ -68,7 +70,7 @@ public final class Interval {
         if (getSize() % 2 == 0) {
             return (keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue() + keyValuePairs.get(end + 1 - getSize() / 2 - 1).getKey().doubleValue()) / 2;
         } else {
-            return keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue();
+            return keyValuePairs.get(end - getSize() / 2).getKey().doubleValue();
         }
     }
 }

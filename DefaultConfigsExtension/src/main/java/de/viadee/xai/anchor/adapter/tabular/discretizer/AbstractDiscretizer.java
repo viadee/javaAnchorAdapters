@@ -1,6 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public abstract class AbstractDiscretizer implements Discretizer {
     private final boolean isSupervised;
 
-    private List<DiscretizationTransition> discretizationTransitions;
+    private List<DiscretizationTransition> discretizationTransitions = new ArrayList<>();
 
     /**
      * Constructs the instance
@@ -66,7 +67,7 @@ public abstract class AbstractDiscretizer implements Discretizer {
         }
 
         // In case all origins are numeric we need to set open lower and upper boundaries
-        if (this.discretizationTransitions.size() > 1 && this.discretizationTransitions.stream()
+        if (!this.discretizationTransitions.isEmpty() && this.discretizationTransitions.stream()
                 .allMatch(d -> d.getDiscretizationOrigin() instanceof NumericDiscretizationOrigin)) {
             DiscretizationTransition minDisc = this.discretizationTransitions.get(0);
             DiscretizationTransition maxDisc = this.discretizationTransitions.get(0);

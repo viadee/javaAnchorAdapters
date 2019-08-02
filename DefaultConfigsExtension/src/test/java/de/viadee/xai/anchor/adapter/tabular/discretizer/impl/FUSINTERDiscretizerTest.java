@@ -273,7 +273,7 @@ class FUSINTERDiscretizerTest {
         NumericDiscretizationOrigin discOrigin3 = ((NumericDiscretizationOrigin) list.get(3).getDiscretizationOrigin());
         assertEquals(23D, discOrigin3.getMinValue());
         assertEquals(36D, discOrigin3.getMaxValue());
-        assertEquals(31.0, list.get(3).getDiscretizedValue().doubleValue());
+        assertEquals(30.0, list.get(3).getDiscretizedValue().doubleValue());
         assertFalse(discOrigin3.isFirst());
         assertFalse(discOrigin3.isLast());
 
@@ -291,7 +291,7 @@ class FUSINTERDiscretizerTest {
      * Number[][] to be discretized is taken from FUSINTER paper Figure 7.
      */
     @Test
-    void testIntervalReductionColin() {
+    void testEqualDistribution() {
         Number[][] values = new Number[][]{
                 {1.0, 1},
                 {1.0, 0},

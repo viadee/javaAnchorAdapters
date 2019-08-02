@@ -42,12 +42,12 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         this.alpha = alpha;
     }
 
-    /*
+    /**
      *
      * Implementation of FUSINTER, 1. sort, 2. equalClassIntervals 3. merge if entropy improves
      *
-     * @param values array of arrays of type {Number, int}, 1. is the column to be discretized
-     *               and 2. is the classification
+     * @param labels Array of Doubles, classifications of instances
+     * @param values Array of Numbers expected. FUSINTER is only possible with continuous variables
      * @return list of Intervals determined to have the highest entropy
      */
     @Override
