@@ -1,4 +1,4 @@
-package de.viadee.xai.anchor.adapter.rmodule;
+package de.viadee.xai.anchor.adapter.remotemodule;
 
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
@@ -22,7 +22,6 @@ import java.util.stream.Stream;
  * Contains code that enables third parties to access the Java implementation by using inter-process communication
  */
 public class AnchorServer {
-
     /**
      * Starts the anchors server
      *
@@ -168,7 +167,5 @@ public class AnchorServer {
                     throw new RuntimeException("Server exit requested by client");
             }
         }
-
     }
-
 }

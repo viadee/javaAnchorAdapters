@@ -1,4 +1,4 @@
-package de.viadee.xai.anchor.adapter.rmodule;
+package de.viadee.xai.anchor.adapter.remotemodule;
 
 
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;

@@ -63,7 +63,7 @@
         <module>ModelImportExtension</module>
         <module>DefaultConfigsExtension</module>
         <module>DefaultMLMethods</module>
-        <module>RModuleExtension</module>
+        <module>RemoteModuleExtension</module>
     </modules>
 
     <build>
