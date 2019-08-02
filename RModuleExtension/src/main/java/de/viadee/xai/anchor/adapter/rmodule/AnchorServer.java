@@ -89,8 +89,9 @@ public class AnchorServer {
                                 instance,
                                 0
                         )
-                                .setCoverageIdentification(new DisabledCoverageIdentification())
-                                .setTau(0.8)
+                                .setCoverageIdentification(new RCallbackCoverageIdentification(out, in))
+                                .setLazyCoverageEvaluation(true)
+                                .setTau(0.95)
                                 .setTauDiscrepancy(0.1)
                                 .build().constructAnchor();
                         // TODO set actual coverage ident fun
