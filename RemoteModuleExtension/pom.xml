@@ -12,8 +12,8 @@
         <version>1.0.1</version>
     </parent>
 
-    <artifactId>RModuleExtension</artifactId>
-    <description>This extension enables the usage of Anchors in R</description>
+    <artifactId>RemoteModuleExtension</artifactId>
+    <description>This extension enables the remote usage of Anchors in foreign languages</description>
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
     <dependencies>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>de.viadee.xai.anchor</groupId>
             <artifactId>algorithm</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
