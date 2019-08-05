@@ -60,9 +60,9 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         m = Arrays.stream(labels).sorted().distinct().toArray(Double[]::new).length;
         n = values.length;
 
-        final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs = IntStream
+        final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs = IntStream
                 .range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Number) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
                 .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
                 .collect(Collectors.toList());
 
@@ -80,7 +80,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
      * @param keyValuePairs, Array of Attribute Class.
      * @return initial List of Intervals
      */
-    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
         int amountSameValue = 0;
@@ -121,7 +121,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     }
 
     private List<Interval> evaluateIntervals(List<Interval> equalClassSplits,
-                                             final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+                                             final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         boolean improvement = true;
 
         while (equalClassSplits.size() > 1 && improvement) {
@@ -179,7 +179,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
      * @return new List with Interval i and i+1 merged
      */
     private List<Interval> mergeInterval(List<Interval> intervals, int i,
-                                         final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+                                         final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         List<Interval> temp = new ArrayList<>(intervals.subList(0, intervals.size()));
         int mergeBegin = temp.get(i).getBegin();
         int mergeEnd = temp.get(i + 1).getEnd();

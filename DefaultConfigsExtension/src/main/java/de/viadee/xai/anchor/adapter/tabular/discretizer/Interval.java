@@ -15,14 +15,14 @@ public final class Interval {
     private final int end;
     private final int size;
     private final int[] classDist;
-    private final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs;
+    private final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs;
 
     /**
      * @param begin         begin index of Interval
      * @param end           end index of Interval
      * @param keyValuePairs list of all values, only used to determine class distribution in interval
      */
-    public Interval(int begin, int end, List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+    public Interval(int begin, int end, List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         Double[] targetValues = keyValuePairs.stream().map(AbstractMap.SimpleImmutableEntry::getValue).sorted().distinct().toArray(Double[]::new);
         this.classDist = new int[targetValues.length];
         this.begin = begin;
@@ -68,9 +68,9 @@ public final class Interval {
 
     private double medianIndexValue() {
         if (getSize() % 2 == 0) {
-            return (keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue() + keyValuePairs.get(end + 1 - getSize() / 2 - 1).getKey().doubleValue()) / 2;
+            return (keyValuePairs.get(end + 1 - getSize() / 2).getKey() + keyValuePairs.get(end + 1 - getSize() / 2 - 1).getKey()) / 2;
         } else {
-            return keyValuePairs.get(end - getSize() / 2).getKey().doubleValue();
+            return keyValuePairs.get(end - getSize() / 2).getKey();
         }
     }
 }

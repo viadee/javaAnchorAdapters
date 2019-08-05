@@ -19,7 +19,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
     private long[] targetValueDistribution;
     private List<Double> bCutPoints = new ArrayList<>();
     private List<Double> actualCutPoints = new ArrayList<>();
-    private List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs;
+    private List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs;
 
     /**
      * Constructs the Ameva Discretizer, Ameva works without any Parameters.
@@ -52,7 +52,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         }
 
         keyValuePairs = IntStream.range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Number) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
                 .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
                 .collect(Collectors.toList());
 
@@ -63,10 +63,14 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
 
         double globalAmeva = 0.0;
         double ameva = createNewCutPoint(globalAmeva);
+        int k = 1;
 
-        while(ameva > globalAmeva){
+        // ameva will be above globalAmeva until the (local) maximum of the contingency coefficient is found.
+        // to prevent an infinite looping in while loop, k is introduced as an exit condition, to break the loop if needed
+        while(ameva > globalAmeva && k < keyValuePairs.size()){
             globalAmeva = ameva;
             ameva = createNewCutPoint(globalAmeva);
+            k++;
         }
 
         if(actualCutPoints.isEmpty()) {
@@ -81,7 +85,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
     }
 
     /**
-     * tentatively adds new cutPoints to the acutalCutpoints and accepts the cutPoints with the highest ameva.
+     * tentatively adds new cutPoints to the actualCutpoints and accepts the cutPoints with the highest ameva.
      * @param currentAmeva ameva of the current actualCutpoints, used to compare to new value
      * @return the new ameva value, after the best potential cut point has been added to actualCutpoints
      */
@@ -140,13 +144,13 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         int z = 0;
         List<Interval> createdIntervals = new ArrayList<>();
         for(Double cp: cutPoints) {
-            while(keyValuePairs.get(z).getKey().doubleValue() < cp && z < keyValuePairs.size()) {
+            while(keyValuePairs.get(z).getKey() < cp && z < keyValuePairs.size()) {
                 z++;
             }
             createdIntervals.add(new Interval(lowerBoundary, z -1, keyValuePairs));
             lowerBoundary = z ;
         }
-        if(createdIntervals.get(createdIntervals.size() -1).getEnd() != keyValuePairs.get(keyValuePairs.size() -1).getKey().doubleValue()) {
+        if(createdIntervals.get(createdIntervals.size() -1).getEnd() != keyValuePairs.get(keyValuePairs.size() -1).getKey()) {
             createdIntervals.add(new Interval(lowerBoundary, keyValuePairs.size() - 1, keyValuePairs));
         }
         return createdIntervals;
