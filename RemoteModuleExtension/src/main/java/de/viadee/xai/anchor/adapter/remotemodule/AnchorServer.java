@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -112,8 +113,9 @@ public class AnchorServer {
                     //  anyway
                     //final ExecutorService pool = Executors.newFixedThreadPool(1);
                     while (true) {
+                        final Socket socket = listener.accept();
                         new AnchorService(
-                                listener.accept(),
+                                socket,
                                 (int) optionValueMap.get("maxAnchorSize"),
                                 (int) optionValueMap.get("beamSize"),
                                 (double) optionValueMap.get("delta"),
@@ -122,7 +124,8 @@ public class AnchorServer {
                                 (double) optionValueMap.get("tauDiscrepancy"),
                                 (int) optionValueMap.get("initSampleCount"),
                                 (boolean) optionValueMap.get("allowSuboptimalSteps"),
-                                (int) optionValueMap.get("batchSize"));
+                                (int) optionValueMap.get("batchSize"))
+                                .run();
                     }
                 }
             } catch (SocketTimeoutException e) {
@@ -195,7 +198,9 @@ public class AnchorServer {
                 final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
                 while (true) {
+                    System.out.println("Starting listening");
                     final String input = in.readLine();
+                    System.out.println("Got input: " + input);
                     if (input == null)
                         throw new RuntimeException("Empty response received");
                     try {
@@ -207,7 +212,6 @@ public class AnchorServer {
                         }
 
                         final String id = obj.getString("id");
-                        final int count = obj.getInt("count");
                         final int dimension = obj.getInt("instance");
                         final RemoteInstance instance = new RemoteInstance(dimension);
 
@@ -236,7 +240,6 @@ public class AnchorServer {
                         //send response
                         final JSONObject response = new JSONObject();
                         response.append("id", id);
-                        response.append("count", count + 1);
                         response.append("status", "response");
                         response.append("anchorResult", new JSONObject(anchorResult));
                         out.println(response.toString());
