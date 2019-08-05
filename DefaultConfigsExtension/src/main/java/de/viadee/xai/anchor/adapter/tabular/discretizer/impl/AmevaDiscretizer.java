@@ -63,14 +63,13 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
 
         double globalAmeva = 0.0;
         double ameva = createNewCutPoint(globalAmeva);
-        int k = 1;
 
         // ameva will be above globalAmeva until the (local) maximum of the contingency coefficient is found.
-        // to prevent an infinite looping in while loop, k is introduced as an exit condition, to break the loop if needed
-        while(ameva > globalAmeva && k < keyValuePairs.size()){
+        // to prevent an infinite looping in while loop, length of potential cut points is tested for emptiness, to break the loop if
+        // all potential cut points have been added.
+        while(ameva > globalAmeva && !bCutPoints.isEmpty()){
             globalAmeva = ameva;
             ameva = createNewCutPoint(globalAmeva);
-            k++;
         }
 
         if(actualCutPoints.isEmpty()) {
