@@ -1,8 +1,5 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -10,32 +7,46 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+
+/**
+ * Reference discretizer to establish a baseline to compare advanced, supervised
+ * approaches with.
+ *
+ */
 public class RandomDiscretizer extends AbstractDiscretizer {
 
-    public RandomDiscretizer() {
-        super(false);
-    }
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
-        if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
-            throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
-        }
+	public RandomDiscretizer() {
+		super(false);
+	}
 
-        final List<Double> valsDistinct = Stream.of(values).distinct().map(v -> ((Number) v).doubleValue()).sorted().collect(Collectors.toList());
+	private final Random random = new Random();
 
-        Random random = new Random();
+	@Override
+	protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
+		if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
+			throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
+		}
 
-        int numberCuts = random.nextInt(valsDistinct.size() + 1);
-        Double[] cutPoints = new Double[numberCuts];
+		final List<Double> valsDistinct = Stream.of(values).distinct().map(v -> ((Number) v).doubleValue()).sorted()
+				.collect(Collectors.toList());
 
-        Collections.shuffle(valsDistinct);
-        for (int i = 0; i < numberCuts; i++) {
-            cutPoints[i] = valsDistinct.get(i);
-        }
+		final int numberCuts = random.nextInt(valsDistinct.size() + 1);
+		final Double[] cutPoints = new Double[numberCuts];
 
-        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(cutPoints);
+		Collections.shuffle(valsDistinct);
+		for (int i = 0; i < numberCuts; i++) {
+			cutPoints[i] = valsDistinct.get(i);
+		}
 
-        return manualDiscretizer.fitCreateTransitions(values, null);
-    }
+		final ManualDiscretizer manualDiscretizer = new ManualDiscretizer(cutPoints);
+
+		return manualDiscretizer.fitCreateTransitions(values, null);
+	}
 }
