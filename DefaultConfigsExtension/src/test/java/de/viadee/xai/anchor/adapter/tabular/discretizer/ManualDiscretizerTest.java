@@ -1,5 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.ManualDiscretizer;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ManualDiscretizerTest {
 
     private static int getTransitionSize(ManualDiscretizer manualDiscretizer) {
-        Field discretizationTransitions = null;
+        Field discretizationTransitions;
         try {
             discretizationTransitions = AbstractDiscretizer.class.getDeclaredField("discretizationTransitions");
             discretizationTransitions.setAccessible(true);
@@ -22,11 +23,11 @@ class ManualDiscretizerTest {
     }
 
     @Test
-    public void testDiscretization() {
+    void testDiscretization() {
         ManualDiscretizer manualDiscretizer = new ManualDiscretizer(20, 40, 60, 80);
         manualDiscretizer.fit(new Serializable[]{50});
 
-        assertEquals(4, getTransitionSize(manualDiscretizer));
+        assertEquals(5, getTransitionSize(manualDiscretizer));
 
         // Adding a class from min to boundary is expected behavior
         assertEquals(20D, ((NumericDiscretizationOrigin) manualDiscretizer
@@ -51,11 +52,122 @@ class ManualDiscretizerTest {
     }
 
     @Test
-    public void testDiscretizationAdaptedLowerClass() {
+    void testDiscretizationTransitionsMinAndMaxBoundary() {
+        Integer[] boundaries = {
+                1, 6
+        };
+        Number[] values = {
+                1, 2, 3, 4, 5, 6
+        };
+
+        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(boundaries);
+        manualDiscretizer.fit(values);
+
+        assertEquals(3, getTransitionSize(manualDiscretizer));
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMinValue());
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMaxValue());
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMinValue());
+        assertEquals(6D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMaxValue());
+
+        assertEquals(6D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(6D).getDiscretizationOrigin()).getMinValue());
+        assertEquals(6D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(6D).getDiscretizationOrigin()).getMaxValue());
+    }
+
+    @Test
+    void testDiscretizationTransitionsAllEqual() {
+        Integer[] boundaries = {
+                1
+        };
+        Number[] values = {
+                1, 1, 1, 1, 1, 1
+        };
+
+        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(boundaries);
+        manualDiscretizer.fit(values);
+
+        assertEquals(1, getTransitionSize(manualDiscretizer));
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMinValue());
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMaxValue());
+    }
+
+    @Test
+    void testDiscretizationTransitionsAllEqualNoBoundaries() {
+        Integer[] boundaries = {};
+        Number[] values = {
+                1, 1, 1, 1, 1, 1
+        };
+
+        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(boundaries);
+        manualDiscretizer.fit(values);
+
+        assertEquals(1, getTransitionSize(manualDiscretizer));
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMinValue());
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMaxValue());
+    }
+
+    @Test
+    void testDiscretizationTransitionsMinBoundary() {
+        Integer[] boundaries = {
+                1
+        };
+        Number[] values = {
+                1, 2, 3, 4, 5, 6
+        };
+
+        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(boundaries);
+        manualDiscretizer.fit(values);
+
+        assertEquals(2, getTransitionSize(manualDiscretizer));
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMinValue());
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(1D).getDiscretizationOrigin()).getMaxValue());
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMinValue());
+        assertEquals(6D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMaxValue());
+    }
+
+    @Test
+    void testDiscretizationTransitionsNoBoundaries() {
+        Integer[] boundaries = {};
+        Number[] values = {
+                1, 2, 3, 4, 5, 6
+        };
+
+        ManualDiscretizer manualDiscretizer = new ManualDiscretizer(boundaries);
+        manualDiscretizer.fit(values);
+
+        assertEquals(1, getTransitionSize(manualDiscretizer));
+
+        assertEquals(1D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMinValue());
+        assertEquals(6D, ((NumericDiscretizationOrigin) manualDiscretizer
+                .getTransition(3.5).getDiscretizationOrigin()).getMaxValue());
+    }
+
+    @Test
+    void testDiscretizationAdaptedLowerClass() {
         ManualDiscretizer manualDiscretizer = new ManualDiscretizer(20, 40, 60, 80);
         manualDiscretizer.fit(new Serializable[]{0});
 
-        assertEquals(4, getTransitionSize(manualDiscretizer));
+        assertEquals(5, getTransitionSize(manualDiscretizer));
 
         assertEquals(0D, ((NumericDiscretizationOrigin) manualDiscretizer
                 .getTransition(10D).getDiscretizationOrigin()).getMinValue());
@@ -79,7 +191,7 @@ class ManualDiscretizerTest {
     }
 
     @Test
-    public void testDiscretizationNewUpperClass() {
+    void testDiscretizationNewUpperClass() {
         ManualDiscretizer manualDiscretizer = new ManualDiscretizer(20, 40, 60, 80);
         manualDiscretizer.fit(new Serializable[]{110});
 
@@ -112,7 +224,7 @@ class ManualDiscretizerTest {
     }
 
     @Test
-    public void testDiscretizationAdapterLowerAndNewUpperClass() {
+    void testDiscretizationAdapterLowerAndNewUpperClass() {
         ManualDiscretizer manualDiscretizer = new ManualDiscretizer(20, 40, 60, 80);
         manualDiscretizer.fit(new Serializable[]{10, 110});
 
