@@ -14,17 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AnchorServerTest {
 
     @Test
-    public void testConnection() throws IOException, InterruptedException {
-        final Thread t1 = new Thread(() -> {
+    public void testConnection() throws IOException {
+        new Thread(() -> {
             try {
                 AnchorServer.main(new String[]{"-p", "6666"});
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
-        t1.start();
-
-        //Thread.currentThread().sleep(1000);
+        }).start();
 
         Socket clientSocket = new Socket(InetAddress.getByName(null), 6666);
         clientSocket.setSoTimeout(3000);
