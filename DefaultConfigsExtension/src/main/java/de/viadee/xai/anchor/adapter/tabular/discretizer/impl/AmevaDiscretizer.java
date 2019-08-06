@@ -53,7 +53,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
 
         keyValuePairs = IntStream.range(0, values.length)
                 .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
-                .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
+                .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 
         bCutPoints = IntStream.range(1, values.length)
@@ -143,7 +143,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         int z = 0;
         List<Interval> createdIntervals = new ArrayList<>();
         for(Double cp: cutPoints) {
-            while(keyValuePairs.get(z).getKey() < cp && z < keyValuePairs.size()) {
+            while(z < keyValuePairs.size() && keyValuePairs.get(z).getKey() < cp) {
                 z++;
             }
             createdIntervals.add(new Interval(lowerBoundary, z -1, keyValuePairs));
