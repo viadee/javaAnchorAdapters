@@ -24,6 +24,7 @@ public class EqualSizeDiscretizer extends AbstractDiscretizer {
     /**
      * creates a {@link PercentileMedianDiscretizer} which creates intervals, that are the same size. In actual datasets
      * a minimum size of 30 is recommended by [Weiss, 2002]
+     * @param classSize size of Intervals to be created. Might be changed slightly if values length is not divisible by it
      */
     public EqualSizeDiscretizer(int classSize) {
         super(false);
