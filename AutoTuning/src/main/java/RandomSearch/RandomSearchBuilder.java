@@ -30,39 +30,46 @@ public class RandomSearchBuilder {
 
     /**
      * Instantiates a enw RandomSearch builder
+     */
+    public RandomSearchBuilder() {
+
+    }
+
+    /**
+     * Instantiates a enw RandomSearch builder
      *
-     * @param scenario               the given scenario
      * @param anchorBuilder          the anchor builder
      * @param anchorTabular          the anchor tabular of the dataset
      * @param classificationFunction the classification function used
      * @param configurationSpace     the full configuration space to optimize
-     * @param timeTermination        the termination condition in seconds
      * @param executionTermination   the termination condition in number of executions
-     * @param measure                the measure to optimize on
-     * @param startWithDefault       should optimization be started with the default value
      */
-    private RandomSearchBuilder(String scenario,
-                                AnchorConstructionBuilder<TabularInstance> anchorBuilder,
+    private RandomSearchBuilder(AnchorConstructionBuilder<TabularInstance> anchorBuilder,
                                 AnchorTabular anchorTabular,
                                 Function<TabularInstance, Integer> classificationFunction,
                                 ConfigurationSpace configurationSpace,
-                                long timeTermination,
-                                int executionTermination,
-                                PerformanceMeasures.Measure measure,
-                                boolean startWithDefault) {
-        this.scenario = scenario;
+                                int executionTermination) {
         this.anchorBuilder = anchorBuilder;
         this.anchorTabular = anchorTabular;
         this.classificationFunction = classificationFunction;
         this.configurationSpace = configurationSpace;
-        this.timeTermination = timeTermination;
         this.executionTermination = executionTermination;
-        this.measure = measure;
-        this.startWithDefault = startWithDefault;
     }
 
-    public RandomSearchBuilder() {
-
+    /**
+     * Create the Default Constructor
+     *
+     * @param anchorBuilder          the anchor builder
+     * @param anchorTabular          the anchor tabular of the dataset
+     * @param classificationFunction the classification function used
+     * @param configurationSpace     the full configuration space to optimize
+     * @return the {@link RandomSearchBuilder}
+     */
+    public RandomSearch createDefaultBuilder(AnchorTabular anchorTabular,
+                                                    AnchorConstructionBuilder<TabularInstance> anchorBuilder,
+                                                    Function<TabularInstance, Integer> classificationFunction,
+                                                    ConfigurationSpace configurationSpace) {
+        return new RandomSearchBuilder(anchorBuilder, anchorTabular,classificationFunction,configurationSpace, 30).build();
     }
 
     /**
@@ -175,18 +182,12 @@ public class RandomSearchBuilder {
         return this;
     }
 
-    private void prepareForBuild() {
-        if (this.configurationSpace == null)
-            this.configurationSpace = new ConfigurationSpace();
-    }
-
     /**
      * Build the Random Search instance setting all values or their pre-configures default values.
      *
      * @return the Random Search instance
      */
     public RandomSearch build() {
-        prepareForBuild();
         return new RandomSearch(scenario, anchorBuilder, anchorTabular, configurationSpace, timeTermination, executionTermination, startWithDefault, classificationFunction, measure);
     }
 

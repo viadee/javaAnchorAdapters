@@ -11,7 +11,7 @@ public class RandomSearchLoggerTest {
     @Test
     public void testFileCreation(){
         //Given
-        ConfigurationSpace configurationSpace = new ConfigurationSpace();
+        ConfigurationSpace configurationSpace = new ConfigurationSpace(new HyperparameterSpace());
         RandomSearchLogger logger = new RandomSearchLogger("Titanic", configurationSpace, PerformanceMeasures.Measure.ACCURACY);
 
         logger.endLogging();

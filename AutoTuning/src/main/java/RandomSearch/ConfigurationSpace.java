@@ -9,14 +9,18 @@ public class ConfigurationSpace {
     private double performance = 0;
     private double coverage = 0;
     private long runtime = 0;
-
-    public ConfigurationSpace() {
-        this.hyperparameterSpace = new HyperparameterSpace();
-    }
-
+    
     public ConfigurationSpace(HyperparameterSpace hyperparameterSpace, DiscretizationSpace discretizationSpace) {
         this.hyperparameterSpace = hyperparameterSpace;
         this.discretizationSpace = discretizationSpace;
+    }
+
+    public ConfigurationSpace(HyperparameterSpace hyperparameterSpace) {
+        this(hyperparameterSpace, null);
+    }
+
+    public ConfigurationSpace(DiscretizationSpace discretizationSpace) {
+        this(null, discretizationSpace);
     }
 
     public ConfigurationSpace(ConfigurationSpace copyFrom) {

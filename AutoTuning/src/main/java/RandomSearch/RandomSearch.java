@@ -4,8 +4,11 @@ import LossFunctions.PredictionModel;
 import LossFunctions.PerformanceMeasures;
 import Parameter.NumericalParameter;
 import Parameter.Parameter;
+import Parameter.CategoricalParameter;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.global.CoveragePick;
@@ -31,7 +34,6 @@ public class RandomSearch {
     private ConfigurationSpace currentConfigurationSpace;
     private ConfigurationSpace bestConfigurationSpace;
     private List<AnchorResult<TabularInstance>> bestExplanations;
-    private RandomSearchLogger logger;
 
     RandomSearch(String scenario,
                  AnchorConstructionBuilder<TabularInstance> anchorBuilder,
@@ -43,6 +45,8 @@ public class RandomSearch {
                  Function<TabularInstance, Integer> classificationFunction,
                  PerformanceMeasures.Measure measure) {
 
+        if (configurationSpace == null)
+            throw new IllegalArgumentException("Configuration space " + ParameterValidation.NULL_MESSAGE);
         if (anchorBuilder == null)
             throw new IllegalArgumentException("AnchorConstructionBuilder " + ParameterValidation.NULL_MESSAGE);
         if (anchorTabular == null)
@@ -61,7 +65,7 @@ public class RandomSearch {
         this.terminationConditionInSec = terminationConditionInSec;
         this.terminationConditionNrEx = terminationConditionNrEx;
 
-        this.bestConfigurationSpace = new ConfigurationSpace();
+        this.bestConfigurationSpace = new ConfigurationSpace(configurationSpace);
 
         if (!startWithDefault)
             currentConfigurationSpace.getHyperparameterSpace().randomizeParameters();
@@ -79,14 +83,14 @@ public class RandomSearch {
         long startTime = System.currentTimeMillis();
         int nrExecutions = 0;
 
-        this.logger = new RandomSearchLogger(scenario, currentConfigurationSpace, measure);
+        RandomSearchLogger logger = new RandomSearchLogger(scenario, currentConfigurationSpace, measure);
 
         while ((System.currentTimeMillis() - startTime) < (terminationConditionInSec * 1000) || nrExecutions < this.terminationConditionNrEx) {
 
             // to calculate the runtime of each Anchors run
             long runtimeStart = System.currentTimeMillis();
 
-            // set all hyperparameters
+            setNewDiscretizers();
             setNewParameters();
 
             List<AnchorResult<TabularInstance>> rules = global ? optimizeGlobal() : optimizeLocal();
@@ -103,7 +107,7 @@ public class RandomSearch {
 
             // log results
             logger.addValuesToLogging(currentConfigurationSpace);
-            logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(rules));
+            //logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(rules));
             logger.endLine();
 
             // check if performance of current space is the best, if yes set current space as best space
@@ -114,6 +118,7 @@ public class RandomSearch {
 
             // randomize all hyperparameters
             currentConfigurationSpace.getHyperparameterSpace().randomizeParameters();
+            currentConfigurationSpace.getDiscretizationSpace().randomizeParameters();
             nrExecutions++;
         }
 
@@ -137,17 +142,35 @@ public class RandomSearch {
         return Arrays.asList(localExplanation);
     }
 
+    private void setNewDiscretizers() {
+
+        DiscretizationSpace ds = currentConfigurationSpace.getDiscretizationSpace();
+
+        if (ds != null){
+            for (int i = 0; i < ds.getDiscretizerParamter().size(); i++) {
+                CategoricalParameter p = ds.getDiscretizerParamter().get(i);
+                if (anchorTabular.getColumns().get(i).getDiscretizer().getClass() != UniqueValueDiscretizer.class)
+                    anchorTabular.getColumns().get(i).setDiscretizer((Discretizer) p.getCurrentValue());
+            }
+        }
+    }
+
     private void setNewParameters() {
 
         HyperparameterSpace hs = currentConfigurationSpace.getHyperparameterSpace();
 
-        anchorBuilder
-                .setTau(((NumericalParameter) hs.getParameterByName("tau")).getCurrentValue().doubleValue())
-                .setBeamSize(((NumericalParameter) hs.getParameterByName("beamsize")).getCurrentValue().intValue())
-                .setDelta(((NumericalParameter) hs.getParameterByName("delta")).getCurrentValue().doubleValue())
-                .setEpsilon(((NumericalParameter) hs.getParameterByName("epsilon")).getCurrentValue().doubleValue())
-                .setTauDiscrepancy(((NumericalParameter) hs.getParameterByName("tauDiscrepancy")).getCurrentValue().doubleValue())
-                .setInitSampleCount(((NumericalParameter) hs.getParameterByName("initSampleCount")).getCurrentValue().intValue());
+        if (hs.getParameterByName("tau") != null)
+            anchorBuilder.setTau(((NumericalParameter) hs.getParameterByName("tau")).getCurrentValue().intValue());
+        if (hs.getParameterByName("beamsize") != null)
+            anchorBuilder.setBeamSize(((NumericalParameter) hs.getParameterByName("beamsize")).getCurrentValue().intValue());
+        if (hs.getParameterByName("delta") != null)
+            anchorBuilder.setDelta(((NumericalParameter) hs.getParameterByName("delta")).getCurrentValue().doubleValue());
+        if (hs.getParameterByName("epsilon") != null)
+            anchorBuilder.setEpsilon(((NumericalParameter) hs.getParameterByName("epsilon")).getCurrentValue().doubleValue());
+        if (hs.getParameterByName("tauDiscrepancy") != null)
+            anchorBuilder.setTauDiscrepancy(((NumericalParameter) hs.getParameterByName("tauDiscrepancy")).getCurrentValue().doubleValue());
+        if (hs.getParameterByName("initSampleCount") != null)
+            anchorBuilder.setInitSampleCount(((NumericalParameter) hs.getParameterByName("initSampleCount")).getCurrentValue().intValue());
     }
 
     /**

@@ -8,9 +8,9 @@ public interface Parameter {
 
     String getName();
 
-    Serializable getDefaultValue();
+    Object getDefaultValue();
 
-    Serializable getCurrentValue();
+    Object getCurrentValue();
 
     void searchRandom();
 

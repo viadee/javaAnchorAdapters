@@ -9,7 +9,7 @@ import java.util.List;
 
 public final class HyperparameterSpace {
 
-    private final List<Parameter> hyperParameters;
+    private List<Parameter> hyperParameters;
 
     public HyperparameterSpace() {
 
@@ -34,6 +34,15 @@ public final class HyperparameterSpace {
     }
 
     /**
+     * Add a parameter to the Hyperparameter space to optimize
+     *
+     * @param parameter the parameter that should be added to the Hyperparameter space
+     */
+    public void addParameter(Parameter parameter) {
+        hyperParameters.add(parameter);
+    }
+
+    /**
      * Get a specific parameter from the hyperparameter set by name
      *
      * @param name the name of the parameter
@@ -45,7 +54,7 @@ public final class HyperparameterSpace {
                 return p;
             }
         }
-        throw new RuntimeException("No parameter found by the name of " + name);
+        throw new IllegalArgumentException("No parameter found by the name of " + name);
     }
 
     /**

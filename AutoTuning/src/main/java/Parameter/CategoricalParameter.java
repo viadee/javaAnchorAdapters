@@ -7,20 +7,20 @@ public class CategoricalParameter implements Parameter {
     String type = "categorical";
 
     private String name;
-    private String[] allValues;
-    private String defaultValue;
-    private String currentValue;
+    private Object[] allValues;
+    private Object defaultValue;
+    private Object currentValue;
 
 
-    public CategoricalParameter(String name, String currentValue) {
-        this(name, currentValue, currentValue, new String[]{currentValue});
+    public CategoricalParameter(String name, Object currentValue) {
+        this(name, currentValue, currentValue, new Object[]{currentValue});
     }
 
-    public CategoricalParameter(String name, String[] allValues) {
+    public CategoricalParameter(String name, Object[] allValues) {
         this(name, allValues.length != 0 ? allValues[0] : null, allValues.length != 0 ? allValues[0] : null, allValues);
     }
 
-    public CategoricalParameter(String name, String defaultValue, String currentValue, String[] allValues) {
+    public CategoricalParameter(String name, Object defaultValue, Object currentValue, Object[] allValues) {
         if (defaultValue == null){
             throw new IllegalArgumentException("Categorical parameters need at least one category");
         }
@@ -38,12 +38,16 @@ public class CategoricalParameter implements Parameter {
         return name;
     }
 
-    public String getDefaultValue() {
+    public Object getDefaultValue() {
         return defaultValue;
     }
 
-    public String getCurrentValue() {
+    public Object getCurrentValue() {
         return currentValue;
+    }
+
+    public Object[] getAllValues() {
+        return allValues;
     }
 
     public void searchRandom() {
