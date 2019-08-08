@@ -1,7 +1,5 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationType;
 import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 
 import java.io.Serializable;

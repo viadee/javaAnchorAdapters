@@ -1,11 +1,11 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,24 +32,21 @@ class FUSINTERDiscretizerTest {
      * Tests Step 2 (Initial Splitting) of FUSINTER Algorithm
      */
     @Test
-    void testEqualClassSplittingSeparateClasses() throws Exception {
+    void testEqualClassSplittingSeparateClasses() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        Field targetValues = FUSINTERDiscretizer.class.getDeclaredField("targetValues");
-        targetValues.setAccessible(true);
-        targetValues.set(fusinterDiscretizer, new Double[]{0.0, 1.0});
-        List<FUSINTERDiscretizer.Interval> list = fusinterDiscretizer.equalClassSplit(
+        List<Interval> list = fusinterDiscretizer.equalClassSplit(
                 Arrays.asList(
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(0.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(1.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(2.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(3.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(4.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(5.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(6.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(7.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(8.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(9.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(0.0, 0.0)
+                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(2.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(3.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(4.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(5.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(6.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(7.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(8.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(9.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0)
                 )
         );
         assertEquals(3, list.size());
@@ -59,26 +56,23 @@ class FUSINTERDiscretizerTest {
      * Tests Step 3 (Values with Mixed Classes Have own Interval) of FUSINTER Algorithm
      */
     @Test
-    void testEqualClassSplittingMixedClasses() throws Exception {
+    void testEqualClassSplittingMixedClasses() {
         FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        Field targetValues = FUSINTERDiscretizer.class.getDeclaredField("targetValues");
-        targetValues.setAccessible(true);
-        targetValues.set(fusinterDiscretizer, new Double[]{0.0, 1.0});
-        List<FUSINTERDiscretizer.Interval> list = fusinterDiscretizer.equalClassSplit(
+        List<Interval> list = fusinterDiscretizer.equalClassSplit(
                 Arrays.asList(
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(0.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(1.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(2.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(3.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(4.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(5.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(5.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(5.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(6.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(7.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(8.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(9.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<Number, Double>(0.0, 0.0)
+                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(2.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(3.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(4.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(5.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(5.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(5.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(6.0, 1.0),
+                        new AbstractMap.SimpleImmutableEntry<>(7.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(8.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(9.0, 0.0),
+                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0)
                 )
         );
         assertEquals(5, list.size());
@@ -279,7 +273,7 @@ class FUSINTERDiscretizerTest {
         NumericDiscretizationOrigin discOrigin3 = ((NumericDiscretizationOrigin) list.get(3).getDiscretizationOrigin());
         assertEquals(23D, discOrigin3.getMinValue());
         assertEquals(36D, discOrigin3.getMaxValue());
-        assertEquals(31.0, list.get(3).getDiscretizedValue().doubleValue());
+        assertEquals(30.0, list.get(3).getDiscretizedValue().doubleValue());
         assertFalse(discOrigin3.isFirst());
         assertFalse(discOrigin3.isLast());
 
@@ -292,4 +286,31 @@ class FUSINTERDiscretizerTest {
 
     }
 
+    /**
+     * Tests Steps 4-8 (Evaluation of potential merges of the equalClassSplits) of the described Algorithm,
+     * Number[][] to be discretized is taken from FUSINTER paper Figure 7.
+     */
+    @Test
+    void testEqualDistribution() {
+        Number[][] values = new Number[][]{
+                {1.0, 1},
+                {1.0, 0},
+                {2.0, 1},
+                {2.0, 0},
+                {3.0, 1},
+                {3.0, 0},
+                {4.0, 1},
+                {4.0, 0}
+        };
+        Serializable[] serializables = new Serializable[values.length];
+        Double[] doubles = new Double[values.length];
+        for (int i = 0; i < values.length; i++) {
+            serializables[i] = values[i][0];
+            doubles[i] = values[i][1].doubleValue();
+        }
+
+        FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
+        List<DiscretizationTransition> list = fusinterDiscretizer.fitCreateTransitions(serializables, doubles);
+        assertEquals(1, list.size());
+    }
 }

@@ -2,7 +2,7 @@ package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 
 import java.io.Serializable;
 import java.util.*;
@@ -18,8 +18,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     private final double lambda;
     private final double alpha;
 
-    // All possible classification in values
-    private Double[] targetValues;
     // Number of possible classifications
     private int m;
     // Number of instances
@@ -44,12 +42,12 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         this.alpha = alpha;
     }
 
-    /*
+    /**
      *
      * Implementation of FUSINTER, 1. sort, 2. equalClassIntervals 3. merge if entropy improves
      *
-     * @param values array of arrays of type {Number, int}, 1. is the column to be discretized
-     *               and 2. is the classification
+     * @param labels Array of Doubles, classifications of instances
+     * @param values Array of Numbers expected. FUSINTER is only possible with continuous variables
      * @return list of Intervals determined to have the highest entropy
      */
     @Override
@@ -59,14 +57,12 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }
 
-        targetValues = Arrays.stream(labels).sorted().distinct().toArray(Double[]::new);
-
-        m = targetValues.length;
+        m = Arrays.stream(labels).sorted().distinct().toArray(Double[]::new).length;
         n = values.length;
 
-        final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs = IntStream
+        final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs = IntStream
                 .range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Number) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
                 .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
                 .collect(Collectors.toList());
 
@@ -84,7 +80,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
      * @param keyValuePairs, Array of Attribute Class.
      * @return initial List of Intervals
      */
-    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
         int amountSameValue = 0;
@@ -101,12 +97,14 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
             } else {
                 amountSameValue++;
                 if (!currentValue.equals(keyValuePairs.get(i - amountSameValue).getValue())) {
-                    if (resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
+                    if ( !resultDiscTrans.isEmpty() && resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
                         resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, keyValuePairs));
                     }
                     lowerLimit = i - amountSameValue;
                     i++;
-
+                    if(i == keyValuePairs.size()){
+                        break;
+                    }
                     while (keyValuePairs.get(i).getKey().equals(keyValuePairs.get(i - 1).getKey())) {
                         i++;
                     }
@@ -123,7 +121,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     }
 
     private List<Interval> evaluateIntervals(List<Interval> equalClassSplits,
-                                             final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+                                             final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         boolean improvement = true;
 
         while (equalClassSplits.size() > 1 && improvement) {
@@ -181,7 +179,7 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
      * @return new List with Interval i and i+1 merged
      */
     private List<Interval> mergeInterval(List<Interval> intervals, int i,
-                                         final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
+                                         final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         List<Interval> temp = new ArrayList<>(intervals.subList(0, intervals.size()));
         int mergeBegin = temp.get(i).getBegin();
         int mergeEnd = temp.get(i + 1).getEnd();
@@ -192,71 +190,4 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         return temp;
     }
 
-    final class Interval {
-        /**
-         * private Interval class for FUSINTER Method with begin and end index to determine class distribution
-         */
-
-        private final int begin;
-        private final int end;
-        private final int size;
-        private final int[] classDist = new int[targetValues.length];
-        private final List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs;
-
-        /**
-         * @param begin         begin index of Interval
-         * @param end           end index of Interval
-         * @param keyValuePairs list of all values, only used to determine class distribution in interval
-         */
-        Interval(int begin, int end, List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs) {
-            this.begin = begin;
-            this.end = end;
-            this.size = end - begin + 1;
-            this.keyValuePairs = keyValuePairs;
-
-            for (int t = 0; t < targetValues.length; t++) {
-                final int finalT = t;
-                Double[] finalTargetValues = targetValues;
-                classDist[t] = (int) IntStream.rangeClosed(begin, end)
-                        .mapToObj(i -> keyValuePairs.get(i).getValue())
-                        .filter(i -> Double.compare(i, finalTargetValues[finalT]) == 0)
-                        .count();
-            }
-        }
-
-        int getBegin() {
-            return begin;
-        }
-
-        int getEnd() {
-            return end;
-        }
-
-        int[] getClassDist() {
-            return classDist;
-        }
-
-        int getSize() {
-            return size;
-        }
-
-        /**
-         * @return the interval as a {@link DiscretizationTransition}
-         */
-        private DiscretizationTransition toDiscretizationTransition() {
-            return new DiscretizationTransition(new NumericDiscretizationOrigin(
-                    keyValuePairs.get(begin).getKey(),
-                    keyValuePairs.get(end).getKey()),
-                    medianIndexValue()
-            );
-        }
-
-        double medianIndexValue() {
-            if (getSize() % 2 == 0) {
-                return (keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue() + keyValuePairs.get(end + 1 - getSize() / 2 - 1).getKey().doubleValue()) / 2;
-            } else {
-                return keyValuePairs.get(end + 1 - getSize() / 2).getKey().doubleValue();
-            }
-        }
-    }
 }
