@@ -1,7 +1,5 @@
 package Parameter;
 
-import java.io.Serializable;
-
 public interface Parameter {
 
     String getType();
@@ -15,5 +13,7 @@ public interface Parameter {
     void searchRandom();
 
     Parameter copy();
+
+    String getParameterString();
 
 }

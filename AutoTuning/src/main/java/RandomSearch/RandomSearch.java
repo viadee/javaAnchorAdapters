@@ -8,7 +8,7 @@ import Parameter.CategoricalParameter;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.global.CoveragePick;
@@ -118,7 +118,6 @@ public class RandomSearch {
 
             // randomize all hyperparameters
             currentConfigurationSpace.getHyperparameterSpace().randomizeParameters();
-            currentConfigurationSpace.getDiscretizationSpace().randomizeParameters();
             nrExecutions++;
         }
 
@@ -147,10 +146,9 @@ public class RandomSearch {
         DiscretizationSpace ds = currentConfigurationSpace.getDiscretizationSpace();
 
         if (ds != null){
-            for (int i = 0; i < ds.getDiscretizerParamter().size(); i++) {
-                CategoricalParameter p = ds.getDiscretizerParamter().get(i);
+            for (int i = 0; i < ds.discretizers.size(); i++) {
                 if (anchorTabular.getColumns().get(i).getDiscretizer().getClass() != UniqueValueDiscretizer.class)
-                    anchorTabular.getColumns().get(i).setDiscretizer((Discretizer) p.getCurrentValue());
+                    anchorTabular.getColumns().get(i).setDiscretizer(ds.getRandomDiscretizer());
             }
         }
     }

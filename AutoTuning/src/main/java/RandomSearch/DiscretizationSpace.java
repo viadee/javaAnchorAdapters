@@ -1,59 +1,35 @@
 package RandomSearch;
 
-import Parameter.CategoricalParameter;
-import Parameter.Parameter;
-import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
-import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import Parameter.DiscretizerInstantiation.DiscretizerInstantiation;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.UniqueValueDiscretizer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DiscretizationSpace {
 
-    private List<CategoricalParameter> discretizerParamter = new ArrayList<CategoricalParameter>();
+    List<Discretizer> discretizers;
 
-    public DiscretizationSpace(AnchorTabular anchorTabular, Discretizer[] discretizers) {
-
-        for (GenericColumn column : anchorTabular.getColumns()) {
-            if (column.getDiscretizer().getClass() != UniqueValueDiscretizer.class) {
-                this.discretizerParamter.add(
-                        new CategoricalParameter(
-                                column.getName(),
-                                discretizers[0].getClass().getName(),
-                                discretizers[0].getClass().getName(),
-                                Arrays.stream(discretizers).map(c -> c.getClass().getName()).toArray(String[]::new))
-                );
-            }
-        }
+    public DiscretizationSpace(DiscretizerInstantiation... instantiations) {
+        discretizers = Stream.of(instantiations).flatMap(d -> (Stream<Discretizer>) d.selectRandom(10).stream()).collect(Collectors.toList());
     }
 
-    /**
-     * Randomize all parameters in the discretization space
-     */
-    public void randomizeParameters() {
-        for (Parameter p : discretizerParamter) {
-            p.searchRandom();
-        }
+    public DiscretizationSpace(List<Discretizer> discretizers) {
+        this.discretizers = discretizers;
     }
 
-    /**
-     * Clone a given parameter set space
-     *
-     * @param original the original parameter set
-     * @return the cloned parameter set
-     */
-    public static List<Parameter> clone(List<Parameter> original) {
-        List<Parameter> result = new ArrayList<>();
-        for (Parameter p : original) {
-            result.add(p.copy());
-        }
-        return result;
+    public void addDiscretizer(Discretizer discretizer) {
+        this.discretizers.add(discretizer);
     }
-    
-    public List<CategoricalParameter> getDiscretizerParamter() {
-        return discretizerParamter;
+
+    public Discretizer getRandomDiscretizer() {
+        Collections.shuffle(this.discretizers);
+        return this.discretizers.get(0);
     }
+
 }
+
+
+

@@ -62,4 +62,8 @@ public class IntegerParameter implements IntegerParameterInterface {
     public IntegerParameter copy() {
        return new IntegerParameter(name, defaultValue, minValue, maxValue, currentValue);
     }
+
+    public String getParameterString() {
+        return name + " " + type + " [" + minValue + "," + maxValue + "][" + defaultValue + "]";
+    }
 }

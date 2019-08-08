@@ -67,4 +67,8 @@ public class ContinuousParameter implements ContinuousParameterInterface {
     public ContinuousParameter copy() {
         return new ContinuousParameter(name, defaultValue, minValue, maxValue, currentValue);
     }
+
+    public String getParameterString() {
+        return name + " " + type + " [" + minValue + "," + maxValue + "][" + defaultValue + "]";
+    }
 }

@@ -1,5 +1,6 @@
 package Parameter;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class CategoricalParameter implements Parameter {
@@ -59,5 +60,10 @@ public class CategoricalParameter implements Parameter {
 
     public CategoricalParameter copy() {
         return new CategoricalParameter(name, defaultValue, currentValue, allValues);
+    }
+
+    public String getParameterString() {
+        String[] allValues = Arrays.stream(this.allValues).map(str -> str.toString()).toArray(String[]::new);
+        return name + " " + type + " {" + String.join(",", allValues) + "}[" + defaultValue + "]";
     }
 }
