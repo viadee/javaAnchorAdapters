@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
 public class MDLPDiscretizer extends AbstractDiscretizer {
 
     private List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs;
+    private List<Integer> potentialCutPoints = new ArrayList<>();
     private List<Integer> actualIntervalEnds = new ArrayList<>();
     private Double[] targetValues;
 
@@ -31,11 +32,11 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
         List<Interval> initialSplit = equalClassSplit(keyValuePairs);
 
-        List<Integer> potentialIntervalEnds = new ArrayList<>();
+
         for(Interval interval: initialSplit) {
-            potentialIntervalEnds.add(interval.getEnd());
+            potentialCutPoints.add(interval.getEnd());
         }
-        determineIntervals(potentialIntervalEnds, 0, potentialIntervalEnds.size() - 1);
+        determineIntervals(0, potentialCutPoints.size() - 1);
 
         List<Interval> evaluatedIntervals = new ArrayList<>();
         Collections.sort(actualIntervalEnds);
@@ -96,11 +97,11 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         return resultDiscTrans;
     }
 
-    private void determineIntervals(List<Integer> potentialCutPoints, int begin, int end) {
+    private void determineIntervals(int begin, int end) {
         double mdlpcMax = 0;
         int posMax = -1;
-        for(int i = begin; i < end; i ++) {
-            double mdlpc = determineMDLPCCriterion(begin, end, i);
+        for(int i = begin + 1; i < end; i++) {
+            double mdlpc = determineMDLPCCriterion(potentialCutPoints.get(begin), potentialCutPoints.get(end), potentialCutPoints.get(i));
             if(mdlpcMax < mdlpc) {
                 mdlpcMax = mdlpc;
                 posMax = i;
@@ -109,16 +110,16 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
         if(mdlpcMax > 0) {
             actualIntervalEnds.add(posMax);
-            determineIntervals(potentialCutPoints, begin, posMax);
-            determineIntervals(potentialCutPoints, posMax + 1, end);
+            determineIntervals(begin, posMax);
+            determineIntervals(posMax + 1, end);
         }
     }
 
-    private double determineMDLPCCriterion(int begin, int end, int i) {
+    private double determineMDLPCCriterion(Integer begin, Integer end, Integer i) {
         Interval completeInterval = new Interval(begin, end, keyValuePairs);
         Interval leftInterval = new Interval(begin, i, keyValuePairs);
         long leftCD = Arrays.stream(leftInterval.getClassDist()).filter(label -> label == 0).count();
-        Interval rightInterval = new Interval(i + 1, end, keyValuePairs);
+        Interval rightInterval = new Interval(potentialCutPoints.get(i + 1), end, keyValuePairs);
         long rightCD = Arrays.stream(rightInterval.getClassDist()).filter(label -> label == 0).count();
 
         double entropyComplete = computeEntropy(completeInterval);
