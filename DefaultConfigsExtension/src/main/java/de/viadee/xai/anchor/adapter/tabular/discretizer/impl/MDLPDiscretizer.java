@@ -36,7 +36,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         for(Interval interval: initialSplit) {
             potentialCutPoints.add(interval.getEnd());
         }
-        determineIntervals(0, potentialCutPoints.size() - 1);
+        determineIntervals(0, keyValuePairs.size() - 1);
 
         List<Interval> evaluatedIntervals = new ArrayList<>();
         Collections.sort(actualIntervalEnds);
@@ -57,7 +57,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
      * @param keyValuePairs, Array of Attribute Class.
      * @return initial List of Intervals
      */
-    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
+    private List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
         final List<Interval> resultDiscTrans = new ArrayList<>();
         int lowerLimit = 0;
         int amountSameValue = 0;
@@ -99,34 +99,41 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
     private void determineIntervals(int begin, int end) {
         double mdlpcMax = 0;
+        int valueMax = -1;
         int posMax = -1;
-        for(int i = begin + 1; i < end; i++) {
-            double mdlpc = determineMDLPCCriterion(potentialCutPoints.get(begin), potentialCutPoints.get(end), potentialCutPoints.get(i));
+        List<Integer> reducedPotentialIntervalEnds = potentialCutPoints.stream()
+                .filter(intervalEnd -> intervalEnd >= begin
+                                    && intervalEnd <= end)
+                .collect(Collectors.toList());
+        for(int i = 0; i < reducedPotentialIntervalEnds.size(); i++) {
+            double mdlpc = determineMDLPCCriterion(begin, end, reducedPotentialIntervalEnds.get(i));
             if(mdlpcMax < mdlpc) {
                 mdlpcMax = mdlpc;
                 posMax = i;
+                valueMax = reducedPotentialIntervalEnds.get(i);
             }
         }
 
         if(mdlpcMax > 0) {
-            actualIntervalEnds.add(posMax);
-            determineIntervals(begin, posMax);
-            determineIntervals(posMax + 1, end);
+            actualIntervalEnds.add(valueMax);
+            determineIntervals(begin, reducedPotentialIntervalEnds.get(posMax));
+            determineIntervals(reducedPotentialIntervalEnds.get(posMax) + 1, end);
         }
     }
 
     private double determineMDLPCCriterion(Integer begin, Integer end, Integer i) {
         Interval completeInterval = new Interval(begin, end, keyValuePairs);
         Interval leftInterval = new Interval(begin, i, keyValuePairs);
-        long leftCD = Arrays.stream(leftInterval.getClassDist()).filter(label -> label == 0).count();
-        Interval rightInterval = new Interval(potentialCutPoints.get(i + 1), end, keyValuePairs);
-        long rightCD = Arrays.stream(rightInterval.getClassDist()).filter(label -> label == 0).count();
+        long leftCD = Arrays.stream(leftInterval.getClassDist()).filter(label -> label != 0).count();
+        Interval rightInterval = new Interval(i + 1, end, keyValuePairs);
+        long rightCD = Arrays.stream(rightInterval.getClassDist()).filter(label -> label != 0).count();
 
         double entropyComplete = computeEntropy(completeInterval);
         double entropyLeft = computeEntropy(leftInterval);
         double entropyRight = computeEntropy(rightInterval);
 
-        double gain = entropyComplete - entropyLeft - entropyRight;
+        double gain = entropyComplete - ((leftInterval.getSize() / (double) completeInterval.getSize()) * entropyLeft + (rightInterval.getSize() / (double) completeInterval.getSize()) * entropyRight);
+//        double gain = entropyComplete - (entropyLeft + entropyRight);
         double delta = log2(Math.pow(3, targetValues.length) - 2)
                         - (targetValues.length * entropyComplete
                         - leftCD * entropyLeft
@@ -145,6 +152,9 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
     }
 
     private double log2(double value) {
+        if(value == 0D) {
+            return 0D;
+        }
         return Math.log(value)/Math.log(2);
     }
 }
