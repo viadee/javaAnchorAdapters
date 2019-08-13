@@ -132,8 +132,10 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         double entropyLeft = computeEntropy(leftInterval);
         double entropyRight = computeEntropy(rightInterval);
 
-        double gain = entropyComplete - ((leftInterval.getSize() / (double) completeInterval.getSize()) * entropyLeft + (rightInterval.getSize() / (double) completeInterval.getSize()) * entropyRight);
-//        double gain = entropyComplete - (entropyLeft + entropyRight);
+        double gain = entropyComplete -
+                ((leftInterval.getSize() / (double) completeInterval.getSize()) * entropyLeft
+                + (rightInterval.getSize() / (double) completeInterval.getSize()) * entropyRight);
+
         double delta = log2(Math.pow(3, targetValues.length) - 2)
                         - (targetValues.length * entropyComplete
                         - leftCD * entropyLeft
