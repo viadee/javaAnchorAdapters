@@ -300,6 +300,45 @@ class MDLPDiscretizerTest {
         assertEquals(2, list.size());
     }
 
+    @Test
+    void testNegativeValues(){
+        Number[][] values = new Number[][]{
+                {-1.0, 0},
+                {-2.0, 0},
+                {-3.0, 0},
+                {-4.0, 0},
+                {-5.0, 0},
+                {-6.0, 1},
+                {-7.0, 1},
+                {-8.0, 1},
+                {-9.0, 1},
+                {-10.0, 1},
+                {-11.0, 2},
+                {-12.0, 2},
+                {-13.0, 2},
+                {-14.0, 2},
+                {-15.0, 2},
+        };
+        Serializable[] serializables = new Serializable[values.length];
+        Double[] doubles = new Double[values.length];
+        for (int i = 0; i < values.length; i++) {
+            serializables[i] = values[i][0];
+            doubles[i] = values[i][1].doubleValue();
+        }
+        MDLPDiscretizer mdlpDiscretizer = new MDLPDiscretizer();
+
+
+        mdlpDiscretizer.fit(serializables, doubles);
+        List<DiscretizationTransition> list = new ArrayList<>(mdlpDiscretizer.getTransitions());
+
+        NumericDiscretizationOrigin discOrigin = ((NumericDiscretizationOrigin) list.get(2).getDiscretizationOrigin());
+        assertEquals(-5D, discOrigin.getMinValue());
+        assertEquals(-1D, discOrigin.getMaxValue());
+        assertEquals(-3.0, list.get(2).getDiscretizedValue().doubleValue());
+        assertFalse(discOrigin.isFirst());
+        assertTrue(discOrigin.isLast());
+
+    }
 
 
 }
