@@ -1,6 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractSupervisedDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 
@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class MDLPDiscretizer extends AbstractDiscretizer {
+public class MDLPDiscretizer extends AbstractSupervisedDiscretizer {
 
     private List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs;
-    private List<Integer> potentialCutPoints = new ArrayList<>();
-    private List<Integer> actualIntervalEnds = new ArrayList<>();
+    private List<Integer> potentialCutPoints = new ArrayList<>(200);
+    private List<Integer> actualIntervalEnds = new ArrayList<>(20);
     private Double[] targetValues;
 
     /**
@@ -25,7 +25,6 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
     }
 
     /**
-     *
      * Implementation of MDLP,
      * 1. Sort all values. 2. Determine all useful cut points (useful if the class changes at this point)
      * 3. Search for cut point which splits the values into the best "bi-partition".
@@ -41,7 +40,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
             throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
         }
 
-       keyValuePairs = IntStream.range(0, values.length)
+        keyValuePairs = IntStream.range(0, values.length)
                 .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
                 .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
@@ -51,7 +50,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         List<Interval> initialSplit = equalClassSplit(keyValuePairs);
 
 
-        for(Interval interval: initialSplit) {
+        for (Interval interval : initialSplit) {
             potentialCutPoints.add(interval.getEnd());
         }
         determineIntervals(0, keyValuePairs.size() - 1);
@@ -59,7 +58,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         List<Interval> evaluatedIntervals = new ArrayList<>();
         Collections.sort(actualIntervalEnds);
         int begin = 0;
-        for(Integer end: actualIntervalEnds) {
+        for (Integer end : actualIntervalEnds) {
             evaluatedIntervals.add(new Interval(begin, end, keyValuePairs));
             begin = end + 1;
         }
@@ -69,56 +68,10 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
     }
 
     /**
-     * generates initial Intervals. Values with same class are merged to a Interval. If a value has several classes, all index with
-     * this value will be a separate Interval.
-     *
-     * @param keyValuePairs, Array of Attribute Class.
-     * @return initial List of Intervals
-     */
-    private List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
-        final List<Interval> resultDiscTrans = new ArrayList<>();
-        int lowerLimit = 0;
-        int amountSameValue = 0;
-        for (int i = 1; i < keyValuePairs.size(); i++) {
-            final Number currentKey = keyValuePairs.get(i).getKey();
-            final Double currentValue = keyValuePairs.get(i).getValue();
-
-            if (!currentKey.equals(keyValuePairs.get(i - 1).getKey())) {
-                amountSameValue = 0;
-                if (!currentValue.equals(keyValuePairs.get(i - 1).getValue())) {
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, keyValuePairs));
-                    lowerLimit = i;
-                }
-            } else {
-                amountSameValue++;
-                if (!currentValue.equals(keyValuePairs.get(i - amountSameValue).getValue())) {
-                    if ( !resultDiscTrans.isEmpty() && resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
-                        resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, keyValuePairs));
-                    }
-                    lowerLimit = i - amountSameValue;
-                    i++;
-                    if(i == keyValuePairs.size()){
-                        break;
-                    }
-                    while (keyValuePairs.get(i).getKey().equals(keyValuePairs.get(i - 1).getKey())) {
-                        i++;
-                    }
-
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, keyValuePairs));
-                    lowerLimit = i;
-                    amountSameValue = 0;
-                }
-            }
-        }
-        resultDiscTrans.add(new Interval(lowerLimit, keyValuePairs.size() - 1, keyValuePairs));
-
-        return resultDiscTrans;
-    }
-
-    /**
      * (RECURSIVE) determine the best cut points for value from index begin to end in keyValuePairs.
+     *
      * @param begin begin index of Interval
-     * @param end end index of Interval
+     * @param end   end index of Interval
      */
     private void determineIntervals(int begin, int end) {
         double mdlpcMax = 0;
@@ -126,18 +79,18 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         int posMax = -1;
         List<Integer> reducedPotentialIntervalEnds = potentialCutPoints.stream()
                 .filter(intervalEnd -> intervalEnd >= begin
-                                    && intervalEnd <= end)
+                        && intervalEnd <= end)
                 .collect(Collectors.toList());
-        for(int i = 0; i < reducedPotentialIntervalEnds.size(); i++) {
+        for (int i = 0; i < reducedPotentialIntervalEnds.size(); i++) {
             double mdlpc = determineMDLPCCriterion(begin, end, reducedPotentialIntervalEnds.get(i));
-            if(mdlpcMax < mdlpc) {
+            if (mdlpcMax < mdlpc) {
                 mdlpcMax = mdlpc;
                 posMax = i;
                 valueMax = reducedPotentialIntervalEnds.get(i);
             }
         }
 
-        if(mdlpcMax > 0) {
+        if (mdlpcMax > 0) {
             actualIntervalEnds.add(valueMax);
             determineIntervals(begin, reducedPotentialIntervalEnds.get(posMax));
             determineIntervals(reducedPotentialIntervalEnds.get(posMax) + 1, end);
@@ -157,24 +110,25 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
         double gain = entropyComplete -
                 ((leftInterval.getSize() / (double) completeInterval.getSize()) * entropyLeft
-                + (rightInterval.getSize() / (double) completeInterval.getSize()) * entropyRight);
+                        + (rightInterval.getSize() / (double) completeInterval.getSize()) * entropyRight);
 
         double delta = log2(Math.pow(3, targetValues.length) - 2)
-                        - (targetValues.length * entropyComplete
-                        - leftCD * entropyLeft
-                        - rightCD * entropyRight);
+                - (targetValues.length * entropyComplete
+                - leftCD * entropyLeft
+                - rightCD * entropyRight);
         return gain - (log2(completeInterval.getSize() - 1.0)) / (double) completeInterval.getSize()
-                    - delta / (double) completeInterval.getSize();
+                - delta / (double) completeInterval.getSize();
     }
 
     /**
      * determines the entropy of an interval
+     *
      * @param interval {@link Interval} to be evaluated
      * @return double value of "Shannons Entropy".
      */
     private double computeEntropy(Interval interval) {
         double entropy = 0;
-        for(int i = 0; i < targetValues.length; i++) {
+        for (int i = 0; i < targetValues.length; i++) {
             entropy += (interval.getClassDist()[i] / (double) interval.getSize())
                     * log2((interval.getClassDist()[i] / (double) interval.getSize()));
         }
@@ -183,9 +137,9 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
 
     private double log2(double value) {
-        if(value == 0D) {
+        if (value == 0D) {
             return 0D;
         }
-        return Math.log(value)/Math.log(2);
+        return Math.log(value) / Math.log(2);
     }
 }

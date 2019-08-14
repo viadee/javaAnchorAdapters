@@ -29,56 +29,6 @@ class FUSINTERDiscretizerTest {
     }
 
     /**
-     * Tests Step 2 (Initial Splitting) of FUSINTER Algorithm
-     */
-    @Test
-    void testEqualClassSplittingSeparateClasses() {
-        FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        List<Interval> list = fusinterDiscretizer.equalClassSplit(
-                Arrays.asList(
-                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(2.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(3.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(4.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(5.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(6.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(7.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(8.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(9.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0)
-                )
-        );
-        assertEquals(3, list.size());
-    }
-
-    /**
-     * Tests Step 3 (Values with Mixed Classes Have own Interval) of FUSINTER Algorithm
-     */
-    @Test
-    void testEqualClassSplittingMixedClasses() {
-        FUSINTERDiscretizer fusinterDiscretizer = new FUSINTERDiscretizer();
-        List<Interval> list = fusinterDiscretizer.equalClassSplit(
-                Arrays.asList(
-                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(1.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(2.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(3.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(4.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(5.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(5.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(5.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(6.0, 1.0),
-                        new AbstractMap.SimpleImmutableEntry<>(7.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(8.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(9.0, 0.0),
-                        new AbstractMap.SimpleImmutableEntry<>(0.0, 0.0)
-                )
-        );
-        assertEquals(5, list.size());
-    }
-
-    /**
      * Tests Steps 4-8 (Evaluation of potential merges of the equalClassSplits) of the described Algorithm,
      * Number[][] to be discretized is taken from FUSINTER paper Figure 7.
      */
