@@ -17,10 +17,24 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
     private List<Integer> actualIntervalEnds = new ArrayList<>();
     private Double[] targetValues;
 
+    /**
+     * Constructs the MDLP Discretizer, MDLP works without any Parameters.
+     */
     public MDLPDiscretizer() {
         super(true);
     }
 
+    /**
+     *
+     * Implementation of MDLP,
+     * 1. Sort all values. 2. Determine all useful cut points (useful if the class changes at this point)
+     * 3. Search for cut point which splits the values into the best "bi-partition".
+     * 4. Repeat [3] for each part until no improvement is possible (recursive)
+     *
+     * @param labels Array of Doubles, classifications of instances
+     * @param values Array of Numbers expected. Ameva is only possible with continuous variables
+     * @return list of DiscretizationTransition determined to have the highest Ameva value
+     */
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
@@ -101,6 +115,11 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         return resultDiscTrans;
     }
 
+    /**
+     * (RECURSIVE) determine the best cut points for value from index begin to end in keyValuePairs.
+     * @param begin begin index of Interval
+     * @param end end index of Interval
+     */
     private void determineIntervals(int begin, int end) {
         double mdlpcMax = 0;
         int valueMax = -1;
@@ -148,6 +167,11 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
                     - delta / (double) completeInterval.getSize();
     }
 
+    /**
+     * determines the entropy of an interval
+     * @param interval {@link Interval} to be evaluated
+     * @return double value of "Shannons Entropy".
+     */
     private double computeEntropy(Interval interval) {
         double entropy = 0;
         for(int i = 0; i < targetValues.length; i++) {
@@ -156,6 +180,7 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
         }
         return -1 * entropy;
     }
+
 
     private double log2(double value) {
         if(value == 0D) {
