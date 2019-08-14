@@ -62,8 +62,8 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
         final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs = IntStream
                 .range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
-                .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
+                .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 
         List<Interval> equalClassSplits = equalClassSplit(keyValuePairs);

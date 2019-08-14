@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class MDLPDiscretizer extends AbstractDiscretizer {
 
@@ -22,9 +23,12 @@ public class MDLPDiscretizer extends AbstractDiscretizer {
 
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
+        if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
+            throw new IllegalArgumentException("Only numeric values allowed for this discretizer");
+        }
 
        keyValuePairs = IntStream.range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
                 .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 

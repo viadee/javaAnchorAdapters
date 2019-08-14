@@ -52,7 +52,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         }
 
         keyValuePairs = IntStream.range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
                 .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 
