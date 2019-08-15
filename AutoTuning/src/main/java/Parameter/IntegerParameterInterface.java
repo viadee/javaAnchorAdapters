@@ -8,7 +8,7 @@ public interface IntegerParameterInterface extends NumericalParameter {
     Integer getDefaultValue();
 
     @Override
-    Integer getCurrentValue();
+    Integer getRandomValue();
 
     @Override
     Integer getMinValue();

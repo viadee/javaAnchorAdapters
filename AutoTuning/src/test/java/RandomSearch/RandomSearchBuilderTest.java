@@ -41,7 +41,7 @@ public class RandomSearchBuilderTest {
     }
 
     private Function<TabularInstance, Integer> fitModel() {
-        TabularRandomForestClassifier randomForestModel = new TabularRandomForestClassifier(100);
+        TabularRandomForestClassifier randomForestModel = new TabularRandomForestClassifier(100, true);
         randomForestModel.fit(anchorTabular.getTabularInstances());
         return  randomForestModel;
     }

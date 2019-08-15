@@ -15,8 +15,7 @@ public class IntegerParameterTest {
         IntegerParameter p = new IntegerParameter("name", 0, minValue, maxValue);
 
         // When
-        p.searchRandom();
-        int result = p.getCurrentValue();
+        int result = p.getRandomValue();
         boolean b = result > 30 || result < 0;
 
         // Then

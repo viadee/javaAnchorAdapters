@@ -1,7 +1,11 @@
 package RandomSearch;
 
+import Parameter.CategoricalParameter;
 import Parameter.DiscretizerInstantiation.DiscretizerInstantiation;
+import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
+import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,10 +14,21 @@ import java.util.stream.Stream;
 
 public class DiscretizationSpace {
 
-    List<Discretizer> discretizers;
+    private DiscretizerInstantiation[] instantiations;
+    private List<Discretizer> discretizers;
+    private AnchorTabular anchorTabular;
+
+    public DiscretizationSpace(AnchorTabular anchorTabular, DiscretizerInstantiation... instantiations) {
+        this.instantiations = instantiations;
+        this.discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
+                .flatMap(Stream::of).collect(Collectors.toList());
+        this.anchorTabular = anchorTabular;
+    }
 
     public DiscretizationSpace(DiscretizerInstantiation... instantiations) {
-        discretizers = Stream.of(instantiations).flatMap(d -> (Stream<Discretizer>) d.selectRandom(10).stream()).collect(Collectors.toList());
+        this.instantiations = instantiations;
+        discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
+                .flatMap(Stream::of).collect(Collectors.toList());
     }
 
     public DiscretizationSpace(List<Discretizer> discretizers) {
@@ -29,6 +44,24 @@ public class DiscretizationSpace {
         return this.discretizers.get(0);
     }
 
+    public String transferToConfigurationSpace() {
+        StringBuffer stringBuffer = new StringBuffer(100);
+        for (GenericColumn column : anchorTabular.getColumns()) {
+            String parentParameterName = column.getName() + "_discretizer";
+            if (column.getDiscretizer().getClass() != UniqueValueDiscretizer.class) {
+                stringBuffer.append(
+                        new CategoricalParameter(parentParameterName,
+                                column.getDiscretizer().getClass().getSimpleName(),
+                                Stream.of(instantiations).map(DiscretizerInstantiation::getClassName).flatMap(Stream::of).collect(Collectors.toList()).toArray(new String[0]))
+                                .getParameterString());
+                stringBuffer.append("\n");
+                for (int i = 0; i < instantiations.length; i++) {
+                    stringBuffer.append(instantiations[i].getChildParameterConfig(parentParameterName));
+                }
+            }
+        }
+        return stringBuffer.toString();
+    }
 }
 
 

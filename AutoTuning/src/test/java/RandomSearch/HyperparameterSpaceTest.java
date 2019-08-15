@@ -57,34 +57,6 @@ public class HyperparameterSpaceTest {
     }
 
     @Test
-    public void testClone() {
-        // Given
-        HyperparameterSpace hs = new HyperparameterSpace(Arrays.asList(parameter));
-
-        // When
-        HyperparameterSpace clone = new HyperparameterSpace(hs);
-
-        // Then
-        Assert.assertSame(((IntegerParameter) hs.getParameterByName(name)).getDefaultValue(), ((IntegerParameter) clone.getParameterByName(name)).getDefaultValue());
-        Assert.assertSame(((IntegerParameter) hs.getParameterByName(name)).getMinValue(), ((IntegerParameter) clone.getParameterByName(name)).getMinValue());
-        Assert.assertSame(((IntegerParameter) hs.getParameterByName(name)).getMaxValue(), ((IntegerParameter) clone.getParameterByName(name)).getMaxValue());
-    }
-
-    @Test
-    public void randomizeParameters() {
-        // Given
-        HyperparameterSpace hs = new HyperparameterSpace(Arrays.asList(parameter));
-
-        // When
-        hs.randomizeParameters();
-        int currentValue = ((IntegerParameter) hs.getParameterByName(name)).getCurrentValue();
-
-        // Then
-        for (int i = 0; i < 100; i++)
-            Assert.assertTrue(currentValue >= minValue && currentValue <= maxValue);
-    }
-
-    @Test
     public void getHyperParameters() {
         // Given
         HyperparameterSpace hs = new HyperparameterSpace(Arrays.asList(parameter));

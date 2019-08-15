@@ -8,23 +8,12 @@ public class IntegerParameter implements IntegerParameterInterface {
     private int defaultValue;
     private int minValue;
     private int maxValue;
-    private int currentValue;
-
 
     public IntegerParameter(String name, int defaultValue, int minValue, int maxValue) {
-        this(name, defaultValue, minValue, maxValue, defaultValue);
-    }
-
-    public IntegerParameter(String name, int currentValue) {
-        this(name, -1, -1, -1, currentValue);
-    }
-
-    public IntegerParameter(String name, int defaultValue, int minValue, int maxValue, int currentValue) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.currentValue = currentValue;
     }
 
     public String getType() {
@@ -47,20 +36,9 @@ public class IntegerParameter implements IntegerParameterInterface {
         return maxValue;
     }
 
-    public Integer getCurrentValue() {
-        return currentValue;
-    }
-
-    public void searchRandom() {
-
+    public Integer getRandomValue() {
         Random random = new Random();
-        int newParameter = random.nextInt(this.maxValue - this.minValue) + 1 + this.minValue;
-
-        this.currentValue = newParameter;
-    }
-
-    public IntegerParameter copy() {
-       return new IntegerParameter(name, defaultValue, minValue, maxValue, currentValue);
+        return random.nextInt(this.maxValue - this.minValue) + 1 + this.minValue;
     }
 
     public String getParameterString() {

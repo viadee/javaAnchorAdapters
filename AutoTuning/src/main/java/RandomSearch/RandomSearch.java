@@ -7,6 +7,7 @@ import Parameter.Parameter;
 import Parameter.CategoricalParameter;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
+import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
@@ -66,10 +67,6 @@ public class RandomSearch {
         this.terminationConditionNrEx = terminationConditionNrEx;
 
         this.bestConfigurationSpace = new ConfigurationSpace(configurationSpace);
-
-        if (!startWithDefault)
-            currentConfigurationSpace.getHyperparameterSpace().randomizeParameters();
-
     }
 
     /**
@@ -115,9 +112,6 @@ public class RandomSearch {
                 bestConfigurationSpace = new ConfigurationSpace(currentConfigurationSpace);
                 bestExplanations = rules;
             }
-
-            // randomize all hyperparameters
-            currentConfigurationSpace.getHyperparameterSpace().randomizeParameters();
             nrExecutions++;
         }
 
@@ -130,7 +124,6 @@ public class RandomSearch {
     }
 
     private List<AnchorResult<TabularInstance>> optimizeGlobal() {
-        // execute Coverage Pick of Anchors and get result
         return new CoveragePick<>(anchorBuilder, 10,
                 Executors.newCachedThreadPool(), null)
                 .run(anchorTabular.getTabularInstances(), 20);
@@ -146,9 +139,9 @@ public class RandomSearch {
         DiscretizationSpace ds = currentConfigurationSpace.getDiscretizationSpace();
 
         if (ds != null){
-            for (int i = 0; i < ds.discretizers.size(); i++) {
-                if (anchorTabular.getColumns().get(i).getDiscretizer().getClass() != UniqueValueDiscretizer.class)
-                    anchorTabular.getColumns().get(i).setDiscretizer(ds.getRandomDiscretizer());
+            for (GenericColumn column : anchorTabular.getColumns()) {
+                if (column.getDiscretizer().getClass() != UniqueValueDiscretizer.class)
+                    column.setDiscretizer(ds.getRandomDiscretizer());
             }
         }
     }
@@ -158,36 +151,25 @@ public class RandomSearch {
         HyperparameterSpace hs = currentConfigurationSpace.getHyperparameterSpace();
 
         if (hs.getParameterByName("tau") != null)
-            anchorBuilder.setTau(((NumericalParameter) hs.getParameterByName("tau")).getCurrentValue().intValue());
+            anchorBuilder.setTau(((NumericalParameter) hs.getParameterByName("tau")).getRandomValue().intValue());
         if (hs.getParameterByName("beamsize") != null)
-            anchorBuilder.setBeamSize(((NumericalParameter) hs.getParameterByName("beamsize")).getCurrentValue().intValue());
+            anchorBuilder.setBeamSize(((NumericalParameter) hs.getParameterByName("beamsize")).getRandomValue().intValue());
         if (hs.getParameterByName("delta") != null)
-            anchorBuilder.setDelta(((NumericalParameter) hs.getParameterByName("delta")).getCurrentValue().doubleValue());
+            anchorBuilder.setDelta(((NumericalParameter) hs.getParameterByName("delta")).getRandomValue().doubleValue());
         if (hs.getParameterByName("epsilon") != null)
-            anchorBuilder.setEpsilon(((NumericalParameter) hs.getParameterByName("epsilon")).getCurrentValue().doubleValue());
+            anchorBuilder.setEpsilon(((NumericalParameter) hs.getParameterByName("epsilon")).getRandomValue().doubleValue());
         if (hs.getParameterByName("tauDiscrepancy") != null)
-            anchorBuilder.setTauDiscrepancy(((NumericalParameter) hs.getParameterByName("tauDiscrepancy")).getCurrentValue().doubleValue());
+            anchorBuilder.setTauDiscrepancy(((NumericalParameter) hs.getParameterByName("tauDiscrepancy")).getRandomValue().doubleValue());
         if (hs.getParameterByName("initSampleCount") != null)
-            anchorBuilder.setInitSampleCount(((NumericalParameter) hs.getParameterByName("initSampleCount")).getCurrentValue().intValue());
+            anchorBuilder.setInitSampleCount(((NumericalParameter) hs.getParameterByName("initSampleCount")).getRandomValue().intValue());
     }
 
-    /**
-     * @param performance
-     */
     private boolean checkIfBetter(double performance) {
         return performance > this.bestConfigurationSpace.getPerformance() * this.bestConfigurationSpace.getCoverage() ? true : false;
     }
 
-
     private void visualizeBestHyperparameterSpace(PerformanceMeasures.Measure measure) {
-
-        StringBuilder sb = new StringBuilder();
-        for (Parameter p : this.bestConfigurationSpace.getHyperparameterSpace().getHyperParameters()) {
-            sb.append(p.getName() + ": " + p.getCurrentValue() + System.lineSeparator());
-        }
-
-        System.out.println("==== The best Hyperparameter Space is ====" + System.lineSeparator() +
-                sb.toString() +
+        System.out.println("==== incumbent performance ====" + System.lineSeparator() +
                 "coverage: " + this.bestConfigurationSpace.getCoverage() + System.lineSeparator() +
                 measure.toString().toLowerCase() + ": " + this.bestConfigurationSpace.getPerformance() + System.lineSeparator() +
                 "runtime: " + this.bestConfigurationSpace.getRuntime() + "ms");

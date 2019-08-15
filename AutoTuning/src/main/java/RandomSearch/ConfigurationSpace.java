@@ -1,6 +1,5 @@
 package RandomSearch;
 
-import Parameter.Parameter;
 import ca.ubc.cs.beta.aeatk.parameterconfigurationspace.ParameterConfigurationSpace;
 
 import java.io.StringReader;
@@ -78,17 +77,17 @@ public class ConfigurationSpace {
 
     public ParameterConfigurationSpace toParameterConfigurationSpace() {
 
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuffer stringBuffer = new StringBuffer(300);
 
         if (hyperparameterSpace != null) {
-            for (Parameter p : hyperparameterSpace.getHyperParameters()) {
-                stringBuilder
-                        .append(p.getParameterString())
-                        .append("\n");
-            }
+            stringBuffer
+                    .append(hyperparameterSpace.getConfigurationString())
+                    .append("\n");
         }
 
-        return new ParameterConfigurationSpace(new StringReader(stringBuilder.toString()));
+        if (discretizationSpace != null)
+            stringBuffer.append(discretizationSpace.transferToConfigurationSpace());
 
+        return new ParameterConfigurationSpace(new StringReader(stringBuffer.toString()));
     }
 }

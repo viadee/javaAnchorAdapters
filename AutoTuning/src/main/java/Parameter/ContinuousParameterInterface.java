@@ -8,7 +8,7 @@ public interface ContinuousParameterInterface extends NumericalParameter {
     Double getDefaultValue();
 
     @Override
-    Double getCurrentValue();
+    Double getRandomValue();
 
     @Override
     Double getMinValue();

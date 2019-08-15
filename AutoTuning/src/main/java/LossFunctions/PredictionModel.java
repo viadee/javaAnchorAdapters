@@ -69,8 +69,8 @@ public class PredictionModel {
             }
 
             if (numberMatches == (rule.getCanonicalFeatures().size())) {
-                LOGGER.info("Predict " + rule.getLabel() + " for the instance based on rule " + ruleNumber + ".");
-                return rule.getLabel();
+                LOGGER.info("Predict " + rule.getExplainedInstanceLabel() + " for the instance based on rule " + ruleNumber + ".");
+                return rule.getExplainedInstanceLabel();
             }
         }
 

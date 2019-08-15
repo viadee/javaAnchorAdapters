@@ -34,9 +34,9 @@ public class RandomSearchLogger {
 
         try {
             StringBuilder values = new StringBuilder();
-            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
-                values.append(p.getCurrentValue() + ";");
-            }
+//            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
+//                values.append(p.getCurrentValue() + ";");
+//            }
             values.append(configurationSpace.getRuntime() + ";");
             values.append(configurationSpace.getCoverage() + ";");
             values.append(configurationSpace.getPerformance() + ";");

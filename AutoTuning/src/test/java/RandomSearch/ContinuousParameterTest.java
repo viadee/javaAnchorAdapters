@@ -15,8 +15,7 @@ public class ContinuousParameterTest {
         ContinuousParameter p = new ContinuousParameter("test", 0, minValue, maxValue);
 
         // When
-        p.searchRandom();
-        double result = p.getCurrentValue();
+        double result = p.getRandomValue();
         boolean b = result < 0.5 || result > 0.95;
 
         // Then

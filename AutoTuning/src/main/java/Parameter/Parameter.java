@@ -8,11 +8,7 @@ public interface Parameter {
 
     Object getDefaultValue();
 
-    Object getCurrentValue();
-
-    void searchRandom();
-
-    Parameter copy();
+    Object getRandomValue();
 
     String getParameterString();
 

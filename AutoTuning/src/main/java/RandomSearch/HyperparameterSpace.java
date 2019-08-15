@@ -1,8 +1,8 @@
 package RandomSearch;
 
-import Parameter.Parameter;
-import Parameter.IntegerParameter;
 import Parameter.ContinuousParameter;
+import Parameter.IntegerParameter;
+import Parameter.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,6 @@ public final class HyperparameterSpace {
         parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
 
         this.hyperParameters = parameters;
-    }
-
-    public HyperparameterSpace(HyperparameterSpace copyFrom) {
-        this.hyperParameters = clone(copyFrom.getHyperParameters());
     }
 
     public HyperparameterSpace(List<Parameter> hyperParameters) {
@@ -57,27 +53,17 @@ public final class HyperparameterSpace {
         throw new IllegalArgumentException("No parameter found by the name of " + name);
     }
 
-    /**
-     * Clone a given parameter set space
-     *
-     * @param original the original parameter set
-     * @return the cloned parameter set
-     */
-    public static List<Parameter> clone(List<Parameter> original) {
-        List<Parameter> result = new ArrayList<>();
-        for (Parameter p : original) {
-            result.add(p.copy());
-        }
-        return result;
-    }
 
-    /**
-     * Randomize all parameters in this hyperparameter space
-     */
-    public void randomizeParameters() {
+    public String getConfigurationString() {
+        StringBuffer stringBuffer = new StringBuffer(300);
+
         for (Parameter p : hyperParameters) {
-            p.searchRandom();
+            stringBuffer
+                    .append(p.getParameterString())
+                    .append("\n");
+
         }
+        return stringBuffer.toString();
     }
 
     public List<Parameter> getHyperParameters() {

@@ -6,7 +6,7 @@ public interface NumericalParameter extends Parameter {
     Number getDefaultValue();
 
     @Override
-    Number getCurrentValue();
+    Number getRandomValue();
 
     Number getMinValue();
 

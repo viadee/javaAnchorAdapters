@@ -10,22 +10,12 @@ public class ContinuousParameter implements ContinuousParameterInterface {
     private double defaultValue;
     private double minValue;
     private double maxValue;
-    private double currentValue;
 
     public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue) {
-        this(name, defaultValue, minValue, maxValue, defaultValue);
-    }
-
-    public ContinuousParameter(String name, double currentValue) {
-        this(name, -1, -1, -1 , currentValue);
-    }
-
-    public ContinuousParameter(String name, double defaultValue, double minValue, double maxValue, double currentValue) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.currentValue = currentValue;
     }
 
 
@@ -49,23 +39,12 @@ public class ContinuousParameter implements ContinuousParameterInterface {
         return maxValue;
     }
 
-    public Double getCurrentValue() {
-        return currentValue;
-    }
-
-    public void searchRandom() {
-
+    public Double getRandomValue() {
         Random random = new Random();
         double randomDouble = this.minValue + (this.maxValue - this.minValue) * random.nextDouble();
 
         BigDecimal bd = new BigDecimal(randomDouble).setScale(2, RoundingMode.HALF_UP);
-        double newParameter = bd.doubleValue();
-
-        this.currentValue = newParameter;
-    }
-
-    public ContinuousParameter copy() {
-        return new ContinuousParameter(name, defaultValue, minValue, maxValue, currentValue);
+        return bd.doubleValue();
     }
 
     public String getParameterString() {
