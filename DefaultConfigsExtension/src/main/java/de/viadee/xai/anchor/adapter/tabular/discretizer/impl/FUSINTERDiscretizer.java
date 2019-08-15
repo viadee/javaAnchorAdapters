@@ -1,6 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractSupervisedDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Implementation of the FUSINTER discretization algorithm described by [Zighed, Rabaséda, Rakotomalala 1998]
  */
-public class FUSINTERDiscretizer extends AbstractDiscretizer {
+public class FUSINTERDiscretizer extends AbstractSupervisedDiscretizer {
 
     private final double lambda;
     private final double alpha;
@@ -43,7 +43,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
     }
 
     /**
-     *
      * Implementation of FUSINTER, 1. sort, 2. equalClassIntervals 3. merge if entropy improves
      *
      * @param labels Array of Doubles, classifications of instances
@@ -62,8 +61,8 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
 
         final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs = IntStream
                 .range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
-                .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
+                .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 
         List<Interval> equalClassSplits = equalClassSplit(keyValuePairs);
@@ -71,53 +70,6 @@ public class FUSINTERDiscretizer extends AbstractDiscretizer {
         evaluatedIntervals = evaluateIntervals(equalClassSplits, keyValuePairs);
 
         return evaluatedIntervals.stream().map(Interval::toDiscretizationTransition).collect(Collectors.toList());
-    }
-
-    /**
-     * generates initial Intervals. Values with same class are merged to a Interval. If a value has several classes, all index with
-     * this value will be a separate Interval.
-     *
-     * @param keyValuePairs, Array of Attribute Class.
-     * @return initial List of Intervals
-     */
-    List<Interval> equalClassSplit(final List<AbstractMap.SimpleImmutableEntry<Double, Double>> keyValuePairs) {
-        final List<Interval> resultDiscTrans = new ArrayList<>();
-        int lowerLimit = 0;
-        int amountSameValue = 0;
-        for (int i = 1; i < keyValuePairs.size(); i++) {
-            final Number currentKey = keyValuePairs.get(i).getKey();
-            final Double currentValue = keyValuePairs.get(i).getValue();
-
-            if (!currentKey.equals(keyValuePairs.get(i - 1).getKey())) {
-                amountSameValue = 0;
-                if (!currentValue.equals(keyValuePairs.get(i - 1).getValue())) {
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, keyValuePairs));
-                    lowerLimit = i;
-                }
-            } else {
-                amountSameValue++;
-                if (!currentValue.equals(keyValuePairs.get(i - amountSameValue).getValue())) {
-                    if ( !resultDiscTrans.isEmpty() && resultDiscTrans.get(resultDiscTrans.size() - 1).getEnd() != i - amountSameValue - 1) {
-                        resultDiscTrans.add(new Interval(lowerLimit, i - 1 - amountSameValue, keyValuePairs));
-                    }
-                    lowerLimit = i - amountSameValue;
-                    i++;
-                    if(i == keyValuePairs.size()){
-                        break;
-                    }
-                    while (keyValuePairs.get(i).getKey().equals(keyValuePairs.get(i - 1).getKey())) {
-                        i++;
-                    }
-
-                    resultDiscTrans.add(new Interval(lowerLimit, i - 1, keyValuePairs));
-                    lowerLimit = i;
-                    amountSameValue = 0;
-                }
-            }
-        }
-        resultDiscTrans.add(new Interval(lowerLimit, keyValuePairs.size() - 1, keyValuePairs));
-
-        return resultDiscTrans;
     }
 
     private List<Interval> evaluateIntervals(List<Interval> equalClassSplits,

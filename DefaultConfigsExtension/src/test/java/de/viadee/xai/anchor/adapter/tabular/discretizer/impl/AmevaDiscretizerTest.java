@@ -186,7 +186,7 @@ class AmevaDiscretizerTest {
                 {30.0, 0}
         };
         AmevaDiscretizer amevaDiscretizer = new AmevaDiscretizer();
-        List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs = Arrays.stream(values).map(value -> new AbstractMap.SimpleImmutableEntry<>((Number) value[0], value[1].doubleValue()))
+        List<AbstractMap.SimpleImmutableEntry<Number, Double>> keyValuePairs = Arrays.stream(values).map(value -> new AbstractMap.SimpleImmutableEntry<>( value[0], value[1].doubleValue()))
                 .sorted(Comparator.comparing(entry -> entry.getKey().doubleValue()))
                 .collect(Collectors.toList());
 

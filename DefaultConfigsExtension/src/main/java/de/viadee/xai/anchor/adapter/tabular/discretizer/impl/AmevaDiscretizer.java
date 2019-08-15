@@ -1,6 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractSupervisedDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Interval;
 
@@ -13,7 +14,7 @@ import java.util.stream.Stream;
 /**
  * Implementation of the Ameva discretization algorithm described by [Gonzales-Abril, Cuberos, Velasco, Ortega 2009]
  */
-public class AmevaDiscretizer extends AbstractDiscretizer {
+public class AmevaDiscretizer extends AbstractSupervisedDiscretizer {
 
     private Double[] targetValues;
     private long[] targetValueDistribution;
@@ -52,7 +53,7 @@ public class AmevaDiscretizer extends AbstractDiscretizer {
         }
 
         keyValuePairs = IntStream.range(0, values.length)
-                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>((Double) values[i], labels[i]))
+                .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(((Number) values[i]).doubleValue(), labels[i]))
                 .sorted(Comparator.comparing(AbstractMap.SimpleImmutableEntry::getKey))
                 .collect(Collectors.toList());
 
