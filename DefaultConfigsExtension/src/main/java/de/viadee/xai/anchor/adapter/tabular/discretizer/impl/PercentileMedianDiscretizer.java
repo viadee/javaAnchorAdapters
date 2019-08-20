@@ -38,35 +38,6 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
         this.classReduction = classReduction;
     }
 
-    private static double medianIndexValue(List<Number> list) {
-        if (list.size() % 2 == 0) {
-            return (list.get(list.size() / 2).doubleValue() + list.get(list.size() / 2 - 1).doubleValue()) / 2;
-        } else {
-            return list.get(list.size() / 2).doubleValue();
-        }
-    }
-
-    private static void distinctMinAndMaxValues(List<Number> numbers, List<DiscretizationTransition> transitions) {
-        for (DiscretizationTransition transition : transitions) {
-            Optional<DiscretizationTransition> relationWhereMinIsMaxOfOther = transitions.stream()
-                    .filter(oTransition -> Objects.equals(
-                            ((NumericDiscretizationOrigin) transition.getDiscretizationOrigin()).getMaxValue(),
-                            ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue()))
-                    .filter(oTransition -> transition != oTransition)
-                    .findFirst();
-
-            if (relationWhereMinIsMaxOfOther.isPresent()) {
-                final DiscretizationTransition oTransition = relationWhereMinIsMaxOfOther.get();
-                numbers.stream().map(Number::doubleValue)
-                        .filter((number ->
-                                number > ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue().doubleValue()))
-                        .min(Double::compareTo)
-                        .ifPresent(newMin -> ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin())
-                                .setMinValue(newMin));
-            }
-        }
-    }
-
     @Override
     protected List<DiscretizationTransition> fitCreateTransitions(Serializable[] values, Double[] labels) {
         if (Stream.of(values).anyMatch(v -> !(v instanceof Number))) {
@@ -101,13 +72,35 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
 
         if (this.classReduction) {
             removeDuplicateDiscretizedValues(result);
+            removeMaxIsMaxOfOther(result);
         }
-
         distinctMinAndMaxValues(numbers, result);
 
         return result;
     }
 
+    /**
+     * removes a transition if its max value equals the max value of the previous transition. This merges the two intervals
+     * ]1-5) [5-5[  will be changed to ]1-5[
+     * @param transitions transitions before remove
+     */
+    private void removeMaxIsMaxOfOther(List<DiscretizationTransition> transitions) {
+        List<DiscretizationTransition> removableTransitions = new ArrayList<>(10);
+
+        int index = 0;
+        for (DiscretizationTransition transition : transitions) {
+            for (int i = index + 1; i < transitions.size(); i++) {
+                if (((NumericDiscretizationOrigin) transition.getDiscretizationOrigin()).getMaxValue()
+                        .equals( ((NumericDiscretizationOrigin) transitions.get(i).getDiscretizationOrigin()).getMaxValue())){
+                    removableTransitions.add(transitions.get(i));
+                }
+            }
+            index++;
+        }
+        if (!removableTransitions.isEmpty()) {
+            transitions.removeAll(removableTransitions);
+        }
+    }
 
     private void removeDuplicateDiscretizedValues(List<DiscretizationTransition> transitions) {
 
@@ -123,7 +116,7 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
             for (Map.Entry<Double, Long> entry : valueCount.entrySet()) {
                 if (entry.getValue() > 1) {
                     List<DiscretizationTransition> discretizerRelationsWithSameCatValue = transitions.stream()
-                            .filter((rel) -> entry.getKey().equals(rel.getDiscretizedValue()))
+                            .filter(rel -> entry.getKey().equals(rel.getDiscretizedValue()))
                             .collect(Collectors.toList());
                     Optional<Double> conditionMinOptional = discretizerRelationsWithSameCatValue.stream()
                             .map(o -> ((NumericDiscretizationOrigin) o.getDiscretizationOrigin())
@@ -149,6 +142,40 @@ public class PercentileMedianDiscretizer extends AbstractDiscretizer {
                         transitions.sort(Comparator.comparingDouble(DiscretizationTransition::getDiscretizedValue));
                     }
                 }
+            }
+        }
+    }
+
+    private static double medianIndexValue(List<Number> list) {
+        if (list.size() % 2 == 0) {
+            return (list.get(list.size() / 2).doubleValue() + list.get(list.size() / 2 - 1).doubleValue()) / 2;
+        } else {
+            return list.get(list.size() / 2).doubleValue();
+        }
+    }
+
+    /**
+     * as the apply function checks inclusively, neighboring transitions need to be distinct in max and min value. The
+     * min value will be incremented to the next value.
+     * @param numbers values to be discretized
+     * @param transitions transitions to be evaluated
+     */
+    private static void distinctMinAndMaxValues(List<Number> numbers, List<DiscretizationTransition> transitions) {
+        for (DiscretizationTransition transition : transitions) {
+            Optional<DiscretizationTransition> relationWhereMinIsMaxOfOther = transitions.stream()
+                    .filter(oTransition -> Objects.equals(
+                            ((NumericDiscretizationOrigin) transition.getDiscretizationOrigin()).getMaxValue(),
+                            ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue()))
+                    .filter(oTransition -> transition != oTransition)
+                    .findFirst();
+
+            if (relationWhereMinIsMaxOfOther.isPresent()) {
+                final DiscretizationTransition oTransition = relationWhereMinIsMaxOfOther.get();
+                numbers.stream().map(Number::doubleValue)
+                        .filter((number ->
+                                number > ((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin()).getMinValue().doubleValue()))
+                        .min(Double::compareTo)
+                        .ifPresent(((NumericDiscretizationOrigin) oTransition.getDiscretizationOrigin())::setMinValue);
             }
         }
     }
