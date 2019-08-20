@@ -4,6 +4,7 @@ import de.viadee.xai.anchor.algorithm.PerturbationFunction;
 import de.viadee.xai.anchor.algorithm.global.ReconfigurablePerturbationFunction;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Implementation of the {@link PerturbationFunction} for arbitrary
@@ -21,6 +22,8 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
 
     private final TabularInstance instance;
     private final TabularInstance[] perturbationData;
+
+    private final TabularInstance[][] reverseIndex;
 
     private Long seed;
     private Random random;
@@ -51,6 +54,26 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
             this.seed = seed;
             this.random = new Random(this.seed);
         }
+        reverseIndex = createReverseIndex(instance, perturbationData);
+    }
+
+    /**
+     * @param instance         the explained instance
+     * @param perturbationData the perturbation data to sample new values from
+     * @return a 2D array containing for each index an array with all instances that match the discretized values.
+     * These instances can be used to draw transformed values from and thus to change a fixed feature's transformed value
+     */
+    private static TabularInstance[][] createReverseIndex(TabularInstance instance,
+                                                          TabularInstance[] perturbationData) {
+        final TabularInstance[][] result = new TabularInstance[instance.getInstance().length][];
+        for (int i = 0; i < instance.getInstance().length; i++) {
+            final int index = i;
+            final Double discretizedColumnValue = instance.getInstance()[index];
+            result[i] = Stream.of(perturbationData)
+                    .filter(pert -> discretizedColumnValue.equals(pert.getInstance()[index]))
+                    .toArray(TabularInstance[]::new);
+        }
+        return result;
     }
 
 
@@ -68,21 +91,27 @@ public class TabularPerturbationFunction implements ReconfigurablePerturbationFu
             shuffledPerturbations.addAll(Arrays.asList(this.perturbationData));
 
         // TODO instead of shuffle rather use ThreadLocalRandom?
-        if (this.random == null) {
-            Collections.shuffle(shuffledPerturbations);
-        } else {
-            Collections.shuffle(shuffledPerturbations, this.random);
-        }
+        final Random rnd = (this.random == null)
+                ? new Random()
+                : this.random;
+
+        Collections.shuffle(shuffledPerturbations, rnd);
 
         List<TabularInstance> rawResult = new ArrayList<>();
         List<boolean[]> featuresChanged = new ArrayList<>();
         for (int i = 0; i < nrPerturbations; i++) {
             final TabularInstance instanceToClone = shuffledPerturbations.get(i);
             final TabularInstance perturbedInstance = new TabularInstance(instanceToClone);
-            // Copy all fixed features
+            // Copy all fixed features. If discretization is used, mutate transformed value within its class
             for (Integer featureId : immutableFeaturesIdx) {
                 perturbedInstance.getInstance()[featureId] = instance.getInstance()[featureId];
-                perturbedInstance.getTransformedInstance()[featureId] = instance.getTransformedInstance()[featureId];
+                final TabularInstance[] sampleFrom = this.reverseIndex[featureId];
+                if (sampleFrom.length < 1) {
+                    perturbedInstance.getTransformedInstance()[featureId] = instance.getTransformedInstance()[featureId];
+                } else {
+                    perturbedInstance.getTransformedInstance()[featureId] = sampleFrom[rnd.nextInt(sampleFrom.length)]
+                            .getTransformedValue(featureId);
+                }
             }
             rawResult.add(perturbedInstance);
             boolean[] tempFeatureChanged = new boolean[perturbedInstance.getFeatureCount()];

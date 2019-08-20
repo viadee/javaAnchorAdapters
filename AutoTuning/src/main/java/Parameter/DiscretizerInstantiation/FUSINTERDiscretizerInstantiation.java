@@ -15,7 +15,7 @@ public class FUSINTERDiscretizerInstantiation implements DiscretizerInstantiatio
 
         List<FUSINTERDiscretizer> discretizers = new ArrayList<>();
 
-        IntStream.range(0, 100).mapToDouble(i -> i / 100D).forEach(lambda ->
+        IntStream.range(1, 100).mapToDouble(i -> i / 100D).forEach(lambda ->
                 IntStream.range(0, 100).mapToDouble(j -> j / 100D).forEach(alpha ->
                         discretizers.add(new FUSINTERDiscretizer(lambda, alpha))));
 

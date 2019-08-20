@@ -1,4 +1,4 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import org.junit.jupiter.api.Test;

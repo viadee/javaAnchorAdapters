@@ -1,6 +1,9 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
+import de.viadee.xai.anchor.adapter.tabular.discretizer.AbstractDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.NumericDiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.ManualDiscretizer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
@@ -30,7 +33,7 @@ class ManualDiscretizerTest {
         assertEquals(5, getTransitionSize(manualDiscretizer));
 
         // Adding a class from min to boundary is expected behavior
-        assertEquals(20D, ((NumericDiscretizationOrigin) manualDiscretizer
+        Assertions.assertEquals(20D, ((NumericDiscretizationOrigin) manualDiscretizer
                 .getTransition(20D).getDiscretizationOrigin()).getMinValue());
         assertEquals(20D, ((NumericDiscretizationOrigin) manualDiscretizer
                 .getTransition(20D).getDiscretizationOrigin()).getMaxValue());

@@ -1,6 +1,6 @@
-package de.viadee.xai.anchor.adapter.tabular.discretizer;
+package de.viadee.xai.anchor.adapter.tabular.discretizer.impl;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.PercentileMedianDiscretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationTransition;
 import org.junit.jupiter.api.Test;
 
 import java.io.Serializable;
@@ -15,6 +15,7 @@ class PercentileMedianDiscretizerTest {
 
     @Test
     public void testErrorThrownOnNonNumbers() {
+
         PercentileMedianDiscretizer percentileMedianDiscretizer = new PercentileMedianDiscretizer(3, false);
         assertThrows(IllegalArgumentException.class, () ->
                 percentileMedianDiscretizer.fit(new Serializable[]{1, 2, "thisshouldbreakeverything"}));

@@ -38,7 +38,7 @@ public class TitanicInitializer implements DataInitializer {
                     .addColumn(IntegerColumn.fromStringInput("Parch"))
                     .addColumn(new StringColumn("Ticket"))
                     .addColumn(DoubleColumn.fromStringInput("Fare", -1, discretizers != null ? discretizers.get("Fare") : new PercentileMedianDiscretizerInstantiation().getDefaultDiscretizer()))
-                    .addColumn(new StringColumn("Cabin", Arrays.asList(new ReplaceEmptyTransformer(false), new ReplaceNonEmptyTransformer(true)), null))
+                    .addColumn(new StringColumn("Cabin"))
                     .addColumn(new StringColumn("Embarked"))
                     .build(data, false, false);
         } catch (IOException e) {
