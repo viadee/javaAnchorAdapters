@@ -21,6 +21,11 @@ public class PercentileMedianDiscretizerInstantiation implements DiscretizerInst
     }
 
     @Override
+    public PercentileMedianDiscretizer getDefaultDiscretizer() {
+        return new PercentileMedianDiscretizer((int) Math.sqrt(maxClassCount));
+    }
+
+    @Override
     public String getChildParameterConfig(String parentName) {
         IntegerParameter classCount = new IntegerParameter(parentName + "_" + getClassName(), (int) Math.sqrt(maxClassCount), minClassCount, maxClassCount);
 

@@ -13,6 +13,11 @@ public class AmevaDiscretizerInstantiation implements DiscretizerInstantiation<A
     }
 
     @Override
+    public AmevaDiscretizer getDefaultDiscretizer() {
+        return new AmevaDiscretizer();
+    }
+
+    @Override
     public String getChildParameterConfig(String parentName) {
         return "";
     }

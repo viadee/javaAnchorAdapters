@@ -56,4 +56,6 @@ public interface DiscretizerInstantiation<T extends Discretizer> {
      */
     T constructDiscretizer(List<Map.Entry<String, String>> parameters);
 
+    T getDefaultDiscretizer();
+
 }

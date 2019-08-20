@@ -21,6 +21,11 @@ public class EqualSizeDiscretizerInstantiation implements DiscretizerInstantiati
     }
 
     @Override
+    public EqualSizeDiscretizer getDefaultDiscretizer() {
+        return new EqualSizeDiscretizer();
+    }
+
+    @Override
     public String getClassName() {
         return EqualSizeDiscretizer.class.getSimpleName();
     }

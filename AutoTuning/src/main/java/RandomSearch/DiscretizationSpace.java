@@ -1,6 +1,7 @@
 package RandomSearch;
 
 import Parameter.CategoricalParameter;
+import DataInitialization.DataInitializer;
 import Parameter.DiscretizerInstantiation.DiscretizerInstantiation;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
@@ -18,11 +19,11 @@ public class DiscretizationSpace {
     private List<Discretizer> discretizers;
     private AnchorTabular anchorTabular;
 
-    public DiscretizationSpace(AnchorTabular anchorTabular, DiscretizerInstantiation... instantiations) {
+    public DiscretizationSpace(DataInitializer dataInitializer, DiscretizerInstantiation... instantiations) {
         this.instantiations = instantiations;
         this.discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
                 .flatMap(Stream::of).collect(Collectors.toList());
-        this.anchorTabular = anchorTabular;
+        this.anchorTabular = dataInitializer.createTabular(null);
     }
 
     public DiscretizationSpace(DiscretizerInstantiation... instantiations) {

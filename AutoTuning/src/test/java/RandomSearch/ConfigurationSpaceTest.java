@@ -29,7 +29,7 @@ public class ConfigurationSpaceTest {
     @Test
     public void testToParameterConfigurationSpaceOnlyHyperparameters() {
         // Given
-        ConfigurationSpace configurationSpace = new ConfigurationSpace(new HyperparameterSpace());
+        ConfigurationSpace configurationSpace = new ConfigurationSpace(HyperparameterSpace.createDefaultHyperparameterSpace());
 
         // When
         ParameterConfigurationSpace parameterConfigurationSpace = configurationSpace.toParameterConfigurationSpace();

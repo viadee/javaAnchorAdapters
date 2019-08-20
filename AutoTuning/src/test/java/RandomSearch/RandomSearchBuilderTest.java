@@ -21,7 +21,7 @@ public class RandomSearchBuilderTest {
     private AnchorTabular anchorTabular = setTabular();
     private Function<TabularInstance, Integer> classificationFunction = fitModel();
     private AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular.createDefaultBuilder(classificationFunction, anchorTabular.getTabularInstances()[1]);
-    private ConfigurationSpace configurationSpace = new ConfigurationSpace(new HyperparameterSpace());
+    private ConfigurationSpace configurationSpace = new ConfigurationSpace(HyperparameterSpace.createDefaultHyperparameterSpace());
     private long timeTermination = 200;
     private int executionTermination = 10;
     private String scenario = "Test";
@@ -49,8 +49,7 @@ public class RandomSearchBuilderTest {
     @Test
     public void testRandomSearchBuilder() {
         new RandomSearchBuilder()
-                .setAnchorTabular(anchorTabular)
-                .setAnchorBuilder(anchorBuilder)
+                .setExplainedInstanceIndex(0)
                 .setConfigurationSpace(configurationSpace)
                 .setMeasure(measure)
                 .setClassificationFunction(classificationFunction)
@@ -65,7 +64,7 @@ public class RandomSearchBuilderTest {
     @Test
     public void testRandomSearchBuilderWithConstructor() {
         new RandomSearchBuilder()
-                .createDefaultBuilder(anchorTabular, anchorBuilder, classificationFunction, configurationSpace);
+                .createDefaultBuilder(anchorTabular, 0, classificationFunction, configurationSpace);
     }
 
 

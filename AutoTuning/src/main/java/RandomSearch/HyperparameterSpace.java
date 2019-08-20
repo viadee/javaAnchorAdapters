@@ -11,8 +11,16 @@ public final class HyperparameterSpace {
 
     private List<Parameter> hyperParameters;
 
-    public HyperparameterSpace() {
+    public HyperparameterSpace(List<Parameter> hyperParameters) {
+        this.hyperParameters = hyperParameters;
+    }
 
+    /**
+     * Create the default Hyperparameterspace for the Anchors algorithm
+     *
+     * @return the instance of the HyperparameterSpace
+     */
+    public static HyperparameterSpace createDefaultHyperparameterSpace() {
         List<Parameter> parameters = new ArrayList<Parameter>();
 
         parameters.add(new IntegerParameter("beamsize", 2, 1, 30));
@@ -22,11 +30,7 @@ public final class HyperparameterSpace {
         parameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
         parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
 
-        this.hyperParameters = parameters;
-    }
-
-    public HyperparameterSpace(List<Parameter> hyperParameters) {
-        this.hyperParameters = hyperParameters;
+        return new HyperparameterSpace(parameters);
     }
 
     /**
@@ -54,16 +58,22 @@ public final class HyperparameterSpace {
     }
 
 
+    /**
+     * Get the hyperparameters as String format for the SMAC algorithm. The format for the String for each
+     * parameter is described in their respective class.
+     *
+     * @return the parameters in the String format needed by SMAC
+     */
     public String getConfigurationString() {
-        StringBuffer stringBuffer = new StringBuffer(300);
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (Parameter p : hyperParameters) {
-            stringBuffer
+            stringBuilder
                     .append(p.getParameterString())
                     .append("\n");
 
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 
     public List<Parameter> getHyperParameters() {

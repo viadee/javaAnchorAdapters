@@ -38,3 +38,4 @@ src/main/resources
 /src/main/java/main.java
 /src/main/java/TitanicDataset.java
 /src/main/java/HellaDataset.java
+/src/main/java/H2OTitanicWrapper.java

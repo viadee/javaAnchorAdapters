@@ -19,10 +19,10 @@ public class RandomSearchLogger {
             File f = new File("rundata_" + new Date().getTime());
             fileWriterCSV = new FileWriter(directory + scenario + File.separator + f.getName() + ".csv");
             StringBuilder header = new StringBuilder();
-            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
-                header.append(p.getName() + ";");
-            }
-            fileWriterCSV.write(header.toString() + "runtime,coverage," + measure.toString().toLowerCase() + ",best rule(s)" + "\n");
+//            for (Parameter p : configurationSpace.getHyperparameterSpace().getHyperParameters()) {
+//                header.append(p.getName() + ";");
+//            }
+            fileWriterCSV.write(header.toString() + "runtime;coverage;" + measure.toString().toLowerCase() + ";best rule(s)" + "\n");
 
         } catch (IOException e) {
             throw new IllegalStateException("Error occurred creating file", e);

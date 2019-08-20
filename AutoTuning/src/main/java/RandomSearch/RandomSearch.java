@@ -1,10 +1,9 @@
 package RandomSearch;
 
-import LossFunctions.PredictionModel;
 import LossFunctions.PerformanceMeasures;
+import LossFunctions.PredictionModel;
+import DataInitialization.DataInitializer;
 import Parameter.NumericalParameter;
-import Parameter.Parameter;
-import Parameter.CategoricalParameter;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
@@ -16,7 +15,9 @@ import de.viadee.xai.anchor.algorithm.global.CoveragePick;
 import de.viadee.xai.anchor.algorithm.util.ParameterValidation;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
@@ -26,19 +27,20 @@ import java.util.function.Function;
 public class RandomSearch {
 
     private final String scenario;
-    private final AnchorConstructionBuilder<TabularInstance> anchorBuilder;
-    private final AnchorTabular anchorTabular;
+    private final int explainedInstanceIndex;
     private final Function<TabularInstance, Integer> classificationFunction;
     private final long terminationConditionInSec;
     private final int terminationConditionNrEx;
     private final PerformanceMeasures.Measure measure;
+    private final DataInitializer data;
+    private AnchorTabular anchorTabular;
     private ConfigurationSpace currentConfigurationSpace;
     private ConfigurationSpace bestConfigurationSpace;
     private List<AnchorResult<TabularInstance>> bestExplanations;
 
     RandomSearch(String scenario,
-                 AnchorConstructionBuilder<TabularInstance> anchorBuilder,
-                 AnchorTabular anchorTabular,
+                 int explainedInstanceIndex,
+                 DataInitializer data,
                  ConfigurationSpace configurationSpace,
                  long terminationConditionInSec,
                  int terminationConditionNrEx,
@@ -48,18 +50,18 @@ public class RandomSearch {
 
         if (configurationSpace == null)
             throw new IllegalArgumentException("Configuration space " + ParameterValidation.NULL_MESSAGE);
-        if (anchorBuilder == null)
-            throw new IllegalArgumentException("AnchorConstructionBuilder " + ParameterValidation.NULL_MESSAGE);
-        if (anchorTabular == null)
-            throw new IllegalArgumentException("AnchorTabular " + ParameterValidation.NULL_MESSAGE);
+        if (explainedInstanceIndex == 0)
+            throw new IllegalArgumentException("explainedInstanceIndex " + ParameterValidation.NULL_MESSAGE);
+        if (data == null)
+            throw new IllegalArgumentException("Data " + ParameterValidation.NULL_MESSAGE);
         if (classificationFunction == null)
             throw new IllegalArgumentException("Classification function " + ParameterValidation.NULL_MESSAGE);
         if (terminationConditionInSec == 0 && terminationConditionNrEx == 0)
             throw new IllegalArgumentException("No termination condition defined to run random search");
 
         this.scenario = scenario;
-        this.anchorBuilder = anchorBuilder;
-        this.anchorTabular = anchorTabular;
+        this.explainedInstanceIndex = explainedInstanceIndex;
+        this.data = data;
         this.currentConfigurationSpace = configurationSpace;
         this.classificationFunction = classificationFunction;
         this.measure = measure;
@@ -67,6 +69,7 @@ public class RandomSearch {
         this.terminationConditionNrEx = terminationConditionNrEx;
 
         this.bestConfigurationSpace = new ConfigurationSpace(configurationSpace);
+        this.anchorTabular = data.createTabular(null);
     }
 
     /**
@@ -88,9 +91,14 @@ public class RandomSearch {
             long runtimeStart = System.currentTimeMillis();
 
             setNewDiscretizers();
-            setNewParameters();
 
-            List<AnchorResult<TabularInstance>> rules = global ? optimizeGlobal() : optimizeLocal();
+            TabularInstance explainedInstance = anchorTabular.getTabularInstances()[explainedInstanceIndex];
+            final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
+                    .createDefaultBuilder(classificationFunction, explainedInstance);
+
+            setNewParameters(anchorBuilder);
+
+            List<AnchorResult<TabularInstance>> rules = global ? optimizeGlobal(anchorBuilder) : optimizeLocal(anchorBuilder);
 
             // set runtime of current Anchors run
             currentConfigurationSpace.setRuntime(System.currentTimeMillis() - runtimeStart);
@@ -104,7 +112,7 @@ public class RandomSearch {
 
             // log results
             logger.addValuesToLogging(currentConfigurationSpace);
-            //logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(rules));
+            logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeGlobalResults(rules));
             logger.endLine();
 
             // check if performance of current space is the best, if yes set current space as best space
@@ -123,13 +131,13 @@ public class RandomSearch {
         System.out.println(anchorTabular.getVisualizer().visualizeGlobalResults(bestExplanations));
     }
 
-    private List<AnchorResult<TabularInstance>> optimizeGlobal() {
+    private List<AnchorResult<TabularInstance>> optimizeGlobal(AnchorConstructionBuilder<TabularInstance> anchorBuilder) {
         return new CoveragePick<>(anchorBuilder, 10,
                 Executors.newCachedThreadPool(), null)
                 .run(anchorTabular.getTabularInstances(), 20);
     }
 
-    private List<AnchorResult<TabularInstance>> optimizeLocal() {
+    private List<AnchorResult<TabularInstance>> optimizeLocal(AnchorConstructionBuilder<TabularInstance> anchorBuilder) {
         final AnchorResult<TabularInstance> localExplanation = anchorBuilder.build().constructAnchor();
         return Arrays.asList(localExplanation);
     }
@@ -137,16 +145,19 @@ public class RandomSearch {
     private void setNewDiscretizers() {
 
         DiscretizationSpace ds = currentConfigurationSpace.getDiscretizationSpace();
+        Map<String, Discretizer> discretizerMap = new HashMap<>();
 
-        if (ds != null){
+        if (ds != null) {
             for (GenericColumn column : anchorTabular.getColumns()) {
                 if (column.getDiscretizer().getClass() != UniqueValueDiscretizer.class)
-                    column.setDiscretizer(ds.getRandomDiscretizer());
+                    discretizerMap.put(column.getName(), ds.getRandomDiscretizer());
             }
         }
+
+        this.anchorTabular = data.createTabular(discretizerMap);
     }
 
-    private void setNewParameters() {
+    private void setNewParameters(AnchorConstructionBuilder<TabularInstance> anchorBuilder) {
 
         HyperparameterSpace hs = currentConfigurationSpace.getHyperparameterSpace();
 

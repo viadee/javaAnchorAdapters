@@ -1,9 +1,9 @@
 package RandomSearch;
 
 import LossFunctions.PerformanceMeasures;
+import DataInitialization.DataInitializer;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
-import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 
 import java.util.function.Function;
 
@@ -14,8 +14,9 @@ import java.util.function.Function;
  */
 public class RandomSearchBuilder {
 
-    private AnchorConstructionBuilder<TabularInstance> anchorBuilder;
+    private int explainedInstanceIndex;
     private AnchorTabular anchorTabular;
+    private DataInitializer data;
     private Function<TabularInstance, Integer> classificationFunction;
     private ConfigurationSpace configurationSpace;
     private long timeTermination;
@@ -38,18 +39,18 @@ public class RandomSearchBuilder {
     /**
      * Instantiates a enw RandomSearch builder
      *
-     * @param anchorBuilder          the anchor builder
+     * @param explainedInstanceIndex the index of the explained instance
      * @param anchorTabular          the anchor tabular of the dataset
      * @param classificationFunction the classification function used
      * @param configurationSpace     the full configuration space to optimize
      * @param executionTermination   the termination condition in number of executions
      */
-    private RandomSearchBuilder(AnchorConstructionBuilder<TabularInstance> anchorBuilder,
+    private RandomSearchBuilder(int explainedInstanceIndex,
                                 AnchorTabular anchorTabular,
                                 Function<TabularInstance, Integer> classificationFunction,
                                 ConfigurationSpace configurationSpace,
                                 int executionTermination) {
-        this.anchorBuilder = anchorBuilder;
+        this.explainedInstanceIndex = explainedInstanceIndex;
         this.anchorTabular = anchorTabular;
         this.classificationFunction = classificationFunction;
         this.configurationSpace = configurationSpace;
@@ -59,41 +60,17 @@ public class RandomSearchBuilder {
     /**
      * Create the Default Constructor
      *
-     * @param anchorBuilder          the anchor builder
+     * @param explainedInstanceIndex the index of the explained instance
      * @param anchorTabular          the anchor tabular of the dataset
      * @param classificationFunction the classification function used
      * @param configurationSpace     the full configuration space to optimize
      * @return the {@link RandomSearchBuilder}
      */
     public RandomSearch createDefaultBuilder(AnchorTabular anchorTabular,
-                                                    AnchorConstructionBuilder<TabularInstance> anchorBuilder,
-                                                    Function<TabularInstance, Integer> classificationFunction,
-                                                    ConfigurationSpace configurationSpace) {
-        return new RandomSearchBuilder(anchorBuilder, anchorTabular,classificationFunction,configurationSpace, 30).build();
-    }
-
-    /**
-     * Sets the anchor Builder
-     *
-     * @param anchorBuilder the anchor builder
-     * @return the current {@link RandomSearchBuilder} for chaining
-     */
-    public RandomSearchBuilder setAnchorBuilder(AnchorConstructionBuilder<TabularInstance> anchorBuilder) {
-        this.anchorBuilder = anchorBuilder;
-
-        return this;
-    }
-
-    /**
-     * Sets the anchor tabular
-     *
-     * @param anchorTabular the anchor tabular of given dataset
-     * @return the current {@link RandomSearchBuilder} for chaining
-     */
-    public RandomSearchBuilder setAnchorTabular(AnchorTabular anchorTabular) {
-        this.anchorTabular = anchorTabular;
-
-        return this;
+                                             int explainedInstanceIndex,
+                                             Function<TabularInstance, Integer> classificationFunction,
+                                             ConfigurationSpace configurationSpace) {
+        return new RandomSearchBuilder(explainedInstanceIndex, anchorTabular, classificationFunction, configurationSpace, 30).build();
     }
 
     /**
@@ -183,12 +160,34 @@ public class RandomSearchBuilder {
     }
 
     /**
+     * Sets the index of the instance that is to be explained
+     * <p>
+     * If not set the used index is 0
+     *
+     * @param explainedInstanceIndex the index of the explained instance
+     * @return the current {@link RandomSearchBuilder} for chaining
+     */
+    public RandomSearchBuilder setExplainedInstanceIndex(int explainedInstanceIndex) {
+        this.explainedInstanceIndex = explainedInstanceIndex;
+
+        return this;
+    }
+
+
+    public RandomSearchBuilder setData(DataInitializer data) {
+        this.data = data;
+
+        return this;
+    }
+
+
+    /**
      * Build the Random Search instance setting all values or their pre-configures default values.
      *
      * @return the Random Search instance
      */
     public RandomSearch build() {
-        return new RandomSearch(scenario, anchorBuilder, anchorTabular, configurationSpace, timeTermination, executionTermination, startWithDefault, classificationFunction, measure);
+        return new RandomSearch(scenario, explainedInstanceIndex, data, configurationSpace, timeTermination, executionTermination, startWithDefault, classificationFunction, measure);
     }
 
 

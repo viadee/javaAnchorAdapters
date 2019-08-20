@@ -23,6 +23,11 @@ public class FUSINTERDiscretizerInstantiation implements DiscretizerInstantiatio
     }
 
     @Override
+    public FUSINTERDiscretizer getDefaultDiscretizer() {
+        return new FUSINTERDiscretizer();
+    }
+
+    @Override
     public String getChildParameterConfig(String parentName) {
         ContinuousParameter lamda = new ContinuousParameter(parentName + "_" + getClassName() + "_0", 1.0, 0, 1);
         ContinuousParameter alpha = new ContinuousParameter(parentName + "_" + getClassName() + "_1", 0.975, 0, 1);

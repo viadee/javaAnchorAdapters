@@ -22,7 +22,7 @@ public class HyperparameterSpaceTest {
     @Test
     public void testAddParameter() {
         // Given
-        HyperparameterSpace hs = new HyperparameterSpace();
+        HyperparameterSpace hs = HyperparameterSpace.createDefaultHyperparameterSpace();
 
         // When
         hs.addParameter(parameter);
