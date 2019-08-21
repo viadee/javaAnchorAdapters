@@ -1,12 +1,11 @@
 package Parameter.DiscretizerInstantiation;
 
 import Parameter.IntegerParameter;
-
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.EqualSizeDiscretizer;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.Random;
 
 public class EqualSizeDiscretizerInstantiation implements DiscretizerInstantiation<EqualSizeDiscretizer> {
 
@@ -16,8 +15,8 @@ public class EqualSizeDiscretizerInstantiation implements DiscretizerInstantiati
     }
 
     @Override
-    public EqualSizeDiscretizer[] getAllDiscretizers() {
-        return IntStream.range(1, valueCount).mapToObj(EqualSizeDiscretizer::new).toArray(EqualSizeDiscretizer[]::new);
+    public EqualSizeDiscretizer getRandomDiscretizer() {
+        return new EqualSizeDiscretizer(new Random().nextInt(valueCount) + 1);
     }
 
     @Override

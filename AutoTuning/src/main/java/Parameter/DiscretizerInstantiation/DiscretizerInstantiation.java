@@ -7,26 +7,11 @@ import java.util.*;
 public interface DiscretizerInstantiation<T extends Discretizer> {
 
     /**
-     * Return an array of all possible discretizers with all its parametrization. For example the
-     * PercentileMedianDiscretizer can have in total as many instances as the column has unique values.
+     * Return a random discretizer instance with.
      *
      * @return the array of discretizer instances
      */
-    T[] getAllDiscretizers();
-
-    /**
-     * Get a number of random selected instances from the total pool of discretizer instances.
-     *
-     * @param count the number of random discretizer instances that is required
-     * @return a list with n many random selected discretizer instances
-     */
-    default List<T> selectRandom(int count) {
-        List<T> arrayList = new ArrayList<>(Arrays.asList(getAllDiscretizers()));
-        if (arrayList.size() < count)
-            throw new IllegalArgumentException("Less elements than expected");
-        Collections.shuffle(arrayList);
-        return arrayList.subList(0, count);
-    }
+    T getRandomDiscretizer();
 
     /**
      * Get the simple class name of the discretizer.

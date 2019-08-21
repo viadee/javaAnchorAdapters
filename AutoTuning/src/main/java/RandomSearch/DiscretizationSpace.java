@@ -10,6 +10,7 @@ import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscreti
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,15 +22,15 @@ public class DiscretizationSpace {
 
     public DiscretizationSpace(DataInitializer dataInitializer, DiscretizerInstantiation... instantiations) {
         this.instantiations = instantiations;
-        this.discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
-                .flatMap(Stream::of).collect(Collectors.toList());
+//        this.discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
+//                .flatMap(Stream::of).collect(Collectors.toList());
         this.anchorTabular = dataInitializer.createTabular(null);
     }
 
     public DiscretizationSpace(DiscretizerInstantiation... instantiations) {
         this.instantiations = instantiations;
-        discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
-                .flatMap(Stream::of).collect(Collectors.toList());
+//        discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
+//                .flatMap(Stream::of).collect(Collectors.toList());
     }
 
     public DiscretizationSpace(List<Discretizer> discretizers) {
@@ -41,8 +42,7 @@ public class DiscretizationSpace {
     }
 
     public Discretizer getRandomDiscretizer() {
-        Collections.shuffle(this.discretizers);
-        return this.discretizers.get(0);
+        return this.instantiations[new Random().nextInt(instantiations.length)].getRandomDiscretizer();
     }
 
     public String transferToConfigurationSpace() {

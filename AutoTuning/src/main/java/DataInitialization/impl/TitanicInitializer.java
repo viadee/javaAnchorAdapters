@@ -8,14 +8,11 @@ import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.IntegerColumn;
 import de.viadee.xai.anchor.adapter.tabular.column.StringColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceEmptyTransformer;
-import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceNonEmptyTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Map;
 
 public class TitanicInitializer implements DataInitializer {
@@ -40,7 +37,7 @@ public class TitanicInitializer implements DataInitializer {
                     .addColumn(DoubleColumn.fromStringInput("Fare", -1, discretizers != null ? discretizers.get("Fare") : new PercentileMedianDiscretizerInstantiation().getDefaultDiscretizer()))
                     .addColumn(new StringColumn("Cabin"))
                     .addColumn(new StringColumn("Embarked"))
-                    .build(data, false, false);
+                    .build(data, false);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Could not read data");

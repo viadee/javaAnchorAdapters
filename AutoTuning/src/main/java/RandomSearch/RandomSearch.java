@@ -93,7 +93,7 @@ public class RandomSearch {
             setNewDiscretizers();
 
             TabularInstance explainedInstance = anchorTabular.getTabularInstances()[explainedInstanceIndex];
-            final AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
+            AnchorConstructionBuilder<TabularInstance> anchorBuilder = anchorTabular
                     .createDefaultBuilder(classificationFunction, explainedInstance);
 
             setNewParameters(anchorBuilder);
@@ -116,7 +116,7 @@ public class RandomSearch {
             logger.endLine();
 
             // check if performance of current space is the best, if yes set current space as best space
-            if (checkIfBetter(currentConfigurationSpace.getPerformance() * currentConfigurationSpace.getCoverage())) {
+            if (checkIfBetter(currentConfigurationSpace.getPerformance(), currentConfigurationSpace.getCoverage())) {
                 bestConfigurationSpace = new ConfigurationSpace(currentConfigurationSpace);
                 bestExplanations = rules;
             }
@@ -175,8 +175,10 @@ public class RandomSearch {
             anchorBuilder.setInitSampleCount(((NumericalParameter) hs.getParameterByName("initSampleCount")).getRandomValue().intValue());
     }
 
-    private boolean checkIfBetter(double performance) {
-        return performance > this.bestConfigurationSpace.getPerformance() * this.bestConfigurationSpace.getCoverage() ? true : false;
+    private boolean checkIfBetter(double performance, double coverage) {
+        if (performance * coverage > this.bestConfigurationSpace.getPerformance() * this.bestConfigurationSpace.getCoverage() && coverage < 1)
+            return true;
+        return false;
     }
 
     private void visualizeBestHyperparameterSpace(PerformanceMeasures.Measure measure) {

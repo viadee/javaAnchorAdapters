@@ -28,7 +28,7 @@ public final class HyperparameterSpace {
         parameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
         parameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
         parameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
-        parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+//        parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
 
         return new HyperparameterSpace(parameters);
     }
@@ -54,7 +54,7 @@ public final class HyperparameterSpace {
                 return p;
             }
         }
-        throw new IllegalArgumentException("No parameter found by the name of " + name);
+        return null;
     }
 
 

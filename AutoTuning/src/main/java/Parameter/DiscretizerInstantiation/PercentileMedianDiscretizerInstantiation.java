@@ -5,7 +5,7 @@ import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.PercentileMedianDis
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.Random;
 
 public class PercentileMedianDiscretizerInstantiation implements DiscretizerInstantiation<PercentileMedianDiscretizer> {
 
@@ -16,8 +16,8 @@ public class PercentileMedianDiscretizerInstantiation implements DiscretizerInst
     }
 
     @Override
-    public PercentileMedianDiscretizer[] getAllDiscretizers() {
-        return IntStream.range(minClassCount, maxClassCount).mapToObj(PercentileMedianDiscretizer::new).toArray(PercentileMedianDiscretizer[]::new);
+    public PercentileMedianDiscretizer getRandomDiscretizer() {
+        return new PercentileMedianDiscretizer(new Random().nextInt(maxClassCount) + minClassCount);
     }
 
     @Override

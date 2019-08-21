@@ -3,23 +3,15 @@ package Parameter.DiscretizerInstantiation;
 import Parameter.ContinuousParameter;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.FUSINTERDiscretizer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.Random;
 
 public class FUSINTERDiscretizerInstantiation implements DiscretizerInstantiation<FUSINTERDiscretizer> {
 
     @Override
-    public FUSINTERDiscretizer[] getAllDiscretizers() {
-
-        List<FUSINTERDiscretizer> discretizers = new ArrayList<>();
-
-        IntStream.range(1, 100).mapToDouble(i -> i / 100D).forEach(lambda ->
-                IntStream.range(0, 100).mapToDouble(j -> j / 100D).forEach(alpha ->
-                        discretizers.add(new FUSINTERDiscretizer(lambda, alpha))));
-
-        return discretizers.toArray(new FUSINTERDiscretizer[0]);
+    public FUSINTERDiscretizer getRandomDiscretizer() {
+        return new FUSINTERDiscretizer((new Random().nextInt(100) + 1)/100D, (new Random().nextInt(100) + 1)/100D);
     }
 
     @Override

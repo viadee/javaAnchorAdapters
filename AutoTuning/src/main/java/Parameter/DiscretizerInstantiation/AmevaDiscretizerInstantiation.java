@@ -8,8 +8,8 @@ import java.util.Map;
 public class AmevaDiscretizerInstantiation implements DiscretizerInstantiation<AmevaDiscretizer> {
 
     @Override
-    public AmevaDiscretizer[] getAllDiscretizers() {
-        return new AmevaDiscretizer[]{new AmevaDiscretizer()};
+    public AmevaDiscretizer getRandomDiscretizer() {
+        return new AmevaDiscretizer();
     }
 
     @Override
