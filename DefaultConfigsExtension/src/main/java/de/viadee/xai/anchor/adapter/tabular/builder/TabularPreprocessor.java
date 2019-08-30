@@ -4,7 +4,7 @@ import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstanceVisualizer;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
+import de.viadee.discretizers4j.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 import de.viadee.xai.anchor.adapter.tabular.util.ArrayUtils;
 import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;

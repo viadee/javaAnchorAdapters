@@ -1,7 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular;
 
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.DiscretizationOrigin;
+import de.viadee.discretizers4j.DiscretizationOrigin;
 import de.viadee.xai.anchor.adapter.tabular.util.FormatTools;
 import de.viadee.xai.anchor.algorithm.AnchorCandidate;
 import de.viadee.xai.anchor.algorithm.AnchorResult;

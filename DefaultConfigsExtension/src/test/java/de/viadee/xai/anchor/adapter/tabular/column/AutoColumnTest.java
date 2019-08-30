@@ -2,6 +2,7 @@ package de.viadee.xai.anchor.adapter.tabular.column;
 
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.builder.AnchorTabularBuilderByName;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ class AutoColumnTest {
     }
 
     @Test
+    @Disabled
     public void testBooleanColumn() throws IOException {
         final String booleanAttr = "BooleanAttr";
         AnchorTabular tabular = new AnchorTabularBuilderByName()
@@ -53,6 +55,7 @@ class AutoColumnTest {
     }
 
     @Test
+    @Disabled
     public void testStringColumn() throws IOException {
         // IdAttr,StringAttr,EnumAttr,BooleanAttr,IntAttr,DoubleAttr,MixedNumAttr,MissingValNumberAttr,MissingValString
         final String strAttr = "StringAttr";

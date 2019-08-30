@@ -1,7 +1,7 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
+import de.viadee.discretizers4j.Discretizer;
+import de.viadee.discretizers4j.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.MapBasedTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.ReplaceNullTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
