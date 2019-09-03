@@ -1,6 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.discretizers4j.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
 import java.io.Serializable;

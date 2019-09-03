@@ -1,6 +1,6 @@
 package de.viadee.xai.anchor.adapter.tabular.column;
 
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
+import de.viadee.discretizers4j.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.StringToBooleanTransformer;
 import de.viadee.xai.anchor.adapter.tabular.transformations.Transformer;
 
