@@ -16,7 +16,7 @@ public final class HyperparameterSpace {
      * @return the instance of the HyperparameterSpace
      */
     public static HyperparameterSpace createDefaultHyperparameterSpace() {
-        List<Parameter> parameters = new ArrayList<Parameter>();
+        List<Parameter> parameters = new ArrayList<>();
 
         parameters.add(new IntegerParameter("beamsize", 2, 1, 30));
         parameters.add(new ContinuousParameter("tau", 0.95, 0.5, 1.0));

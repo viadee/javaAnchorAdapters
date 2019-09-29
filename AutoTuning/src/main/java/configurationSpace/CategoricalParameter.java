@@ -49,7 +49,7 @@ public class CategoricalParameter implements Parameter {
     }
     
     public String getParameterString() {
-        String[] allValues = Arrays.stream(this.allValues).map(str -> str.toString()).toArray(String[]::new);
+        String[] allValues = Arrays.stream(this.allValues).map(String::toString).toArray(String[]::new);
         return name + " " + type + " {" + String.join(",", allValues) + "}[" + defaultValue + "]";
     }
 }

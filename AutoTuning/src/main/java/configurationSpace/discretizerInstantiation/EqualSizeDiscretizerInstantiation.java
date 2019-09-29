@@ -32,17 +32,7 @@ public class EqualSizeDiscretizerInstantiation implements DiscretizerInstantiati
     @Override
     public String getChildParameterConfig(String parentName) {
         IntegerParameter classSize = new IntegerParameter(parentName + "_" + getClassName(), (int) Math.sqrt(valueCount), 1, valueCount);
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder
-                .append(classSize.getParameterString())
-                .append("\n")
-                .append(classSize.getName())
-                .append("|")
-                .append(parentName)
-                .append(" == ")
-                .append(getClassName())
-                .append("\n");
-        return stringBuilder.toString();
+        return classSize.getParameterString() + "\n" + classSize.getName() + "|" + parentName + " == " + getClassName() + "\n";
     }
 
     @Override

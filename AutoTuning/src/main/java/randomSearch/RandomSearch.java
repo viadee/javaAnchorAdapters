@@ -2,7 +2,6 @@ package randomSearch;
 
 import dataInitialization.DataInitializer;
 import evaluationMetrics.PerformanceMeasures;
-import evaluationMetrics.PredictionModel;
 import evaluationMetrics.TabularPredictionModel;
 import configurationSpace.ConfigurationSpace;
 import configurationSpace.DiscretizationSpace;

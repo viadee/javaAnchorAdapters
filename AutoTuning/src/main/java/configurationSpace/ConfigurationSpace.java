@@ -75,8 +75,12 @@ public class ConfigurationSpace {
         this.runtime = runtime;
     }
 
+    /**
+     * Get the Create a ParameterConfigurationSpace for the SMAC algorithm
+     *
+     * @return ParameterConfigurationSpace
+     */
     public ParameterConfigurationSpace toParameterConfigurationSpace() {
-
         StringBuffer stringBuffer = new StringBuffer(300);
 
         if (hyperparameterSpace != null) {

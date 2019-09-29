@@ -28,18 +28,7 @@ public class PercentileMedianDiscretizerInstantiation implements DiscretizerInst
     @Override
     public String getChildParameterConfig(String parentName) {
         IntegerParameter classCount = new IntegerParameter(parentName + "_" + getClassName(), (int) Math.sqrt(maxClassCount), minClassCount, maxClassCount);
-
-        StringBuffer stringBuffer = new StringBuffer(100);
-        stringBuffer
-                .append(classCount.getParameterString())
-                .append("\n")
-                .append(classCount.getName())
-                .append("|")
-                .append(parentName)
-                .append(" == ")
-                .append(getClassName())
-                .append("\n");
-        return stringBuffer.toString();
+        return classCount.getParameterString() + "\n" + classCount.getName() + "|" + parentName + " == " + getClassName() + "\n";
     }
 
     @Override

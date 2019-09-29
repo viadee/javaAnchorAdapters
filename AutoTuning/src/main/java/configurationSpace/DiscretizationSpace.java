@@ -36,10 +36,21 @@ public class DiscretizationSpace {
         this.discretizers.add(discretizer);
     }
 
+    /**
+     * Get a random discretizer instance
+     *
+     * @return Discretizer instance
+     */
     public Discretizer getRandomDiscretizer() {
         return this.instantiations[new Random().nextInt(instantiations.length)].getRandomDiscretizer();
     }
 
+    /**
+     * For SMAC create for each column that need discretization a new Categorical Parameter and create a String from it
+     * to be processable by SMAC
+     *
+     * @return The String for all discretization parameters
+     */
     public String transferToConfigurationSpace() {
         StringBuffer stringBuffer = new StringBuffer(100);
         for (GenericColumn column : anchorTabular.getColumns()) {
@@ -51,8 +62,8 @@ public class DiscretizationSpace {
                                 Stream.of(instantiations).map(DiscretizerInstantiation::getClassName).flatMap(Stream::of).collect(Collectors.toList()).toArray(new String[0]))
                                 .getParameterString());
                 stringBuffer.append("\n");
-                for (int i = 0; i < instantiations.length; i++) {
-                    stringBuffer.append(instantiations[i].getChildParameterConfig(parentParameterName));
+                for (DiscretizerInstantiation i : instantiations) {
+                    stringBuffer.append(i.getChildParameterConfig(parentParameterName));
                 }
             }
         }
