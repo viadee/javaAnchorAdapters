@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Map;
 
-public class SMACHelper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SMACHelper.class);
+public class SmacExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SmacExecutor.class);
 
     private static InstanceListWithSeeds trainingILWS;
     private static InstanceListWithSeeds testingILWS;
@@ -42,12 +42,12 @@ public class SMACHelper {
     private TargetAlgorithmEvaluator tae;
     private double cutOffTime;
 
-    public SMACHelper(String scenario,
-                      ConfigurationSpace configurationSpace,
-                      TargetAlgorithmEvaluator tae,
-                      String outputDir,
-                      SMACOptions smacOptions,
-                      double cutOffTime) {
+    public SmacExecutor(String scenario,
+                        ConfigurationSpace configurationSpace,
+                        TargetAlgorithmEvaluator tae,
+                        String outputDir,
+                        SMACOptions smacOptions,
+                        double cutOffTime) {
 
         if (tae == null)
             throw new IllegalArgumentException("The Target Algorithm Evaluator " + ParameterValidation.NULL_MESSAGE);

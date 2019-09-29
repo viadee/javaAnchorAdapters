@@ -10,9 +10,9 @@ import java.io.File;
 /**
  * The builder class for the smac optimization method.
  * <p></p>
- * Set various needed values to build an instance of the SMACHelper class.
+ * Set various needed values to build an instance of the SmacExecutor class.
  */
-public class SMACBuilder {
+public class SmacExecutorBuilder {
 
     private String trainInstancesFile;
     private String testInstancesFile;
@@ -30,16 +30,16 @@ public class SMACBuilder {
     private boolean logModel = false;
     private double cutOffTime = Double.MAX_VALUE;
 
-    public SMACBuilder() {
+    public SmacExecutorBuilder() {
     }
 
     /**
      * Sets the configuration space with the parameters to optimize
      *
      * @param configurationSpace configuration space with hyperparameters and discretization space
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setConfigurationSpace(ConfigurationSpace configurationSpace) {
+    public SmacExecutorBuilder setConfigurationSpace(ConfigurationSpace configurationSpace) {
         this.configurationSpace = configurationSpace;
         return this;
     }
@@ -48,9 +48,9 @@ public class SMACBuilder {
      * Set the scenario name for logging
      *
      * @param scenario the name of the current scenario
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setScenario(String scenario) {
+    public SmacExecutorBuilder setScenario(String scenario) {
         this.scenario = scenario;
         return this;
     }
@@ -59,9 +59,9 @@ public class SMACBuilder {
      * Set the target algorithm for optimization
      *
      * @param tae the algorithm to optimize
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setTargetAlgorithmEvaluator(TargetAlgorithmEvaluator tae) {
+    public SmacExecutorBuilder setTargetAlgorithmEvaluator(TargetAlgorithmEvaluator tae) {
         this.tae = tae;
         return this;
     }
@@ -70,9 +70,9 @@ public class SMACBuilder {
      * Set the directory where the output is logged to
      *
      * @param outputDir the directory name for output
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setOutputDir(String outputDir) {
+    public SmacExecutorBuilder setOutputDir(String outputDir) {
         this.outputDir = outputDir;
         return this;
     }
@@ -81,9 +81,9 @@ public class SMACBuilder {
      * Set the file path and name of the train instances
      *
      * @param trainInstancesFile the full file path of the instances file
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setTrainInstancesFile(String trainInstancesFile) {
+    public SmacExecutorBuilder setTrainInstancesFile(String trainInstancesFile) {
         this.trainInstancesFile = trainInstancesFile;
         return this;
     }
@@ -92,9 +92,9 @@ public class SMACBuilder {
      * Set the file path and name of the test instances
      *
      * @param testInstancesFile the full file path of the test instances file
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setTestInstancesFile(String testInstancesFile) {
+    public SmacExecutorBuilder setTestInstancesFile(String testInstancesFile) {
         this.testInstancesFile = testInstancesFile;
         return this;
     }
@@ -103,9 +103,9 @@ public class SMACBuilder {
      * Set the total number of executions that should be executed
      *
      * @param totalNumRunsLimit the total number of executions
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setTotalNumRunsLimit(int totalNumRunsLimit) {
+    public SmacExecutorBuilder setTotalNumRunsLimit(int totalNumRunsLimit) {
         this.totalNumRunsLimit = totalNumRunsLimit;
         return this;
     }
@@ -114,9 +114,9 @@ public class SMACBuilder {
      * Set the objective the run is optimized on
      *
      * @param runObjective the objective of optimization
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setRunObjective(RunObjective runObjective) {
+    public SmacExecutorBuilder setRunObjective(RunObjective runObjective) {
         this.runObjective = runObjective;
         return this;
     }
@@ -125,9 +125,9 @@ public class SMACBuilder {
      * Set whether the created model should be logged
      *
      * @param logModel should the model be logged
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setLogModel(boolean logModel) {
+    public SmacExecutorBuilder setLogModel(boolean logModel) {
         this.logModel = logModel;
         return this;
     }
@@ -136,9 +136,9 @@ public class SMACBuilder {
      * Set the cut-off time for the algorithm runs
      *
      * @param cutOffTime the time after which the algorithm is terminated
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setCutOffTime(double cutOffTime) {
+    public SmacExecutorBuilder setCutOffTime(double cutOffTime) {
         this.cutOffTime = cutOffTime;
         return this;
     }
@@ -147,9 +147,9 @@ public class SMACBuilder {
      * Set a full set of options for smac
      *
      * @param smacOptions the options for the smac algorithm
-     * @return the current {@link SMACBuilder} for chaining
+     * @return the current {@link SmacExecutorBuilder} for chaining
      */
-    public SMACBuilder setSmacOptions(SMACOptions smacOptions) {
+    public SmacExecutorBuilder setSmacOptions(SMACOptions smacOptions) {
         this.smacOptions = smacOptions;
         return this;
     }
@@ -174,8 +174,8 @@ public class SMACBuilder {
      *
      * @return the smac Helper instance
      */
-    public SMACHelper build() {
+    public SmacExecutor build() {
         prepareForBuild();
-        return new SMACHelper(scenario, configurationSpace, tae, outputDir, smacOptions, cutOffTime);
+        return new SmacExecutor(scenario, configurationSpace, tae, outputDir, smacOptions, cutOffTime);
     }
 }

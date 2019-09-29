@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-public class SMACHelperTest {
+public class SmacExecutorTest {
 
     // Given
     final private int explainedInstanceIndex = 1;
@@ -32,7 +32,7 @@ public class SMACHelperTest {
                     new AmevaDiscretizerInstantiation(),
                     new MDLPDiscretizerInstantiation()));
 
-    public SMACHelperTest() throws IOException {
+    public SmacExecutorTest() throws IOException {
     }
 
 
@@ -40,7 +40,7 @@ public class SMACHelperTest {
     public void testEmptyTAERun() {
 
         // Then
-        new SMACBuilder()
+        new SmacExecutorBuilder()
                 .setScenario(scenario)
                 .setConfigurationSpace(configurationSpace)
                 .setTotalNumRunsLimit(1)
@@ -51,7 +51,7 @@ public class SMACHelperTest {
     public void testRunLocal() {
         Logger logger = new Logger("smac-output",scenario, configurationSpace, PerformanceMeasures.Measure.PRECISION);
         LocalAnchorsTAE tae = new LocalAnchorsTAE(explainedInstanceIndex, function::predict, data, logger);
-        SMACHelper exe = new SMACBuilder()
+        SmacExecutor exe = new SmacExecutorBuilder()
                 .setScenario(scenario)
                 .setConfigurationSpace(configurationSpace)
                 .setTargetAlgorithmEvaluator(tae)
@@ -71,7 +71,7 @@ public class SMACHelperTest {
             instances[i] = i;
         }
         CoveragePickTAE tae = new CoveragePickTAE(instances, function::predict, data, PerformanceMeasures.Measure.RECALL,logger);
-        SMACHelper exe = new SMACBuilder()
+        SmacExecutor exe = new SmacExecutorBuilder()
                 .setScenario(scenario)
                 .setConfigurationSpace(configurationSpace)
                 .setTargetAlgorithmEvaluator(tae)
