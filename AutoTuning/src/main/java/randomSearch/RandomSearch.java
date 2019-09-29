@@ -179,7 +179,7 @@ public class RandomSearch {
 
         // visualize best hyperparameters and the best global explanations
         visualizeBestHyperparameterSpace();
-        System.out.println(anchorTabular.getVisualizer().visualizeGlobalResults(bestExplanations));
+        System.out.println("BEST ANCHOR:" + System.lineSeparator() + anchorTabular.getVisualizer().visualizeGlobalResults(bestExplanations));
     }
 
     /**

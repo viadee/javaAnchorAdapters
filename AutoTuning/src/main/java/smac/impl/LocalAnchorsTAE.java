@@ -1,7 +1,6 @@
 package smac.impl;
 
 import dataInitialization.DataInitializer;
-import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
 import randomSearch.Logger;
 import smac.util.AnchorsConfig;
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration;
@@ -15,17 +14,12 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.TargetAlgorithmEvaluatorRun
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.TabularPerturbationFunction;
-import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.execution.sampling.DefaultSamplingFunction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
@@ -67,7 +61,7 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
 
             long runtimeStart = System.currentTimeMillis();
 
-            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizer(configuration, anchorTabular));
+            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizerForSmac(configuration, anchorTabular));
 
             final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[explainedInstanceIndex];
             final TabularPerturbationFunction perturbationFunction = new TabularPerturbationFunction(explainedInstance, anchorTabular.getTabularInstances());
@@ -76,7 +70,7 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
             double emptyRulePrecision = getEmptyRulePrecision(perturbationFunction, explainedInstanceLabel);
             AnchorConstructionBuilder anchorBuilder = setAnchorConstructionBuilder(perturbationFunction, explainedInstanceLabel, explainedInstance);
 
-            AnchorResult<TabularInstance> result = AnchorsConfig.setParameters(configuration, anchorBuilder).build().constructAnchor();
+            AnchorResult<TabularInstance> result = AnchorsConfig.setParametersForSmac(configuration, anchorBuilder).build().constructAnchor();
 
             final double runtime = System.currentTimeMillis() - runtimeStart;
             final double coverage = result.getCoverage();

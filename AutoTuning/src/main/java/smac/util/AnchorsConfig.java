@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public abstract class AnchorsConfig {
 
-    public static AnchorConstructionBuilder setParameters(ParameterConfiguration configuration, AnchorConstructionBuilder<TabularInstance> anchorBuilder){
+    public static AnchorConstructionBuilder setParametersForSmac(ParameterConfiguration configuration, AnchorConstructionBuilder<TabularInstance> anchorBuilder){
         if (configuration.get("tau") != null)
             anchorBuilder.setTau(Double.valueOf(configuration.get("tau")));
         if (configuration.get("epsilon") != null)
@@ -37,7 +37,7 @@ public abstract class AnchorsConfig {
         return anchorBuilder;
     }
 
-    public static Map<String, Discretizer> setDiscretizer(ParameterConfiguration configuration, AnchorTabular anchorTabular) {
+    public static Map<String, Discretizer> setDiscretizerForSmac(ParameterConfiguration configuration, AnchorTabular anchorTabular) {
         final Map<String, String> parameters = configuration.getActiveParameters().stream()
                 .map(p -> new HashMap.SimpleImmutableEntry<>(p, configuration.get(p)))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

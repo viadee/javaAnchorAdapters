@@ -78,7 +78,7 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
             long runtimeStart = System.currentTimeMillis();
 
-            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizer(configuration, anchorTabular));
+            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizerForSmac(configuration, anchorTabular));
 
             final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[0];
             final TabularPerturbationFunction perturbationFunction = new TabularPerturbationFunction(explainedInstance, anchorTabular.getTabularInstances());
@@ -96,7 +96,7 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
                 }
             }
 
-            List<AnchorResult<TabularInstance>> rules = new CoveragePick<>(AnchorsConfig.setParameters(configuration, anchorBuilder), 10,
+            List<AnchorResult<TabularInstance>> rules = new CoveragePick<>(AnchorsConfig.setParametersForSmac(configuration, anchorBuilder), 10,
                     Executors.newCachedThreadPool(), null)
                     .run(instances, 20);
 
