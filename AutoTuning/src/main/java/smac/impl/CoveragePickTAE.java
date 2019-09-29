@@ -3,7 +3,6 @@ package smac.impl;
 import dataInitialization.DataInitializer;
 import evaluationMetrics.PerformanceMeasures;
 import evaluationMetrics.TabularPredictionModel;
-import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
 import randomSearch.Logger;
 import smac.util.AnchorsConfig;
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration;
@@ -17,19 +16,14 @@ import ca.ubc.cs.beta.aeatk.targetalgorithmevaluator.TargetAlgorithmEvaluatorRun
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.adapter.tabular.TabularPerturbationFunction;
-import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
-import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 import de.viadee.xai.anchor.algorithm.execution.sampling.DefaultSamplingFunction;
 import de.viadee.xai.anchor.algorithm.global.CoveragePick;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
@@ -41,6 +35,10 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
     int time = 0;
     private AnchorTabular anchorTabular;
+
+    public CoveragePickTAE(Function<TabularInstance, Integer> classificationFunction, DataInitializer data, Logger logger, PerformanceMeasures.Measure measure) {
+        this(null,classificationFunction,data,measure,logger);
+    }
 
     public CoveragePickTAE(int[] indexes, Function<TabularInstance, Integer> classificationFunction, DataInitializer data, PerformanceMeasures.Measure measure, Logger logger) {
         this.indexes = indexes;
@@ -56,53 +54,13 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
         // calculate performance as a minimization problem
         TabularPredictionModel tabularPredictionModel = new TabularPredictionModel(explanations);
         List<Integer> prediction = tabularPredictionModel.predict(anchorTabular.getTabularInstances());
-        PerformanceMeasures performance = new PerformanceMeasures(prediction, model, anchorTabular.getTabularInstances());
-        return performance;
+        return new PerformanceMeasures(prediction, model, anchorTabular.getTabularInstances());
 
-    }
-
-    private void setDiscretizers(ParameterConfiguration configuration) {
-
-        final Map<String, String> parameters = configuration.getActiveParameters().stream()
-                .map(p -> new HashMap.SimpleImmutableEntry<>(p, configuration.get(p)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        Map<String, Discretizer> nameToDiscretizer = new HashMap<>();
-
-        for (GenericColumn column : anchorTabular.getColumns()) {
-
-            if (!column.getDiscretizer().getClass().getSimpleName().equals(UniqueValueDiscretizer.class.getSimpleName())) {
-                Map<String, String> columnDiscretizerParameters = parameters.entrySet().stream()
-                        .sorted(Map.Entry.comparingByKey())
-                        .filter(e -> e.getKey().toLowerCase().contains(column.getName().toLowerCase()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-                List<Map.Entry<String, String>> test = columnDiscretizerParameters.entrySet().stream()
-                        .collect(Collectors.toList());
-
-                try {
-                    final String constructorClassName = "configurationSpace.discretizerInstantiation." +
-                            test.get(0).getValue() + "Instantiation";
-
-                    final DiscretizerInstantiation discretizerConstructor = (DiscretizerInstantiation) Class.forName(constructorClassName)
-                            .getConstructor().newInstance();
-
-                    Discretizer newDiscretizer = discretizerConstructor.constructDiscretizer(test.subList(1, test.size()));
-
-                    nameToDiscretizer.put(column.getName(), newDiscretizer);
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        anchorTabular = data.createTabular(nameToDiscretizer);
     }
 
     @Override
     public List<AlgorithmRunResult> evaluateRun(AlgorithmRunConfiguration algorithmRunConfiguration) {
-        return this.evaluateRun(Arrays.asList(algorithmRunConfiguration), null);
+        return this.evaluateRun(Collections.singletonList(algorithmRunConfiguration), null);
     }
 
     @Override
@@ -120,7 +78,7 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
             long runtimeStart = System.currentTimeMillis();
 
-            setDiscretizers(configuration);
+            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizer(configuration, anchorTabular));
 
             final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[0];
             final TabularPerturbationFunction perturbationFunction = new TabularPerturbationFunction(explainedInstance, anchorTabular.getTabularInstances());
@@ -128,9 +86,14 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
             AnchorConstructionBuilder anchorBuilder = setAnchorConstructionBuilder(perturbationFunction, explainedInstanceLabel, explainedInstance);
 
-            TabularInstance[] instances = new TabularInstance[indexes.length];
-            for (int i = 0; i < indexes.length; i++) {
-                instances[i] = anchorTabular.getTabularInstances()[indexes[i]];
+            TabularInstance[] instances;
+            if (indexes == null) {
+                instances = anchorTabular.getTabularInstances();
+            } else {
+                instances = new TabularInstance[indexes.length];
+                for (int i = 0; i < indexes.length; i++) {
+                    instances[i] = anchorTabular.getTabularInstances()[indexes[i]];
+                }
             }
 
             List<AnchorResult<TabularInstance>> rules = new CoveragePick<>(AnchorsConfig.setParameters(configuration, anchorBuilder), 10,
@@ -153,7 +116,7 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
             }
             logger.endLine();
 
-            ar.add(new ExistingAlgorithmRunResult(ac, RunStatus.SAT, runtime, 1, quality , 10L));
+            ar.add(new ExistingAlgorithmRunResult(ac, RunStatus.SAT, runtime, 1, quality , 10L, anchorTabular.getVisualizer().visualizeGlobalResults(rules)));
         }
         return ar;
     }

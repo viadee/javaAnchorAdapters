@@ -1,8 +1,20 @@
 package smac.util;
 
 import ca.ubc.cs.beta.aeatk.parameterconfigurationspace.ParameterConfiguration;
+import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
+import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
+import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 import de.viadee.xai.anchor.algorithm.AnchorConstructionBuilder;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class AnchorsConfig {
 
@@ -23,5 +35,43 @@ public abstract class AnchorsConfig {
             anchorBuilder.setAllowSuboptimalSteps(Boolean.valueOf(configuration.get("allowSuboptimalSteps")));
 
         return anchorBuilder;
+    }
+
+    public static Map<String, Discretizer> setDiscretizer(ParameterConfiguration configuration, AnchorTabular anchorTabular) {
+        final Map<String, String> parameters = configuration.getActiveParameters().stream()
+                .map(p -> new HashMap.SimpleImmutableEntry<>(p, configuration.get(p)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<String, Discretizer> nameToDiscretizer = new HashMap<>();
+
+        for (GenericColumn column : anchorTabular.getColumns()) {
+
+            if (!column.getDiscretizer().getClass().getSimpleName().equals(UniqueValueDiscretizer.class.getSimpleName())) {
+                Map<String, String> columnDiscretizerParameters = parameters.entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .filter(e -> e.getKey().toLowerCase().contains(column.getName().toLowerCase()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+
+                List<Map.Entry<String, String>> test = columnDiscretizerParameters.entrySet().stream()
+                        .collect(Collectors.toList());
+
+                try {
+                    final String constructorClassName = "configurationSpace.discretizerInstantiation." +
+                            test.get(0).getValue() + "Instantiation";
+
+                    final DiscretizerInstantiation discretizerConstructor = (DiscretizerInstantiation) Class.forName(constructorClassName)
+                            .getConstructor().newInstance();
+
+                    Discretizer newDiscretizer = discretizerConstructor.constructDiscretizer(test.subList(1, test.size()));
+
+                    nameToDiscretizer.put(column.getName(), newDiscretizer);
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        return nameToDiscretizer;
     }
 }

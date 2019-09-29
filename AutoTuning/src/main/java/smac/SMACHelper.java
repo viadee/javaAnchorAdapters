@@ -36,7 +36,6 @@ public class SMACHelper {
 
     // Variables from the Builder
     private ConfigurationSpace configurationSpace;
-//     private String outputDir = "C:\\Users\\B96\\IdeaProjects\\javaAnchorAdapters\\AutoTuning\\smac-output\\";
     private String scenario;
     private SMACOptions options;
     private String outputDir;
@@ -115,8 +114,11 @@ public class SMACHelper {
                     runHistory.getAlgorithmRunsExcludingRedundant(incumbent).size(),
                     runHistory.getProblemInstancesRan(incumbent).size());
         }
-//        List<TrajectoryFileEntry> tfes = smacBuilder.getTrajectoryFileLogger().getTrajectoryFileEntries();
 
+        // Display best rule
+        String bestRule = runHistory.getAlgorithmRunsIncludingRedundant(incumbent).get(0).getAdditionalRunData();
+        bestRule = bestRule.replace("\\n","").replaceAll("\\r", System.lineSeparator());
+        System.out.println(" BEST ANCHOR: " + System.lineSeparator() + bestRule);
     }
 
     private void setDefaultOptions() {

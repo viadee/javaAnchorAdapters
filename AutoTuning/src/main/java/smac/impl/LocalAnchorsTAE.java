@@ -48,7 +48,7 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
 
     @Override
     public List<AlgorithmRunResult> evaluateRun(AlgorithmRunConfiguration algorithmRunConfiguration) {
-        return this.evaluateRun(Arrays.asList(algorithmRunConfiguration), null);
+        return this.evaluateRun(Collections.singletonList(algorithmRunConfiguration), null);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
 
             long runtimeStart = System.currentTimeMillis();
 
-            setDiscretizers(configuration);
+            anchorTabular = data.createTabular(AnchorsConfig.setDiscretizer(configuration, anchorTabular));
 
             final TabularInstance explainedInstance = anchorTabular.getTabularInstances()[explainedInstanceIndex];
             final TabularPerturbationFunction perturbationFunction = new TabularPerturbationFunction(explainedInstance, anchorTabular.getTabularInstances());
@@ -89,49 +89,9 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
             logger.addRulesToLogging(anchorTabular.getVisualizer().visualizeResult(result));
             logger.endLine();
 
-            ar.add(new ExistingAlgorithmRunResult(ac, RunStatus.SAT, runtime, 1, quality , 10L));
+            ar.add(new ExistingAlgorithmRunResult(ac, RunStatus.SAT, runtime, 1, quality , 10L, anchorTabular.getVisualizer().visualizeResult(result)));
         }
         return ar;
-    }
-
-
-    private void setDiscretizers(ParameterConfiguration configuration) {
-
-        final Map<String, String> parameters = configuration.getActiveParameters().stream()
-                .map(p -> new HashMap.SimpleImmutableEntry<>(p, configuration.get(p)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        Map<String, Discretizer> nameToDiscretizer = new HashMap<>();
-
-        for (GenericColumn column : anchorTabular.getColumns()) {
-
-            if (!column.getDiscretizer().getClass().getSimpleName().equals(UniqueValueDiscretizer.class.getSimpleName())) {
-                Map<String, String> columnDiscretizerParameters = parameters.entrySet().stream()
-                        .sorted(Map.Entry.comparingByKey())
-                        .filter(e -> e.getKey().toLowerCase().contains(column.getName().toLowerCase()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                                (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-                List<Map.Entry<String, String>> test = columnDiscretizerParameters.entrySet().stream()
-                        .collect(Collectors.toList());
-
-                try {
-                    final String constructorClassName = "configurationSpace.discretizerInstantiation." +
-                            test.get(0).getValue() + "Instantiation";
-
-                    final DiscretizerInstantiation discretizerConstructor = (DiscretizerInstantiation) Class.forName(constructorClassName)
-                            .getConstructor().newInstance();
-
-                    Discretizer newDiscretizer = discretizerConstructor.constructDiscretizer(test.subList(1, test.size()));
-
-                    nameToDiscretizer.put(column.getName(), newDiscretizer);
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        anchorTabular = data.createTabular(nameToDiscretizer);
     }
 
     /**
