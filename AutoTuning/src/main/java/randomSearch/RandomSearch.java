@@ -3,6 +3,7 @@ package randomSearch;
 import dataInitialization.DataInitializer;
 import evaluationMetrics.PerformanceMeasures;
 import evaluationMetrics.PredictionModel;
+import evaluationMetrics.TabularPredictionModel;
 import configurationSpace.ConfigurationSpace;
 import configurationSpace.DiscretizationSpace;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
@@ -277,7 +278,7 @@ public class RandomSearch {
      */
     private void setGlobalPerformance(List<AnchorResult<TabularInstance>> rules) {
         // predict labels of instances based on generated global rules
-        PredictionModel model = new PredictionModel(rules);
+        TabularPredictionModel model = new TabularPredictionModel(rules);
         List<Integer> prediction = model.predict(anchorTabular.getTabularInstances());
         PerformanceMeasures performanceMeasures = new PerformanceMeasures(prediction, classificationFunction, anchorTabular.getTabularInstances());
         currentConfigurationSpace.setPerformance(performanceMeasures.calcMeasure(measure));

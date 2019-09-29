@@ -1,4 +1,4 @@
-package configurationSpace.DiscretizerInstantiation;
+package configurationSpace.discretizerInstantiation;
 
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.AmevaDiscretizer;

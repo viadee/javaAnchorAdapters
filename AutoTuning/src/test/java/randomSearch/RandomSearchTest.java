@@ -6,7 +6,7 @@ import H2OWrapper.H2OTitanicWrapper;
 import evaluationMetrics.PerformanceMeasures;
 import configurationSpace.ConfigurationSpace;
 import configurationSpace.DiscretizationSpace;
-import configurationSpace.DiscretizerInstantiation.*;
+import configurationSpace.discretizerInstantiation.*;
 import configurationSpace.HyperparameterSpace;
 import org.junit.Test;
 

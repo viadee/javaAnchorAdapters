@@ -2,8 +2,8 @@ package smac.impl;
 
 import dataInitialization.DataInitializer;
 import evaluationMetrics.PerformanceMeasures;
-import evaluationMetrics.PredictionModel;
-import configurationSpace.DiscretizerInstantiation.DiscretizerInstantiation;
+import evaluationMetrics.TabularPredictionModel;
+import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
 import randomSearch.Logger;
 import smac.util.AnchorsConfig;
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration;
@@ -54,8 +54,8 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
     private PerformanceMeasures calcPerformance(List<AnchorResult<TabularInstance>> explanations, AnchorTabular anchorTabular, Function<TabularInstance, Integer> model) {
 
         // calculate performance as a minimization problem
-        PredictionModel predictionModel = new PredictionModel(explanations);
-        List<Integer> prediction = predictionModel.predict(anchorTabular.getTabularInstances());
+        TabularPredictionModel tabularPredictionModel = new TabularPredictionModel(explanations);
+        List<Integer> prediction = tabularPredictionModel.predict(anchorTabular.getTabularInstances());
         PerformanceMeasures performance = new PerformanceMeasures(prediction, model, anchorTabular.getTabularInstances());
         return performance;
 
@@ -82,7 +82,7 @@ public class CoveragePickTAE implements TargetAlgorithmEvaluator {
                         .collect(Collectors.toList());
 
                 try {
-                    final String constructorClassName = "configurationSpace.DiscretizerInstantiation." +
+                    final String constructorClassName = "configurationSpace.discretizerInstantiation." +
                             test.get(0).getValue() + "Instantiation";
 
                     final DiscretizerInstantiation discretizerConstructor = (DiscretizerInstantiation) Class.forName(constructorClassName)

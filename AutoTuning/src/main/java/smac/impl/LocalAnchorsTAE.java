@@ -1,7 +1,7 @@
 package smac.impl;
 
 import dataInitialization.DataInitializer;
-import configurationSpace.DiscretizerInstantiation.DiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
 import randomSearch.Logger;
 import smac.util.AnchorsConfig;
 import ca.ubc.cs.beta.aeatk.algorithmrunconfiguration.AlgorithmRunConfiguration;
@@ -116,7 +116,7 @@ public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
                         .collect(Collectors.toList());
 
                 try {
-                    final String constructorClassName = "configurationSpace.DiscretizerInstantiation." +
+                    final String constructorClassName = "configurationSpace.discretizerInstantiation." +
                             test.get(0).getValue() + "Instantiation";
 
                     final DiscretizerInstantiation discretizerConstructor = (DiscretizerInstantiation) Class.forName(constructorClassName)

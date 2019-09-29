@@ -1,10 +1,10 @@
 package randomSearch;
 
 import configurationSpace.DiscretizationSpace;
-import configurationSpace.DiscretizerInstantiation.AmevaDiscretizerInstantiation;
-import configurationSpace.DiscretizerInstantiation.DiscretizerInstantiation;
-import configurationSpace.DiscretizerInstantiation.EqualSizeDiscretizerInstantiation;
-import configurationSpace.DiscretizerInstantiation.PercentileMedianDiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.AmevaDiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.EqualSizeDiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.PercentileMedianDiscretizerInstantiation;
 import dataInitialization.impl.TitanicInitializer;
 import org.junit.Assert;
 import org.junit.Test;

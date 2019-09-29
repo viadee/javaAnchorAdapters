@@ -1,4 +1,4 @@
-package configurationSpace.DiscretizerInstantiation;
+package configurationSpace.discretizerInstantiation;
 
 import configurationSpace.IntegerParameter;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.EqualSizeDiscretizer;

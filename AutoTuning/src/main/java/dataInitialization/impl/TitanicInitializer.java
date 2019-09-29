@@ -1,7 +1,7 @@
 package dataInitialization.impl;
 
 import dataInitialization.DataInitializer;
-import configurationSpace.DiscretizerInstantiation.PercentileMedianDiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.PercentileMedianDiscretizerInstantiation;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.builder.AnchorTabularBuilderByName;
 import de.viadee.xai.anchor.adapter.tabular.column.DoubleColumn;

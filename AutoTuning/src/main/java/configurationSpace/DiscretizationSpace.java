@@ -1,7 +1,7 @@
 package configurationSpace;
 
 import dataInitialization.DataInitializer;
-import configurationSpace.DiscretizerInstantiation.DiscretizerInstantiation;
+import configurationSpace.discretizerInstantiation.DiscretizerInstantiation;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
