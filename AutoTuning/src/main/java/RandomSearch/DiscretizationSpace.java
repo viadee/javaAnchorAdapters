@@ -6,9 +6,9 @@ import Parameter.DiscretizerInstantiation.DiscretizerInstantiation;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.column.GenericColumn;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
+import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.AmevaDiscretizer;
 import de.viadee.xai.anchor.adapter.tabular.discretizer.impl.UniqueValueDiscretizer;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -22,15 +22,11 @@ public class DiscretizationSpace {
 
     public DiscretizationSpace(DataInitializer dataInitializer, DiscretizerInstantiation... instantiations) {
         this.instantiations = instantiations;
-//        this.discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
-//                .flatMap(Stream::of).collect(Collectors.toList());
         this.anchorTabular = dataInitializer.createTabular(null);
     }
 
     public DiscretizationSpace(DiscretizerInstantiation... instantiations) {
         this.instantiations = instantiations;
-//        discretizers = Stream.of(instantiations).map(DiscretizerInstantiation::getAllDiscretizers)
-//                .flatMap(Stream::of).collect(Collectors.toList());
     }
 
     public DiscretizationSpace(List<Discretizer> discretizers) {
@@ -52,7 +48,7 @@ public class DiscretizationSpace {
             if (column.getDiscretizer().getClass() != UniqueValueDiscretizer.class) {
                 stringBuffer.append(
                         new CategoricalParameter(parentParameterName,
-                                column.getDiscretizer().getClass().getSimpleName(),
+                                AmevaDiscretizer.class.getSimpleName(),
                                 Stream.of(instantiations).map(DiscretizerInstantiation::getClassName).flatMap(Stream::of).collect(Collectors.toList()).toArray(new String[0]))
                                 .getParameterString());
                 stringBuffer.append("\n");

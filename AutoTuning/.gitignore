@@ -39,3 +39,7 @@ src/main/resources
 /src/main/java/TitanicDataset.java
 /src/main/java/HellaDataset.java
 /src/main/java/H2OTitanicWrapper.java
+/src/main/java/mainBaseline.java
+/src/test/resources/RandomSearchTest/hella.csv
+/src/test/resources/RandomSearchTest/titanic_test.csv
+/src/main/java/globalExperiments.java

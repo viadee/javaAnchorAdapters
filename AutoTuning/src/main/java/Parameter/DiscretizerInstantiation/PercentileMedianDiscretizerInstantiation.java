@@ -10,7 +10,7 @@ import java.util.Random;
 public class PercentileMedianDiscretizerInstantiation implements DiscretizerInstantiation<PercentileMedianDiscretizer> {
 
     private final int minClassCount = 1;
-    private final int maxClassCount = 100;
+    private final int maxClassCount = 2000;
 
     public PercentileMedianDiscretizerInstantiation() {
     }

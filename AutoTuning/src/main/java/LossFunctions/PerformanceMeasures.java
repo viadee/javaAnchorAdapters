@@ -7,11 +7,11 @@ import java.util.function.Function;
 
 public class PerformanceMeasures {
 
-    private double coverage;
-    private int truePositives;
-    private int falsePositives;
-    private int trueNegatives;
-    private int falseNegatives;
+    private double coverage = 0;
+    private int truePositives = 0;
+    private int falsePositives = 0;
+    private int trueNegatives = 0;
+    private int falseNegatives = 0;
 
     public enum Measure {
         ACCURACY,
@@ -19,6 +19,9 @@ public class PerformanceMeasures {
         RECALL,
         SPECIFICITY,
         F1
+    }
+
+    public PerformanceMeasures() {
     }
 
     public PerformanceMeasures(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] data) {
@@ -51,31 +54,19 @@ public class PerformanceMeasures {
     }
 
     private double calcAccuracy() {
-
-        double accuracy = ((double) truePositives + (double) trueNegatives) / ((double) truePositives + (double) trueNegatives + (double) falsePositives + (double) falseNegatives);
-        return accuracy;
-
+        return ((double) truePositives + (double) trueNegatives) / ((double) truePositives + (double) trueNegatives + (double) falsePositives + (double) falseNegatives);
     }
 
     private double calcPrecision() {
-
-        double precision = (double) truePositives / ((double) truePositives + (double) falsePositives);
-        return precision;
-
+        return truePositives + falsePositives == 0 ? 0 : (double) truePositives / ((double) truePositives + (double) falsePositives);
     }
 
     private double calcRecall() {
-
-        double recall = (double) truePositives / ((double) truePositives + (double) falseNegatives);
-        return recall;
-
+        return truePositives + falseNegatives == 0 ? 0 : (double) truePositives / ((double) truePositives + (double) falseNegatives);
     }
 
     private double calcSpecificity() {
-
-        double specificity = (double) trueNegatives / ((double) falsePositives + (double) trueNegatives);
-        return specificity;
-
+        return falsePositives + trueNegatives == 0 ? 0 :(double) trueNegatives / ((double) falsePositives + (double) trueNegatives);
     }
 
     private double calcF1() {
@@ -83,16 +74,15 @@ public class PerformanceMeasures {
         double precision = calcPrecision();
         double recall = calcRecall();
 
-        double f1 = 2 * ((precision * recall) / (precision + recall));
-        return f1;
-
+        return precision + recall == 0 ? 0 : 2 * ((precision * recall) / (precision + recall));
     }
 
     /**
-     * @param predictedValues
-     * @param predictFunction
-     * @param data
-     * @return
+     * Calculating the values in the confusion matrix
+     *
+     * @param predictedValues the values predicted by the given ruleset
+     * @param predictFunction the classification function
+     * @param data all tabular instances
      */
     private void calcPerformance(List<Integer> predictedValues, Function<TabularInstance, Integer> predictFunction, TabularInstance[] data) {
         int predInstances = 0;
@@ -127,6 +117,22 @@ public class PerformanceMeasures {
 
     public void setCoverage(double coverage) {
         this.coverage = coverage;
+    }
+
+    public void setTruePositives(int truePositives) {
+        this.truePositives = truePositives;
+    }
+
+    public void setFalsePositives(int falsePositives) {
+        this.falsePositives = falsePositives;
+    }
+
+    public void setTrueNegatives(int trueNegatives) {
+        this.trueNegatives = trueNegatives;
+    }
+
+    public void setFalseNegatives(int falseNegatives) {
+        this.falseNegatives = falseNegatives;
     }
 
     public int getTruePositives() {

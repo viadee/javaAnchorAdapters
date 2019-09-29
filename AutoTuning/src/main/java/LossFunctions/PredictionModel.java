@@ -4,6 +4,7 @@ import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import de.viadee.xai.anchor.algorithm.AnchorResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class PredictionModel {
     private final List<AnchorResult<TabularInstance>> rules;
 
     public PredictionModel(List<AnchorResult<TabularInstance>> globalExplanations) {
-        this.rules = globalExplanations;
+        Collections.shuffle(globalExplanations);
         // sort by precision so higher precisions get prioritized
-        rules.sort(Comparator.comparingDouble(AnchorResult<TabularInstance>::getPrecision).reversed());
-
+        globalExplanations.sort(Comparator.comparingDouble(AnchorResult<TabularInstance>::getPrecision).reversed());
+        this.rules = globalExplanations;
     }
 
     /**
@@ -52,23 +53,9 @@ public class PredictionModel {
         int ruleNumber = 0;
 
         for (AnchorResult<TabularInstance> rule : this.rules) {
-            int numberMatches = 0;
             ruleNumber++;
-//            System.out.println("Check rule " + ruleNumber + " with precision " + r.getPrecision() + " and label " + r.getLabel());
 
-            for (int f : rule.getCanonicalFeatures()) {
-
-                double instanceValue = instance.getValue(f);
-                double ruleValue = rule.getInstance().getValue(f);
-
-//                System.out.println("Feature: " + rule.getInstance().getFeatures()[f].getName() + " - Instance value: " + instanceValue + " ---- Rule value: " + ruleValue);
-
-                if (instanceValue == ruleValue) {
-                    numberMatches++;
-                }
-            }
-
-            if (numberMatches == (rule.getCanonicalFeatures().size())) {
+            if (checkIfRuleApplies(instance, rule)) {
                 LOGGER.info("Predict " + rule.getExplainedInstanceLabel() + " for the instance based on rule " + ruleNumber + ".");
                 return rule.getExplainedInstanceLabel();
             }
@@ -76,6 +63,19 @@ public class PredictionModel {
 
         LOGGER.info("No rule found to predict the instance.");
         return -1;
+    }
+
+    private boolean checkIfRuleApplies(TabularInstance instance, AnchorResult<TabularInstance> rule) {
+        for (int f : rule.getCanonicalFeatures()) {
+
+            double instanceValue = instance.getValue(f);
+            double ruleValue = rule.getInstance().getValue(f);
+
+            if (instanceValue != ruleValue) {
+                return false;
+            }
+        }
+        return true;
     }
     
 }

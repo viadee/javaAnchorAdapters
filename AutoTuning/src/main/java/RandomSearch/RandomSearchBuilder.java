@@ -1,7 +1,7 @@
 package RandomSearch;
 
-import LossFunctions.PerformanceMeasures;
 import DataInitialization.DataInitializer;
+import LossFunctions.PerformanceMeasures;
 import de.viadee.xai.anchor.adapter.tabular.AnchorTabular;
 import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 
@@ -14,7 +14,7 @@ import java.util.function.Function;
  */
 public class RandomSearchBuilder {
 
-    private int explainedInstanceIndex;
+    private int explainedInstanceIndex[];
     private AnchorTabular anchorTabular;
     private DataInitializer data;
     private Function<TabularInstance, Integer> classificationFunction;
@@ -45,7 +45,7 @@ public class RandomSearchBuilder {
      * @param configurationSpace     the full configuration space to optimize
      * @param executionTermination   the termination condition in number of executions
      */
-    private RandomSearchBuilder(int explainedInstanceIndex,
+    private RandomSearchBuilder(int[] explainedInstanceIndex,
                                 AnchorTabular anchorTabular,
                                 Function<TabularInstance, Integer> classificationFunction,
                                 ConfigurationSpace configurationSpace,
@@ -67,9 +67,9 @@ public class RandomSearchBuilder {
      * @return the {@link RandomSearchBuilder}
      */
     public RandomSearch createDefaultBuilder(AnchorTabular anchorTabular,
-                                             int explainedInstanceIndex,
                                              Function<TabularInstance, Integer> classificationFunction,
-                                             ConfigurationSpace configurationSpace) {
+                                             ConfigurationSpace configurationSpace,
+                                             int... explainedInstanceIndex) {
         return new RandomSearchBuilder(explainedInstanceIndex, anchorTabular, classificationFunction, configurationSpace, 30).build();
     }
 
@@ -167,7 +167,7 @@ public class RandomSearchBuilder {
      * @param explainedInstanceIndex the index of the explained instance
      * @return the current {@link RandomSearchBuilder} for chaining
      */
-    public RandomSearchBuilder setExplainedInstanceIndex(int explainedInstanceIndex) {
+    public RandomSearchBuilder setExplainedInstanceIndex(int... explainedInstanceIndex) {
         this.explainedInstanceIndex = explainedInstanceIndex;
 
         return this;

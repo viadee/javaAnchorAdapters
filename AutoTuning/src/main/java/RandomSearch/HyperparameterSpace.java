@@ -2,10 +2,10 @@ package RandomSearch;
 
 import Parameter.ContinuousParameter;
 import Parameter.IntegerParameter;
+import Parameter.CategoricalParameter;
 import Parameter.Parameter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class HyperparameterSpace {
 
@@ -24,11 +24,12 @@ public final class HyperparameterSpace {
         List<Parameter> parameters = new ArrayList<Parameter>();
 
         parameters.add(new IntegerParameter("beamsize", 2, 1, 30));
-        parameters.add(new ContinuousParameter("tau", 1, 0.1, 1.0));
+        parameters.add(new ContinuousParameter("tau", 0.95, 0.5, 1.0));
         parameters.add(new ContinuousParameter("delta", 0.1, 0.1, 0.5));
         parameters.add(new ContinuousParameter("epsilon", 0.1, 0.1, 0.5));
         parameters.add(new ContinuousParameter("tauDiscrepancy", 0.05, 0.01, 0.1));
-//        parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+        parameters.add(new IntegerParameter("initSampleCount", 1, 1, 10));
+        parameters.add(new CategoricalParameter("allowSuboptimalSteps", "true", new String[]{"true", "false"}));
 
         return new HyperparameterSpace(parameters);
     }
@@ -55,6 +56,19 @@ public final class HyperparameterSpace {
             }
         }
         return null;
+    }
+
+    /**
+     * Get a map of randomized parameters
+     *
+     * @return the list of parameters with a random value assigned
+     */
+    public Map<String, String> randomizeParameters() {
+        Map<String, String> parameters = new LinkedHashMap<>();
+        for (Parameter parameter : hyperParameters) {
+            parameters.put(parameter.getName(), parameter.getRandomValue().toString());
+        }
+        return parameters;
     }
 
 

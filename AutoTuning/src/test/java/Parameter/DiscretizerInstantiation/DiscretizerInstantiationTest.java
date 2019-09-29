@@ -16,10 +16,10 @@ public class DiscretizerInstantiationTest {
         DiscretizerInstantiation discretizerInstantiation = new PercentileMedianDiscretizerInstantiation();
 
         // When
-        Discretizer[] result = discretizerInstantiation.getAllDiscretizers();
+        Discretizer result = discretizerInstantiation.getRandomDiscretizer();
 
         // Then
-        Assert.assertTrue(result.length == 99);
+        Assert.assertTrue(result.getClass().equals(PercentileMedianDiscretizer.class));
     }
 
     @Test
@@ -28,10 +28,10 @@ public class DiscretizerInstantiationTest {
         DiscretizerInstantiation discretizerInstantiation = new FUSINTERDiscretizerInstantiation();
 
         // When
-        Discretizer[] result = discretizerInstantiation.getAllDiscretizers();
+        Discretizer result = discretizerInstantiation.getRandomDiscretizer();
 
         // Then
-        Assert.assertTrue(result.length == 100 * 100);
+        Assert.assertTrue(result.getClass().equals(FUSINTERDiscretizer.class));
     }
 
 
@@ -41,10 +41,10 @@ public class DiscretizerInstantiationTest {
         DiscretizerInstantiation discretizerInstantiation = new EqualSizeDiscretizerInstantiation();
 
         // When
-        Discretizer[] result = discretizerInstantiation.getAllDiscretizers();
+        Discretizer result = discretizerInstantiation.getRandomDiscretizer();
 
         // Then
-        Assert.assertTrue(result.length == 99);
+        Assert.assertTrue(result.getClass().equals(EqualSizeDiscretizer.class));
     }
 
     @Test
@@ -53,10 +53,10 @@ public class DiscretizerInstantiationTest {
         DiscretizerInstantiation discretizerInstantiation = new AmevaDiscretizerInstantiation();
 
         // When
-        Discretizer[] result = discretizerInstantiation.getAllDiscretizers();
+        Discretizer result = discretizerInstantiation.getRandomDiscretizer();
 
         // Then
-        Assert.assertTrue(result.length == 1);
+        Assert.assertTrue(result.getClass().equals(AmevaDiscretizer.class));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class DiscretizerInstantiationTest {
         String result = discretizerInstantiation.getChildParameterConfig("test");
 
         // Then
-        Assert.assertTrue(result.equals("test_PercentileMedianDiscretizer_classCount integer [1,100][10]\ntest_PercentileMedianDiscretizer_classCount|test == PercentileMedianDiscretizer\n"));
+        Assert.assertTrue(result.equals("test_PercentileMedianDiscretizer integer [1,100][10]\ntest_PercentileMedianDiscretizer|test == PercentileMedianDiscretizer\n"));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class DiscretizerInstantiationTest {
         String result = discretizerInstantiation.getChildParameterConfig("test");
 
         // Then
-        Assert.assertTrue(result.equals("test_EqualSizeDiscretizer_classSize integer [1,100][10]\ntest_EqualSizeDiscretizer_classSize|test == EqualSizeDiscretizer\n"));
+        Assert.assertTrue(result.equals("test_EqualSizeDiscretizer integer [1,100][10]\ntest_EqualSizeDiscretizer|test == EqualSizeDiscretizer\n"));
     }
 
     @Test

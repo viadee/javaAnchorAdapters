@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class EqualSizeDiscretizerInstantiation implements DiscretizerInstantiation<EqualSizeDiscretizer> {
 
-    private final int valueCount = 100;
+    private final int valueCount = 2000;
 
     public EqualSizeDiscretizerInstantiation() {
     }

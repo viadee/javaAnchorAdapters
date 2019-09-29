@@ -33,7 +33,7 @@
         <dependency>
             <groupId>de.viadee.xai.anchor</groupId>
             <artifactId>algorithm</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- AnchorJ Default Solutions Extension containing AnchorTabular -->
@@ -54,6 +54,11 @@
         <dependency>
             <groupId>ai.h2o</groupId>
             <artifactId>h2o-genmodel</artifactId>
+            <version>3.22.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>ai.h2o</groupId>
+            <artifactId>h2o-genmodel-ext-xgboost</artifactId>
             <version>3.22.1.4</version>
         </dependency>
 

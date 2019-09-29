@@ -64,7 +64,7 @@ public class RandomSearchBuilderTest {
     @Test
     public void testRandomSearchBuilderWithConstructor() {
         new RandomSearchBuilder()
-                .createDefaultBuilder(anchorTabular, 0, classificationFunction, configurationSpace);
+                .createDefaultBuilder(anchorTabular, classificationFunction, configurationSpace, 0);
     }
 
 

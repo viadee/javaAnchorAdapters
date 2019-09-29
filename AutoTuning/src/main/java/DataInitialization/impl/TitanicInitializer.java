@@ -19,7 +19,7 @@ public class TitanicInitializer implements DataInitializer {
 
     @Override
     public AnchorTabular createTabular(Map<String, Discretizer> discretizers) {
-        InputStream data = ClassLoader.getSystemResourceAsStream("Titanic/train.csv");
+        InputStream data = ClassLoader.getSystemResourceAsStream("Titanic/titanic.csv");
         if (data == null)
             throw new RuntimeException("Could not load data");
 
@@ -33,7 +33,7 @@ public class TitanicInitializer implements DataInitializer {
                     .addColumn(DoubleColumn.fromStringInput("Age", -1, discretizers != null ? discretizers.get("Age") : new PercentileMedianDiscretizerInstantiation().getDefaultDiscretizer()))
                     .addColumn(IntegerColumn.fromStringInput("SibSp"))
                     .addColumn(IntegerColumn.fromStringInput("Parch"))
-                    .addColumn(new StringColumn("Ticket"))
+                    .addColumn(IntegerColumn.fromStringInput("SameTicket"))
                     .addColumn(DoubleColumn.fromStringInput("Fare", -1, discretizers != null ? discretizers.get("Fare") : new PercentileMedianDiscretizerInstantiation().getDefaultDiscretizer()))
                     .addColumn(new StringColumn("Cabin"))
                     .addColumn(new StringColumn("Embarked"))
