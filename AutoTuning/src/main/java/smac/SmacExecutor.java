@@ -24,6 +24,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+/**
+ * The execution of the SMAC algorithm. Results are logged and the best configuration and the best rule are displayed
+ * to the user.
+ */
 public class SmacExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(SmacExecutor.class);
 
@@ -62,6 +66,9 @@ public class SmacExecutor {
         this.cutOffTime = cutOffTime;
     }
 
+    /**
+     * Running the SMAC algorithm to find the best configuration with the provided options.
+     */
     public void run() {
 
         setDefaultOptions();

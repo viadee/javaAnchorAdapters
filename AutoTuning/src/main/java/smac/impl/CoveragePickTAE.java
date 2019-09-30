@@ -25,6 +25,10 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 
+/**
+ * The target algorithm evaluator executing the Coverage Pick algorithm with a selected configuration from SMAC.
+ * The evaluation's value is processed to SMAC
+ */
 public class CoveragePickTAE implements TargetAlgorithmEvaluator {
 
     private final Function<TabularInstance, Integer> classificationFunction;

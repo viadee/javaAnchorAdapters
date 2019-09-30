@@ -13,6 +13,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Contains all functionalities for instantiating the discretization space by defining which discretization methods
+ * should be considered in the optimization process
+ */
 public class DiscretizationSpace {
 
     private DiscretizerInstantiation[] instantiations;

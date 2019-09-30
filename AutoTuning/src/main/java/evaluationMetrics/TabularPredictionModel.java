@@ -9,6 +9,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The prediction model for Tabular Data. Predicts the label given by a ruleset for each instance in a tabular
+ * dataset.
+ */
 public class TabularPredictionModel extends PredictionModel<TabularInstance> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TabularPredictionModel.class);

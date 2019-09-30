@@ -4,6 +4,10 @@ import ca.ubc.cs.beta.aeatk.parameterconfigurationspace.ParameterConfigurationSp
 
 import java.io.StringReader;
 
+/**
+ * The configuration space containing all parameters that need tuning and contains the performance for the selected
+ * configuration
+ */
 public class ConfigurationSpace {
 
     private HyperparameterSpace hyperparameterSpace;

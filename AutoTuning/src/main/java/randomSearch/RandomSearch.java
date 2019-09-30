@@ -26,7 +26,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- * Class for optimizing a given configuration space for Anchor construction
+ * Class for optimizing a given configuration space for Anchors by randomly selecting new parameters randomly from
+ * the configuration space
  */
 public class RandomSearch {
 

@@ -16,8 +16,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The abstract class for automatically fitting Anchors to the by SMAC provided configuration
+ * <p>
+ * Provides functionalities to set Anchors' hyperparameters and set new Discretizers to the AnchorTabular
+ */
 public abstract class AnchorsConfig {
 
+    /**
+     * Set Anchors' hyperparameters to the new selected configuration
+     *
+     * @param configuration the configuration provided by SMAC
+     * @param anchorBuilder the anchorBuilder that is adapted to the new configuration
+     * @return new fitted anchorBuilder
+     */
     public static AnchorConstructionBuilder setParametersForSmac(ParameterConfiguration configuration, AnchorConstructionBuilder<TabularInstance> anchorBuilder){
         if (configuration.get("tau") != null)
             anchorBuilder.setTau(Double.valueOf(configuration.get("tau")));
@@ -37,6 +49,13 @@ public abstract class AnchorsConfig {
         return anchorBuilder;
     }
 
+    /**
+     * Get a Map of discretizers from the SMAC configuration
+     *
+     * @param configuration the configuration provided by SMAC
+     * @param anchorTabular the anchorBuilder to get all discretized columns
+     * @return a map of discretizers
+     */
     public static Map<String, Discretizer> setDiscretizerForSmac(ParameterConfiguration configuration, AnchorTabular anchorTabular) {
         final Map<String, String> parameters = configuration.getActiveParameters().stream()
                 .map(p -> new HashMap.SimpleImmutableEntry<>(p, configuration.get(p)))

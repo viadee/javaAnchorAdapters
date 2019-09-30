@@ -5,6 +5,10 @@ import de.viadee.xai.anchor.adapter.tabular.TabularInstance;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Calculates different measures based on the comparison of a list of predicted values and the predictions of
+ * a classification model
+ */
 public class PerformanceMeasures {
 
     private double coverage = 0;

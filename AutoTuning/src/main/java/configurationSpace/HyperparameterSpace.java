@@ -2,6 +2,10 @@ package configurationSpace;
 
 import java.util.*;
 
+/**
+ * The hyperparameterspace containing all parameters to tune. As default can be initialized with the standard
+ * parameters of the Anchors
+ */
 public final class HyperparameterSpace {
 
     private List<Parameter> hyperParameters;

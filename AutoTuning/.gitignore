@@ -43,3 +43,4 @@ src/main/resources
 /src/test/resources/RandomSearchTest/hella.csv
 /src/test/resources/RandomSearchTest/titanic_test.csv
 /src/main/java/globalExperiments.java
+/baseline/

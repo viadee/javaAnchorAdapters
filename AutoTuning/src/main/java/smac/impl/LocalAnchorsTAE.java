@@ -22,6 +22,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+/**
+ * The target algorithm evaluator executing the Anchors algorithm with a selected configuration from SMAC.
+ * The evaluation's value is processed to SMAC
+ */
 public class LocalAnchorsTAE implements TargetAlgorithmEvaluator {
 
     private final Function<TabularInstance, Integer> classificationFunction;

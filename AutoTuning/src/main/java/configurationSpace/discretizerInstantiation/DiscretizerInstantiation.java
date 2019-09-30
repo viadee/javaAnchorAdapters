@@ -4,6 +4,9 @@ import de.viadee.xai.anchor.adapter.tabular.discretizer.Discretizer;
 
 import java.util.*;
 
+/**
+ * Interface for instantiating discretizer objects from the categorical discretization parameter.
+ */
 public interface DiscretizerInstantiation<T extends Discretizer> {
 
     /**
