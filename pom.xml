@@ -7,9 +7,9 @@
 
     <groupId>de.viadee.xai.anchor</groupId>
     <artifactId>anchorjAdapters</artifactId>
-    <!-- NOTE: when changing version, all anchor properties in child poms need to be considerd, too-->
+    <!-- NOTE: when changing version, all anchor properties in child poms need to be considered, too-->
     <!-- -->
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>pom</packaging>
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
@@ -56,6 +56,10 @@
         <developerConnection>scm:git:ssh://github.com/viadee/javaAnchorAdapters</developerConnection>
         <url>https://github.com/viadee/javaAnchorAdapters/tree/master</url>
     </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <modules>
         <module>SparkExtension</module>
