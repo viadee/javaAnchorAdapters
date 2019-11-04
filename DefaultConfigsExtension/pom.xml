@@ -9,7 +9,7 @@
     <parent>
         <groupId>de.viadee.xai.anchor</groupId>
         <artifactId>anchorjAdapters</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
 
     <artifactId>DefaultConfigsAdapter</artifactId>
@@ -17,6 +17,12 @@
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
     <dependencies>
+
+        <dependency>
+            <groupId>de.viadee</groupId>
+            <artifactId>discretizer4j</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
         <!-- ImageJ -->
         <dependency>
@@ -50,12 +56,6 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
             <version>1.5.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.viadee</groupId>
-            <artifactId>discretizer4j</artifactId>
-            <version>1.0.1</version>
         </dependency>
 
         <!-- SLIC for ImageJ -->

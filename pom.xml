@@ -9,7 +9,7 @@
     <artifactId>anchorjAdapters</artifactId>
     <!-- NOTE: when changing version, all anchor properties in child poms need to be considered, too-->
     <!-- -->
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
     <url>https://github.com/viadee/javaAnchorAdapters</url>
 
